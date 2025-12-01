@@ -41,7 +41,7 @@ Add to your `pom.xml`:
 </repositories>
 
 <dependency>
-    <groupId>com.github.yourusername</groupId>
+    <groupId>com.farashian</groupId>
     <artifactId>persian-calendar</artifactId>
     <version>v2.0.0</version>
 </dependency>
