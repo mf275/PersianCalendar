@@ -41,12 +41,12 @@ Add to your `pom.xml`:
 </repositories>
 
 <dependency>
-    <groupId>com.farashian</groupId>
+    <groupId>com.github.mf275</groupId>
     <artifactId>persian-calendar</artifactId>
     <version>v2.0.0</version>
 </dependency>
-
-implementation 'com.farashian:persian-calendar:2.0.0'
+        
+implementation 'com.github.mf275:PersianCalendar:v2.0.0'
 
 This is the English version of the documentation. I have included a link to the Farsi version at the beginning.
 
