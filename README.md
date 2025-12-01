@@ -29,12 +29,21 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 
 ## 📦 Installation
 
-### Maven
+
+Add to your `pom.xml`:
+
 ```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
 <dependency>
-  <groupId>com.farashian</groupId>
-  <artifactId>persian-calendar</artifactId>
-  <version>2.0.0</version>
+    <groupId>com.github.yourusername</groupId>
+    <artifactId>persian-calendar</artifactId>
+    <version>v2.0.0</version>
 </dependency>
 
 implementation 'com.farashian:persian-calendar:2.0.0'
