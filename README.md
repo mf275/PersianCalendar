@@ -34,10 +34,10 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
   <groupId>com.farashian</groupId>
   <artifactId>pcalendar</artifactId>
-  <version>1.1.0</version>
+  <version>2.0.0</version>
 </dependency>
 
-implementation 'com.farashian:pcalendar:1.1.0'
+implementation 'com.farashian:pcalendar:2.0.0'
 
 This is the English version of the documentation. I have included a link to the Farsi version at the beginning.
 
