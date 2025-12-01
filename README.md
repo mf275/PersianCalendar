@@ -33,11 +33,11 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 ```xml
 <dependency>
   <groupId>com.farashian</groupId>
-  <artifactId>pcalendar</artifactId>
+  <artifactId>persian-calendar</artifactId>
   <version>2.0.0</version>
 </dependency>
 
-implementation 'com.farashian:pcalendar:2.0.0'
+implementation 'com.farashian:persian-calendar:2.0.0'
 
 This is the English version of the documentation. I have included a link to the Farsi version at the beginning.
 
