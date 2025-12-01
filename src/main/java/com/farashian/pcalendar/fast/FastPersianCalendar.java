@@ -202,10 +202,6 @@ public class FastPersianCalendar extends Calendar {
         }
     }
 
-    public boolean isLeapYear() {
-        return isLeapYear(getYear());
-    }
-
     private static boolean isLeapYear(int year) {
         int remainder = year % 33;
         return remainder == 1 || remainder == 5 || remainder == 9 ||
@@ -903,5 +899,586 @@ public class FastPersianCalendar extends Calendar {
         return formatToTwoDigits(year, locale) + delimiter +
                formatToTwoDigits(month + 1, locale) + delimiter +
                formatToTwoDigits(day, locale);
+    }
+
+    // === HELPER METHODS FOR DATE MANIPULATION ===
+
+    /**
+     * Add weeks to the current date
+     * @param weeks number of weeks to add (can be negative to subtract)
+     */
+    public void addWeeks(int weeks) {
+        addDays(weeks * 7);
+    }
+
+    /**
+     * Add months to the current date
+     * @param months number of months to add (can be negative to subtract)
+     */
+    public void addMonths(int months) {
+        add(MONTH, months);
+    }
+
+    /**
+     * Add years to the current date
+     * @param years number of years to add (can be negative to subtract)
+     */
+    public void addYears(int years) {
+        add(YEAR, years);
+    }
+
+    /**
+     * Get a copy of this calendar with days added
+     * @param days number of days to add
+     * @return new FastPersianCalendar instance with the added days
+     */
+    public FastPersianCalendar plusDays(int days) {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.addDays(days);
+        return result;
+    }
+
+    /**
+     * Get a copy of this calendar with days subtracted
+     * @param days number of days to subtract
+     * @return new FastPersianCalendar instance with the subtracted days
+     */
+    public FastPersianCalendar minusDays(int days) {
+        return plusDays(-days);
+    }
+
+    /**
+     * Get a copy of this calendar with weeks added
+     * @param weeks number of weeks to add
+     * @return new FastPersianCalendar instance with the added weeks
+     */
+    public FastPersianCalendar plusWeeks(int weeks) {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.addWeeks(weeks);
+        return result;
+    }
+
+    /**
+     * Get a copy of this calendar with weeks subtracted
+     * @param weeks number of weeks to subtract
+     * @return new FastPersianCalendar instance with the subtracted weeks
+     */
+    public FastPersianCalendar minusWeeks(int weeks) {
+        return plusWeeks(-weeks);
+    }
+
+    /**
+     * Get a copy of this calendar with months added
+     * @param months number of months to add
+     * @return new FastPersianCalendar instance with the added months
+     */
+    public FastPersianCalendar plusMonths(int months) {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.addMonths(months);
+        return result;
+    }
+
+    /**
+     * Get a copy of this calendar with months subtracted
+     * @param months number of months to subtract
+     * @return new FastPersianCalendar instance with the subtracted months
+     */
+    public FastPersianCalendar minusMonths(int months) {
+        return plusMonths(-months);
+    }
+
+    /**
+     * Get a copy of this calendar with years added
+     * @param years number of years to add
+     * @return new FastPersianCalendar instance with the added years
+     */
+    public FastPersianCalendar plusYears(int years) {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.addYears(years);
+        return result;
+    }
+
+    /**
+     * Get a copy of this calendar with years subtracted
+     * @param years number of years to subtract
+     * @return new FastPersianCalendar instance with the subtracted years
+     */
+    public FastPersianCalendar minusYears(int years) {
+        return plusYears(-years);
+    }
+
+    /**
+     * Check if this date is before another Persian date
+     * @param other the date to compare with
+     * @return true if this date is before the other date
+     */
+    public boolean isBefore(FastPersianCalendar other) {
+        return this.getTimeInMillis() < other.getTimeInMillis();
+    }
+
+    /**
+     * Check if this date is after another Persian date
+     * @param other the date to compare with
+     * @return true if this date is after the other date
+     */
+    public boolean isAfter(FastPersianCalendar other) {
+        return this.getTimeInMillis() > other.getTimeInMillis();
+    }
+
+    /**
+     * Check if this date is equal to another Persian date
+     * @param other the date to compare with
+     * @return true if both dates represent the same day
+     */
+    public boolean isEqual(FastPersianCalendar other) {
+        return this.persianYear == other.persianYear &&
+               this.persianMonth == other.persianMonth &&
+               this.persianDay == other.persianDay;
+    }
+
+    /**
+     * Get the number of days between this date and another date
+     * @param other the date to compare with
+     * @return number of days between the two dates (positive if this date is later)
+     */
+    public long daysBetween(FastPersianCalendar other) {
+        long diffMillis = this.getTimeInMillis() - other.getTimeInMillis();
+        return diffMillis / (1000 * 60 * 60 * 24);
+    }
+
+    /**
+     * Check if the current date is a holiday (Friday in Persian calendar)
+     * @return true if the day is Friday
+     */
+    public boolean isHoliday() {
+        return get(DAY_OF_WEEK) == WEEKDAY_HOLIDAY_NUMBER;
+    }
+
+    /**
+     * Check if the current date is today
+     * @return true if the date represents today
+     */
+    public boolean isToday() {
+        FastPersianCalendar today = new FastPersianCalendar();
+        return isEqual(today);
+    }
+
+    /**
+     * Get the first day of the current month
+     * @return new FastPersianCalendar instance set to the first day of current month
+     */
+    public FastPersianCalendar withFirstDayOfMonth() {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.set(DAY_OF_MONTH, 1);
+        return result;
+    }
+
+    /**
+     * Get the last day of the current month
+     * @return new FastPersianCalendar instance set to the last day of current month
+     */
+    public FastPersianCalendar withLastDayOfMonth() {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        int lastDay = result.getDaysInMonth();
+        result.set(DAY_OF_MONTH, lastDay);
+        return result;
+    }
+
+    /**
+     * Get the first day of the current year
+     * @return new FastPersianCalendar instance set to Farvardin 1 of current year
+     */
+    public FastPersianCalendar withFirstDayOfYear() {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.set(MONTH, FARVARDIN);
+        result.set(DAY_OF_MONTH, 1);
+        return result;
+    }
+
+    /**
+     * Get the last day of the current year
+     * @return new FastPersianCalendar instance set to Esfand 29/30 of current year
+     */
+    public FastPersianCalendar withLastDayOfYear() {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.set(MONTH, ESFAND);
+        int lastDay = isLeapYear(result.getYear()) ? 30 : 29;
+        result.set(DAY_OF_MONTH, lastDay);
+        return result;
+    }
+
+    /**
+     * Get the start of the day (00:00:00.000)
+     * @return new FastPersianCalendar instance with time set to midnight
+     */
+    public FastPersianCalendar atStartOfDay() {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.set(HOUR_OF_DAY, 0);
+        result.set(MINUTE, 0);
+        result.set(SECOND, 0);
+        result.set(MILLISECOND, 0);
+        return result;
+    }
+
+    /**
+     * Get the end of the day (23:59:59.999)
+     * @return new FastPersianCalendar instance with time set to end of day
+     */
+    public FastPersianCalendar atEndOfDay() {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        result.set(HOUR_OF_DAY, 23);
+        result.set(MINUTE, 59);
+        result.set(SECOND, 59);
+        result.set(MILLISECOND, 999);
+        return result;
+    }
+
+    /**
+     * Get the age in years based on a reference date (usually today)
+     * @param referenceDate the date to calculate age against (usually today)
+     * @return age in years
+     */
+    public int getAge(FastPersianCalendar referenceDate) {
+        int age = referenceDate.persianYear - this.persianYear;
+
+        // Adjust if birthday hasn't occurred yet this year
+        if (referenceDate.persianMonth < this.persianMonth ||
+            (referenceDate.persianMonth == this.persianMonth &&
+             referenceDate.persianDay < this.persianDay)) {
+            age--;
+        }
+
+        return Math.max(0, age);
+    }
+
+    /**
+     * Get the age in years based on today's date
+     * @return age in years
+     */
+    public int getAge() {
+        return getAge(new FastPersianCalendar());
+    }
+
+    /**
+     * Check if the current date is within a date range (inclusive)
+     * @param startDate start of the range
+     * @param endDate end of the range
+     * @return true if current date is between startDate and endDate (inclusive)
+     */
+    public boolean isBetween(FastPersianCalendar startDate, FastPersianCalendar endDate) {
+        return !this.isBefore(startDate) && !this.isAfter(endDate);
+    }
+
+    /**
+     * Get the day of year (1 to 365/366)
+     * @return day of year
+     */
+    public int getDayOfYear() {
+        complete(); // Ensure fields are computed
+        return get(DAY_OF_YEAR);
+    }
+
+    /**
+     * Get the week of year
+     * @return week of year (1-53)
+     */
+    public int getWeekOfYear() {
+        complete(); // Ensure fields are computed
+        return get(WEEK_OF_YEAR);
+    }
+
+    /**
+     * Get the week of month
+     * @return week of month (1-6)
+     */
+    public int getWeekOfMonth() {
+        complete(); // Ensure fields are computed
+        return get(WEEK_OF_MONTH);
+    }
+
+    /**
+     * Create a copy of this calendar
+     * @return a deep copy of this FastPersianCalendar instance
+     */
+    @Override
+    public FastPersianCalendar clone() {
+        // Create a new instance with the same time zone and locale
+        FastPersianCalendar clone = new FastPersianCalendar(this.getTimeZone(), this.locale);
+
+        // Copy the internal state
+        clone.persianYear = this.persianYear;
+        clone.persianMonth = this.persianMonth;
+        clone.persianDay = this.persianDay;
+        clone.setTimeInMillis(this.getTimeInMillis());
+
+        // Copy the time fields if they are set
+        for (int i = 0; i < FIELD_COUNT; i++) {
+            if (this.isSet[i]) {
+                clone.fields[i] = this.fields[i];
+                clone.isSet[i] = true;
+            }
+        }
+
+        // Copy cache and state
+        clone.lastComputedTime = this.lastComputedTime;
+        clone.isDirty = this.isDirty;
+        clone.areFieldsSet = this.areFieldsSet;
+
+        return clone;
+    }
+
+    /**
+     * Check if the current date is a weekend (Friday in Persian calendar)
+     * @return true if the day is Friday
+     */
+    public boolean isWeekend() {
+        return isHoliday();
+    }
+
+    /**
+     * Check if the current date is a weekday (Saturday through Thursday)
+     * @return true if the day is not Friday
+     */
+    public boolean isWeekday() {
+        return !isHoliday();
+    }
+
+    /**
+     * Get the number of days in the current year
+     * @return 365 or 366 depending on leap year
+     */
+    public int getDaysInYear() {
+        return isLeapYear() ? 366 : 365;
+    }
+
+    /**
+     * Get the quarter (3-month period) of the year
+     * @return quarter number (1-4)
+     */
+    public int getQuarter() {
+        return persianMonth / 3 + 1;
+    }
+
+    /**
+     * Check if the current date is the last day of the month
+     * @return true if current day is the last day of the month
+     */
+    public boolean isLastDayOfMonth() {
+        return persianDay == getDaysInMonth();
+    }
+
+    /**
+     * Check if the current date is the first day of the month
+     * @return true if current day is the first day of the month
+     */
+    public boolean isFirstDayOfMonth() {
+        return persianDay == 1;
+    }
+
+    /**
+     * Get the number of days remaining in the current month
+     * @return days remaining in month
+     */
+    public int getDaysRemainingInMonth() {
+        return getDaysInMonth() - persianDay;
+    }
+
+    /**
+     * Get the number of days passed in the current month
+     * @return days passed in month
+     */
+    public int getDaysPassedInMonth() {
+        return persianDay - 1;
+    }
+
+    /**
+     * Get a string representation of the date in ISO-like format (YYYY/MM/DD)
+     * @return formatted date string
+     */
+    public String toIsoString() {
+        return String.format(locale, "%04d/%02d/%02d",
+                             persianYear, persianMonth + 1, persianDay);
+    }
+
+    /**
+     * Check if this date is in a leap year
+     * @return true if the year is a leap year
+     */
+    public boolean isLeapYear() {
+        // Quick validation - persianYear should always be valid
+        if (persianYear < 1) {
+            ensureComputed(); // Just in case
+        }
+        return isLeapYear(persianYear);
+    }
+
+    /**
+     * Get the day of week as Persian name
+     * @return Persian weekday name
+     */
+    public String getPersianWeekdayName() {
+        return getWeekdayName(get(DAY_OF_WEEK), PERSIAN_LOCALE);
+    }
+
+    /**
+     * Get the month name in Persian
+     * @return Persian month name
+     */
+    public String getPersianMonthName() {
+        return getMonthName(persianMonth, PERSIAN_LOCALE);
+    }
+
+    /**
+     * Get the month name in English
+     * @return English month name
+     */
+    public String getEnglishMonthName() {
+        return getMonthName(persianMonth, Locale.ENGLISH);
+    }
+
+    /**
+     * Check if two dates represent the same day (ignoring time)
+     * @param other the date to compare with
+     * @return true if same year, month, and day
+     */
+    public boolean isSameDay(FastPersianCalendar other) {
+        ensureComputed();
+        other.ensureComputed();
+        return this.persianYear == other.persianYear &&
+               this.persianMonth == other.persianMonth &&
+               this.persianDay == other.persianDay;
+    }
+
+    /**
+     * Check if two dates represent the same month and year
+     * @param other the date to compare with
+     * @return true if same year and month
+     */
+    public boolean isSameMonth(FastPersianCalendar other) {
+        ensureComputed();
+        other.ensureComputed();
+        return this.persianYear == other.persianYear &&
+               this.persianMonth == other.persianMonth;
+    }
+
+    /**
+     * Check if two dates represent the same year
+     * @param other the date to compare with
+     * @return true if same year
+     */
+    public boolean isSameYear(FastPersianCalendar other) {
+        ensureComputed();
+        other.ensureComputed();
+        return this.persianYear == other.persianYear;
+    }
+
+    /**
+     * Get midnight timestamp for this date
+     * @return milliseconds since epoch for midnight of this date
+     */
+    public long getMidnightTime() {
+        return atStartOfDay().getTimeInMillis();
+    }
+
+    /**
+     * Check if the date is valid
+     * @return true if the date represents a valid Persian date
+     */
+    public boolean isValid() {
+        try {
+            validateDate(persianYear, persianMonth, persianDay);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get the maximum possible day for the current month
+     * @return maximum day number for current month
+     */
+    public int getMaxDayOfMonth() {
+        return getDaysInMonth(persianYear, persianMonth);
+    }
+
+    /**
+     * Get the previous Friday (weekend start)
+     * @return date of previous Friday
+     */
+    public FastPersianCalendar getPreviousFriday() {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        int currentDayOfWeek = get(DAY_OF_WEEK);
+        int daysToSubtract = (currentDayOfWeek - FRIDAY + 7) % 7;
+        if (daysToSubtract == 0) {
+            daysToSubtract = 7; // If it's already Friday, go to previous Friday
+        }
+        result.addDays(-daysToSubtract);
+        return result;
+    }
+
+    /**
+     * Get the next Friday (weekend start)
+     * @return date of next Friday
+     */
+    public FastPersianCalendar getNextFriday() {
+        FastPersianCalendar result = new FastPersianCalendar(this);
+        int currentDayOfWeek = get(DAY_OF_WEEK);
+        int daysToAdd = (FRIDAY - currentDayOfWeek + 7) % 7;
+        if (daysToAdd == 0) {
+            daysToAdd = 7; // If it's already Friday, go to next Friday
+        }
+        result.addDays(daysToAdd);
+        return result;
+    }
+
+    /**
+     * Check if the date is in the past
+     * @return true if date is before today
+     */
+    public boolean isPast() {
+        return isBefore(new FastPersianCalendar());
+    }
+
+    /**
+     * Check if the date is in the future
+     * @return true if date is after today
+     */
+    public boolean isFuture() {
+        return isAfter(new FastPersianCalendar());
+    }
+
+    /**
+     * Get the difference in months between this date and another date
+     * @param other the date to compare with
+     * @return number of months difference (positive if this date is later)
+     */
+    public int monthsBetween(FastPersianCalendar other) {
+        int yearDiff = this.persianYear - other.persianYear;
+        int monthDiff = this.persianMonth - other.persianMonth;
+        return yearDiff * 12 + monthDiff;
+    }
+
+    /**
+     * Get the difference in years between this date and another date
+     * @param other the date to compare with
+     * @return number of years difference (positive if this date is later)
+     */
+    public int yearsBetween(FastPersianCalendar other) {
+        int yearDiff = this.persianYear - other.persianYear;
+
+        // Adjust if the month/day hasn't occurred yet this year
+        if (yearDiff > 0) {
+            if (this.persianMonth < other.persianMonth ||
+                (this.persianMonth == other.persianMonth && this.persianDay < other.persianDay)) {
+                yearDiff--;
+            }
+        } else if (yearDiff < 0) {
+            if (this.persianMonth > other.persianMonth ||
+                (this.persianMonth == other.persianMonth && this.persianDay > other.persianDay)) {
+                yearDiff++;
+            }
+        }
+
+        return yearDiff;
     }
 }

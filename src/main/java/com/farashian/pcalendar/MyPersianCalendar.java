@@ -868,4 +868,399 @@ public class MyPersianCalendar extends Calendar {
             return null;
         }
     }
+
+    // === HELPER METHODS FOR DATE MANIPULATION ===
+
+    /**
+     * Add days to the current date
+     * @param days number of days to add (can be negative to subtract)
+     */
+    public void addDays(int days) {
+        add(DAY_OF_MONTH, days);
+    }
+
+    /**
+     * Add weeks to the current date
+     * @param weeks number of weeks to add (can be negative to subtract)
+     */
+    public void addWeeks(int weeks) {
+        addDays(weeks * 7);
+    }
+
+    /**
+     * Add months to the current date
+     * @param months number of months to add (can be negative to subtract)
+     */
+    public void addMonths(int months) {
+        add(MONTH, months);
+    }
+
+    /**
+     * Add years to the current date
+     * @param years number of years to add (can be negative to subtract)
+     */
+    public void addYears(int years) {
+        add(YEAR, years);
+    }
+
+    /**
+     * Get a copy of this calendar with days added
+     * @param days number of days to add
+     * @return new MyPersianCalendar instance with the added days
+     */
+    public MyPersianCalendar plusDays(int days) {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.addDays(days);
+        return result;
+    }
+
+    /**
+     * Get a copy of this calendar with days subtracted
+     * @param days number of days to subtract
+     * @return new MyPersianCalendar instance with the subtracted days
+     */
+    public MyPersianCalendar minusDays(int days) {
+        return plusDays(-days);
+    }
+
+    /**
+     * Get a copy of this calendar with weeks added
+     * @param weeks number of weeks to add
+     * @return new MyPersianCalendar instance with the added weeks
+     */
+    public MyPersianCalendar plusWeeks(int weeks) {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.addWeeks(weeks);
+        return result;
+    }
+
+    /**
+     * Get a copy of this calendar with weeks subtracted
+     * @param weeks number of weeks to subtract
+     * @return new MyPersianCalendar instance with the subtracted weeks
+     */
+    public MyPersianCalendar minusWeeks(int weeks) {
+        return plusWeeks(-weeks);
+    }
+
+    /**
+     * Get a copy of this calendar with months added
+     * @param months number of months to add
+     * @return new MyPersianCalendar instance with the added months
+     */
+    public MyPersianCalendar plusMonths(int months) {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.addMonths(months);
+        return result;
+    }
+
+    /**
+     * Get a copy of this calendar with months subtracted
+     * @param months number of months to subtract
+     * @return new MyPersianCalendar instance with the subtracted months
+     */
+    public MyPersianCalendar minusMonths(int months) {
+        return plusMonths(-months);
+    }
+
+    /**
+     * Get a copy of this calendar with years added
+     * @param years number of years to add
+     * @return new MyPersianCalendar instance with the added years
+     */
+    public MyPersianCalendar plusYears(int years) {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.addYears(years);
+        return result;
+    }
+
+    /**
+     * Get a copy of this calendar with years subtracted
+     * @param years number of years to subtract
+     * @return new MyPersianCalendar instance with the subtracted years
+     */
+    public MyPersianCalendar minusYears(int years) {
+        return plusYears(-years);
+    }
+
+    /**
+     * Check if this date is before another Persian date
+     * @param other the date to compare with
+     * @return true if this date is before the other date
+     */
+    public boolean isBefore(MyPersianCalendar other) {
+        return this.getTimeInMillis() < other.getTimeInMillis();
+    }
+
+    /**
+     * Check if this date is after another Persian date
+     * @param other the date to compare with
+     * @return true if this date is after the other date
+     */
+    public boolean isAfter(MyPersianCalendar other) {
+        return this.getTimeInMillis() > other.getTimeInMillis();
+    }
+
+    /**
+     * Check if this date is equal to another Persian date
+     * @param other the date to compare with
+     * @return true if both dates represent the same day
+     */
+    public boolean isEqual(MyPersianCalendar other) {
+        return this.getYear() == other.getYear() &&
+               this.getMonth() == other.getMonth() &&
+               this.getDayOfMonth() == other.getDayOfMonth();
+    }
+
+    /**
+     * Get the number of days between this date and another date
+     * @param other the date to compare with
+     * @return number of days between the two dates (positive if this date is later)
+     */
+    public long daysBetween(MyPersianCalendar other) {
+        long diffMillis = this.getTimeInMillis() - other.getTimeInMillis();
+        return diffMillis / (1000 * 60 * 60 * 24);
+    }
+
+    /**
+     * Check if the current date is a holiday (Friday in Persian calendar)
+     * @return true if the day is Friday
+     */
+    public boolean isHoliday() {
+        return get(DAY_OF_WEEK) == WEEKDAY_HOLIDAY_NUMBER;
+    }
+
+    /**
+     * Check if the current date is today
+     * @return true if the date represents today
+     */
+    public boolean isToday() {
+        MyPersianCalendar today = new MyPersianCalendar();
+        return isEqual(today);
+    }
+
+    /**
+     * Get the first day of the current month
+     * @return new MyPersianCalendar instance set to the first day of current month
+     */
+    public MyPersianCalendar withFirstDayOfMonth() {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.set(DAY_OF_MONTH, 1);
+        return result;
+    }
+
+    /**
+     * Get the last day of the current month
+     * @return new MyPersianCalendar instance set to the last day of current month
+     */
+    public MyPersianCalendar withLastDayOfMonth() {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        int lastDay = result.getDaysInMonth();
+        result.set(DAY_OF_MONTH, lastDay);
+        return result;
+    }
+
+    /**
+     * Get the first day of the current year
+     * @return new MyPersianCalendar instance set to Farvardin 1 of current year
+     */
+    public MyPersianCalendar withFirstDayOfYear() {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.set(MONTH, FARVARDIN);
+        result.set(DAY_OF_MONTH, 1);
+        return result;
+    }
+
+    /**
+     * Get the last day of the current year
+     * @return new MyPersianCalendar instance set to Esfand 29/30 of current year
+     */
+    public MyPersianCalendar withLastDayOfYear() {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.set(MONTH, ESFAND);
+        int lastDay = isLeapYear(result.getYear()) ? 30 : 29;
+        result.set(DAY_OF_MONTH, lastDay);
+        return result;
+    }
+
+    /**
+     * Get the start of the day (00:00:00.000)
+     * @return new MyPersianCalendar instance with time set to midnight
+     */
+    public MyPersianCalendar atStartOfDay() {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.set(HOUR_OF_DAY, 0);
+        result.set(MINUTE, 0);
+        result.set(SECOND, 0);
+        result.set(MILLISECOND, 0);
+        return result;
+    }
+
+    /**
+     * Get the end of the day (23:59:59.999)
+     * @return new MyPersianCalendar instance with time set to end of day
+     */
+    public MyPersianCalendar atEndOfDay() {
+        MyPersianCalendar result = new MyPersianCalendar(this);
+        result.set(HOUR_OF_DAY, 23);
+        result.set(MINUTE, 59);
+        result.set(SECOND, 59);
+        result.set(MILLISECOND, 999);
+        return result;
+    }
+
+    /**
+     * Get the age in years based on a reference date (usually today)
+     * @param referenceDate the date to calculate age against (usually today)
+     * @return age in years
+     */
+    public int getAge(MyPersianCalendar referenceDate) {
+        int age = referenceDate.getYear() - this.getYear();
+
+        // Adjust if birthday hasn't occurred yet this year
+        if (referenceDate.getMonth() < this.getMonth() ||
+            (referenceDate.getMonth() == this.getMonth() &&
+             referenceDate.getDayOfMonth() < this.getDayOfMonth())) {
+            age--;
+        }
+
+        return Math.max(0, age);
+    }
+
+    /**
+     * Get the age in years based on today's date
+     * @return age in years
+     */
+    public int getAge() {
+        return getAge(new MyPersianCalendar());
+    }
+
+    /**
+     * Check if the current date is within a date range (inclusive)
+     * @param startDate start of the range
+     * @param endDate end of the range
+     * @return true if current date is between startDate and endDate (inclusive)
+     */
+    public boolean isBetween(MyPersianCalendar startDate, MyPersianCalendar endDate) {
+        return !this.isBefore(startDate) && !this.isAfter(endDate);
+    }
+
+    /**
+     * Get the day of year (1 to 365/366)
+     * @return day of year
+     */
+    public int getDayOfYear() {
+        complete(); // Ensure fields are computed
+        return get(DAY_OF_YEAR);
+    }
+
+    /**
+     * Get the week of year
+     * @return week of year (1-53)
+     */
+    public int getWeekOfYear() {
+        complete(); // Ensure fields are computed
+        return get(WEEK_OF_YEAR);
+    }
+
+    /**
+     * Get the week of month
+     * @return week of month (1-6)
+     */
+    public int getWeekOfMonth() {
+        complete(); // Ensure fields are computed
+        return get(WEEK_OF_MONTH);
+    }
+
+    /**
+     * Create a copy of this calendar
+     * @return a deep copy of this MyPersianCalendar instance
+     */
+    @Override
+    public MyPersianCalendar clone() {
+        // Create a new instance with the same time zone and locale
+        MyPersianCalendar clone = new MyPersianCalendar(this.getTimeZone(), this.locale);
+
+        // Copy the internal state
+        clone.ymd = this.ymd.clone();
+        clone.setTimeInMillis(this.getTimeInMillis());
+
+        // Copy the time fields if they are set
+        for (int i = 0; i < FIELD_COUNT; i++) {
+            if (this.isSet[i]) {
+                clone.fields[i] = this.fields[i];
+                clone.isSet[i] = true;
+            }
+        }
+
+        // Copy cache
+        clone.lastComputedTime = this.lastComputedTime;
+        clone.lastComputedYmd = this.lastComputedYmd.clone();
+
+        return clone;
+    }
+
+    /**
+     * Check if the current date is a weekend (Friday in Persian calendar)
+     * @return true if the day is Friday
+     */
+    public boolean isWeekend() {
+        return isHoliday();
+    }
+
+    /**
+     * Check if the current date is a weekday (Saturday through Thursday)
+     * @return true if the day is not Friday
+     */
+    public boolean isWeekday() {
+        return !isHoliday();
+    }
+
+    /**
+     * Get the number of days in the current year
+     * @return 365 or 366 depending on leap year
+     */
+    public int getDaysInYear() {
+        return isLeapYear() ? 366 : 365;
+    }
+
+    /**
+     * Get the quarter (3-month period) of the year
+     * @return quarter number (1-4)
+     */
+    public int getQuarter() {
+        return getMonth() / 3 + 1;
+    }
+
+    /**
+     * Check if the current date is the last day of the month
+     * @return true if current day is the last day of the month
+     */
+    public boolean isLastDayOfMonth() {
+        return getDayOfMonth() == getDaysInMonth();
+    }
+
+    /**
+     * Check if the current date is the first day of the month
+     * @return true if current day is the first day of the month
+     */
+    public boolean isFirstDayOfMonth() {
+        return getDayOfMonth() == 1;
+    }
+
+    /**
+     * Get the number of days remaining in the current month
+     * @return days remaining in month
+     */
+    public int getDaysRemainingInMonth() {
+        return getDaysInMonth() - getDayOfMonth();
+    }
+
+    /**
+     * Get the number of days passed in the current month
+     * @return days passed in month
+     */
+    public int getDaysPassedInMonth() {
+        return getDayOfMonth() - 1;
+    }
 }
