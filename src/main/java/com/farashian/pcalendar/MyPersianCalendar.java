@@ -98,7 +98,22 @@ public class MyPersianCalendar extends Calendar {
         return getDaysInMonth(getYear(), getMonth());
     }
 
-    protected int getDaysInMonth(int year, int month) {
+    public int getDaysInMonth(int year, int month) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11");
+        }
+
+        if (month < 6) {
+            return 31;
+        } else if (month < 11) {
+            return 30;
+        } else {
+            return isLeapYear(year) ? 30 : 29;
+        }
+    }
+
+    // Static utility method
+    public static int getDaysInMonthStatic(int year, int month) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11");
         }
@@ -698,6 +713,14 @@ public class MyPersianCalendar extends Calendar {
     }
 
     public static boolean isLeapYear(int year) {
+        // Or use the same algorithm for consistency
+        int remainder = year % 33;
+        return remainder == 1 || remainder == 5 || remainder == 9 ||
+               remainder == 13 || remainder == 17 || remainder == 22 ||
+               remainder == 26 || remainder == 30;
+    }
+
+    protected static boolean isLeapYearOld(int year) {
         if (year >= 1200 && year <= 1600) {
             return leapYears.contains(year);
         }

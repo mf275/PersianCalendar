@@ -119,7 +119,22 @@ public class FastPersianCalendar extends Calendar {
         return getDaysInMonth(getYear(), getMonth());
     }
 
-    protected int getDaysInMonth(int year, int month) {
+    public int getDaysInMonth(int year, int month) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11");
+        }
+
+        if (month < 6) {
+            return 31;
+        } else if (month < 11) {
+            return 30;
+        } else {
+            return isLeapYear(year) ? 30 : 29;
+        }
+    }
+
+    // Static utility method
+    public static int getDaysInMonthStatic(int year, int month) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11");
         }
@@ -202,14 +217,19 @@ public class FastPersianCalendar extends Calendar {
         }
     }
 
-    private static boolean isLeapYear(int year) {
+    public static boolean isLeapYear(int year) {
         int remainder = year % 33;
         return remainder == 1 || remainder == 5 || remainder == 9 ||
                remainder == 13 || remainder == 17 || remainder == 22 ||
                remainder == 26 || remainder == 30;
     }
 
-    // === CORE CALENDAR METHODS (FIXED) ===
+    protected static boolean isLeapYearOld(int year) {
+        int remainder = year % 33;
+        return remainder == 1 || remainder == 5 || remainder == 9 ||
+               remainder == 13 || remainder == 17 || remainder == 22 ||
+               remainder == 26 || remainder == 30;
+    }
 
     @Override
     protected void computeTime() {
@@ -624,7 +644,7 @@ public class FastPersianCalendar extends Calendar {
 
     // === FAST CONVERSION ALGORITHMS ===
 
-    private static void gregorianToJalaliFast(int gy, int gm, int gd, int[] out) {
+    public static void gregorianToJalaliFast(int gy, int gm, int gd, int[] out) {
         int jy = (gm > 2) ? (gy + 1) : gy;
 
         // Fast month day offsets
@@ -1202,6 +1222,27 @@ public class FastPersianCalendar extends Calendar {
      */
     @Override
     public FastPersianCalendar clone() {
+        // Call parent clone
+        FastPersianCalendar clone = (FastPersianCalendar) super.clone();
+
+        // The parent clone() creates a shallow copy
+        // We need to ensure our fields are properly copied
+
+        // Our int fields will be copied correctly by parent clone
+        // But we need to ensure gCal is in sync
+        // Since gCal is final and shared, we need to sync it
+
+        // Set gCal to the same time (it's the same object reference, but that's OK)
+        clone.gCal.setTimeInMillis(this.gCal.getTimeInMillis());
+
+        // The time field should already be copied by super.clone()
+        // We need to recompute our Persian fields from the time
+        clone.computePersianFromGregorianFast();
+
+        return clone;
+    }
+
+    public FastPersianCalendar clone1() {
         // Create a new instance with the same time zone and locale
         FastPersianCalendar clone = new FastPersianCalendar(this.getTimeZone(), this.locale);
 
