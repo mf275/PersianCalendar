@@ -429,12 +429,12 @@ public class DateCalculator {
 
 ### Common Issues and Solutions
 
-| Issue | Possible Reason | Solution |
-| :--- | :--- | :--- |
-| `ClassNotFoundException` | Class is not in the classpath | Ensure the `src/` folder or the JAR file is correctly added. |
-| Incorrect date | Wrong time zone | Call `setTimeZone("Asia/Tehran")`. |
-| Farsi numbers are not displayed | Not configured | Set `setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.FARSI)`. |
-| Error parsing date | Incorrect date format | Check the input date format against the pattern set by `setPattern`. |
+| Issue                           | Possible Reason               | Solution                                                                          |
+|:--------------------------------|:------------------------------|:----------------------------------------------------------------------------------|
+| `ClassNotFoundException`        | Class is not in the classpath | Ensure the `src/` folder or the JAR file is correctly added.                      |
+| Incorrect date                  | Wrong time zone               | Call `setTimeZone("Asia/Tehran")`.                                                |
+| Farsi numbers are not displayed | Not configured                | Set `setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.FARSI)`. |
+| Error parsing date              | Incorrect date format         | Check the input date format against the pattern set by `setPattern`.              |
 
 ### Debug Logging
 
