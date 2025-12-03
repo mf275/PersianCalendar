@@ -2,12 +2,7 @@ package com.farashian.pcalendar.fast;
 
 import com.farashian.pcalendar.MyPCConstants;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 import static com.farashian.pcalendar.MyPCConstants.PERSIAN_LOCALE;
 
@@ -17,25 +12,25 @@ import static com.farashian.pcalendar.MyPCConstants.PERSIAN_LOCALE;
  */
 public class FastPersianCalendar extends Calendar {
 
-    public static final int FIRST_DAY_OF_WEEK = Calendar.SATURDAY;
+    public static final int FIRST_DAY_OF_WEEK      = Calendar.SATURDAY;
     public static final int WEEKDAY_HOLIDAY_NUMBER = Calendar.FRIDAY;
 
     // Calendar constants we need to define
     private static final int AD = 1; // Gregorian era constant
 
     // Month constants
-    public static final int FARVARDIN = 0;
+    public static final int FARVARDIN   = 0;
     public static final int ORDIBEHESHT = 1;
-    public static final int KHORDAD = 2;
-    public static final int TIR = 3;
-    public static final int MORDAD = 4;
-    public static final int SHAHRIVAR = 5;
-    public static final int MEHR = 6;
-    public static final int ABAN = 7;
-    public static final int AZAR = 8;
-    public static final int DEY = 9;
-    public static final int BAHMAN = 10;
-    public static final int ESFAND = 11;
+    public static final int KHORDAD     = 2;
+    public static final int TIR         = 3;
+    public static final int MORDAD      = 4;
+    public static final int SHAHRIVAR   = 5;
+    public static final int MEHR        = 6;
+    public static final int ABAN        = 7;
+    public static final int AZAR        = 8;
+    public static final int DEY         = 9;
+    public static final int BAHMAN      = 10;
+    public static final int ESFAND      = 11;
 
     // Fast internal storage
     private int persianYear;
@@ -43,10 +38,10 @@ public class FastPersianCalendar extends Calendar {
     private int persianDay;
 
     // Performance optimizations
-    private final GregorianCalendar gCal;
-    private final Locale locale;
-    private long lastComputedTime = -1;
-    private boolean isDirty = true;
+    public final  GregorianCalendar gCal;
+    private final Locale            locale;
+    private       long              lastComputedTime = -1;
+    private       boolean           isDirty          = true;
 
     // Thread-local for temporary calculations
     private static final ThreadLocal<int[]> tempArrayCache =
@@ -67,11 +62,11 @@ public class FastPersianCalendar extends Calendar {
     public FastPersianCalendar(TimeZone zone, Locale locale) {
         super(zone, locale);
         this.locale = locale;
-        this.gCal = new GregorianCalendar(zone, locale);
+        this.gCal   = new GregorianCalendar(zone, locale);
         // Initialize with reasonable defaults
-        this.persianYear = 1400;
+        this.persianYear  = 1400;
         this.persianMonth = 0;
-        this.persianDay = 1;
+        this.persianDay   = 1;
     }
 
     public FastPersianCalendar(FastPersianCalendar pc) {
@@ -235,9 +230,9 @@ public class FastPersianCalendar extends Calendar {
     protected void computeTime() {
         if (isDirty || lastComputedTime != time || !areFieldsSet) {
             computeGregorianFromPersianFast();
-            time = gCal.getTimeInMillis();
+            time             = gCal.getTimeInMillis();
             lastComputedTime = time;
-            isDirty = false;
+            isDirty          = false;
 
             // Invalidate fields since time changed
             areFieldsSet = false;
@@ -247,14 +242,16 @@ public class FastPersianCalendar extends Calendar {
     @Override
     protected void computeFields() {
         if (time != lastComputedTime || !areFieldsSet) {
+            gCal.setTimeInMillis(time); // This is needed to sync gCal with current time
             computePersianFromGregorianFast();
             lastComputedTime = time;
-            isDirty = false;
+            isDirty          = false;
 
             // Compute all calendar fields
             computeAllFields();
         }
     }
+
 
     /**
      * Compute all calendar fields that parent class expects
@@ -265,14 +262,14 @@ public class FastPersianCalendar extends Calendar {
         gCal.setTimeInMillis(time);
 
         // Set basic Persian date fields
-        fields[YEAR] = persianYear;
-        fields[MONTH] = persianMonth;
+        fields[YEAR]         = persianYear;
+        fields[MONTH]        = persianMonth;
         fields[DAY_OF_MONTH] = persianDay;
 
         // Set time fields from Gregorian (they're the same)
         fields[HOUR_OF_DAY] = gCal.get(HOUR_OF_DAY);
-        fields[MINUTE] = gCal.get(MINUTE);
-        fields[SECOND] = gCal.get(SECOND);
+        fields[MINUTE]      = gCal.get(MINUTE);
+        fields[SECOND]      = gCal.get(SECOND);
         fields[MILLISECOND] = gCal.get(MILLISECOND);
 
         // CRITICAL FIX: Use Gregorian's properly computed day-of-week
@@ -283,9 +280,9 @@ public class FastPersianCalendar extends Calendar {
         calculatePersianWeekFields();
 
         // Set other fields
-        fields[AM_PM] = gCal.get(AM_PM);
-        fields[HOUR] = gCal.get(HOUR);
-        fields[DST_OFFSET] = gCal.get(DST_OFFSET);
+        fields[AM_PM]       = gCal.get(AM_PM);
+        fields[HOUR]        = gCal.get(HOUR);
+        fields[DST_OFFSET]  = gCal.get(DST_OFFSET);
         fields[ZONE_OFFSET] = gCal.get(ZONE_OFFSET);
 
         // ERA is always AD for Persian calendar (modern dates)
@@ -310,9 +307,9 @@ public class FastPersianCalendar extends Calendar {
         fields[WEEK_OF_YEAR] = weekOfYear;
 
         // Calculate week of month
-        int dayOfMonth = fields[DAY_OF_MONTH];
+        int dayOfMonth      = fields[DAY_OF_MONTH];
         int firstDayOfMonth = calculateFirstDayOfMonth();
-        int weekOfMonth = (dayOfMonth - 1 + ((dayOfWeek - firstDayOfMonth + 7) % 7)) / 7 + 1;
+        int weekOfMonth     = (dayOfMonth - 1 + ((dayOfWeek - firstDayOfMonth + 7) % 7)) / 7 + 1;
         fields[WEEK_OF_MONTH] = weekOfMonth;
 
         // Calculate day of week in month
@@ -363,7 +360,7 @@ public class FastPersianCalendar extends Calendar {
         jalaliToGregorianFast(persianYear, persianMonth + 1, persianDay, temp);
 
         // Get current time fields before setting date
-        int hour = internalGet(HOUR_OF_DAY, 0);
+        int hour   = internalGet(HOUR_OF_DAY, 0);
         int minute = internalGet(MINUTE, 0);
         int second = internalGet(SECOND, 0);
         int millis = internalGet(MILLISECOND, 0);
@@ -385,9 +382,9 @@ public class FastPersianCalendar extends Calendar {
                               gCal.get(Calendar.DAY_OF_MONTH), temp);
 
         // The algorithm returns 1-based month, convert to 0-based for internal storage
-        persianYear = temp[0];
+        persianYear  = temp[0];
         persianMonth = temp[1] - 1;  // FIXED: Convert 1-based to 0-based
-        persianDay = temp[2];
+        persianDay   = temp[2];
     }
 
     /**
@@ -429,6 +426,7 @@ public class FastPersianCalendar extends Calendar {
             areFieldsSet = false;
         }
     }
+
     public void addDays(int days) {
         add(DAY_OF_MONTH, days);
     }
@@ -446,7 +444,7 @@ public class FastPersianCalendar extends Calendar {
             case MONTH:
                 int totalMonths = persianYear * 12 + persianMonth + amount;
                 if (totalMonths >= 0) {
-                    persianYear = totalMonths / 12;
+                    persianYear  = totalMonths / 12;
                     persianMonth = totalMonths % 12;
                 } else {
                     int yearsToSubtract = (-totalMonths + 11) / 12;
@@ -465,9 +463,9 @@ public class FastPersianCalendar extends Calendar {
         // Recompute Gregorian date and sync
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
-        isDirty = true;
+        isDirty          = true;
         lastComputedTime = -1;
-        areFieldsSet = false;
+        areFieldsSet     = false;
     }
 
     /**
@@ -557,9 +555,9 @@ public class FastPersianCalendar extends Calendar {
         // Recompute Gregorian date and sync
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
-        isDirty = true;
+        isDirty          = true;
         lastComputedTime = -1;
-        areFieldsSet = false;
+        areFieldsSet     = false;
     }
 
     // === OVERRIDES (FIXED) ===
@@ -568,8 +566,8 @@ public class FastPersianCalendar extends Calendar {
     public void setTimeInMillis(long millis) {
         super.setTimeInMillis(millis);
         lastComputedTime = -1;
-        isDirty = true;
-        areFieldsSet = false;
+        isDirty          = true;
+        areFieldsSet     = false;
     }
 
     @Override
@@ -577,8 +575,8 @@ public class FastPersianCalendar extends Calendar {
         super.setTimeZone(zone);
         gCal.setTimeZone(zone);
         lastComputedTime = -1;
-        isDirty = true;
-        areFieldsSet = false;
+        isDirty          = true;
+        areFieldsSet     = false;
     }
 
     @Override
@@ -615,7 +613,7 @@ public class FastPersianCalendar extends Calendar {
         // Recompute Gregorian date and sync everything
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
-        areFieldsSet = false;
+        areFieldsSet     = false;
         lastComputedTime = -1;
     }
 
@@ -717,12 +715,12 @@ public class FastPersianCalendar extends Calendar {
     // === INTERNAL HELPERS ===
 
     private void setPersianDateInternal(int year, int month, int day) {
-        this.persianYear = year;
-        this.persianMonth = month;
-        this.persianDay = day;
-        this.isDirty = true;
+        this.persianYear      = year;
+        this.persianMonth     = month;
+        this.persianDay       = day;
+        this.isDirty          = true;
         this.lastComputedTime = -1;
-        this.areFieldsSet = false;
+        this.areFieldsSet     = false;
 
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
@@ -730,7 +728,7 @@ public class FastPersianCalendar extends Calendar {
 
     private void setInternalField(int field, int value) {
         fields[field] = value;
-        isSet[field] = true;
+        isSet[field]  = true;
     }
 
     private int internalGet(int field, int defaultValue) {
@@ -742,34 +740,56 @@ public class FastPersianCalendar extends Calendar {
     @Override
     public int getMinimum(int field) {
         switch (field) {
-            case YEAR: return 1;
-            case MONTH: return FARVARDIN;
-            case DAY_OF_MONTH: return 1;
-            case DAY_OF_WEEK: return SUNDAY;
-            case HOUR_OF_DAY: return 0;
-            case MINUTE: return 0;
-            case SECOND: return 0;
-            case MILLISECOND: return 0;
-            case ERA: return AD;
-            default: return 0;
+            case YEAR:
+                return 1;
+            case MONTH:
+                return FARVARDIN;
+            case DAY_OF_MONTH:
+                return 1;
+            case DAY_OF_WEEK:
+                return SUNDAY;
+            case HOUR_OF_DAY:
+                return 0;
+            case MINUTE:
+                return 0;
+            case SECOND:
+                return 0;
+            case MILLISECOND:
+                return 0;
+            case ERA:
+                return AD;
+            default:
+                return 0;
         }
     }
 
     @Override
     public int getMaximum(int field) {
         switch (field) {
-            case YEAR: return 9999;
-            case MONTH: return ESFAND;
-            case DAY_OF_MONTH: return 31;
-            case DAY_OF_WEEK: return SATURDAY;
-            case HOUR_OF_DAY: return 23;
-            case MINUTE: return 59;
-            case SECOND: return 59;
-            case MILLISECOND: return 999;
-            case WEEK_OF_MONTH: return 6;
-            case WEEK_OF_YEAR: return 53;
-            case ERA: return AD;
-            default: return 0;
+            case YEAR:
+                return 9999;
+            case MONTH:
+                return ESFAND;
+            case DAY_OF_MONTH:
+                return 31;
+            case DAY_OF_WEEK:
+                return SATURDAY;
+            case HOUR_OF_DAY:
+                return 23;
+            case MINUTE:
+                return 59;
+            case SECOND:
+                return 59;
+            case MILLISECOND:
+                return 999;
+            case WEEK_OF_MONTH:
+                return 6;
+            case WEEK_OF_YEAR:
+                return 53;
+            case ERA:
+                return AD;
+            default:
+                return 0;
         }
     }
 
@@ -781,10 +801,14 @@ public class FastPersianCalendar extends Calendar {
     @Override
     public int getLeastMaximum(int field) {
         switch (field) {
-            case DAY_OF_MONTH: return 29;
-            case WEEK_OF_MONTH: return 4;
-            case WEEK_OF_YEAR: return 52;
-            default: return getMaximum(field);
+            case DAY_OF_MONTH:
+                return 29;
+            case WEEK_OF_MONTH:
+                return 4;
+            case WEEK_OF_YEAR:
+                return 52;
+            default:
+                return getMaximum(field);
         }
     }
 
@@ -856,9 +880,9 @@ public class FastPersianCalendar extends Calendar {
         if (tokens.length != 3) return null;
 
         try {
-            int year = Integer.parseInt(tokens[0].trim());
+            int year  = Integer.parseInt(tokens[0].trim());
             int month = Integer.parseInt(tokens[1].trim()) - 1;
-            int day = Integer.parseInt(tokens[2].trim());
+            int day   = Integer.parseInt(tokens[2].trim());
 
             // Basic validation
             if (year < 1 || month < 0 || month > 11 || day < 1 || day > 31) {
@@ -1098,8 +1122,8 @@ public class FastPersianCalendar extends Calendar {
      * @return new FastPersianCalendar instance set to the last day of current month
      */
     public FastPersianCalendar withLastDayOfMonth() {
-        FastPersianCalendar result = new FastPersianCalendar(this);
-        int lastDay = result.getDaysInMonth();
+        FastPersianCalendar result  = new FastPersianCalendar(this);
+        int                 lastDay = result.getDaysInMonth();
         result.set(DAY_OF_MONTH, lastDay);
         return result;
     }
@@ -1247,23 +1271,23 @@ public class FastPersianCalendar extends Calendar {
         FastPersianCalendar clone = new FastPersianCalendar(this.getTimeZone(), this.locale);
 
         // Copy the internal state
-        clone.persianYear = this.persianYear;
+        clone.persianYear  = this.persianYear;
         clone.persianMonth = this.persianMonth;
-        clone.persianDay = this.persianDay;
+        clone.persianDay   = this.persianDay;
         clone.setTimeInMillis(this.getTimeInMillis());
 
         // Copy the time fields if they are set
         for (int i = 0; i < FIELD_COUNT; i++) {
             if (this.isSet[i]) {
                 clone.fields[i] = this.fields[i];
-                clone.isSet[i] = true;
+                clone.isSet[i]  = true;
             }
         }
 
         // Copy cache and state
         clone.lastComputedTime = this.lastComputedTime;
-        clone.isDirty = this.isDirty;
-        clone.areFieldsSet = this.areFieldsSet;
+        clone.isDirty          = this.isDirty;
+        clone.areFieldsSet     = this.areFieldsSet;
 
         return clone;
     }
@@ -1447,9 +1471,9 @@ public class FastPersianCalendar extends Calendar {
      * @return date of previous Friday
      */
     public FastPersianCalendar getPreviousFriday() {
-        FastPersianCalendar result = new FastPersianCalendar(this);
-        int currentDayOfWeek = get(DAY_OF_WEEK);
-        int daysToSubtract = (currentDayOfWeek - FRIDAY + 7) % 7;
+        FastPersianCalendar result           = new FastPersianCalendar(this);
+        int                 currentDayOfWeek = get(DAY_OF_WEEK);
+        int                 daysToSubtract   = (currentDayOfWeek - FRIDAY + 7) % 7;
         if (daysToSubtract == 0) {
             daysToSubtract = 7; // If it's already Friday, go to previous Friday
         }
@@ -1462,9 +1486,9 @@ public class FastPersianCalendar extends Calendar {
      * @return date of next Friday
      */
     public FastPersianCalendar getNextFriday() {
-        FastPersianCalendar result = new FastPersianCalendar(this);
-        int currentDayOfWeek = get(DAY_OF_WEEK);
-        int daysToAdd = (FRIDAY - currentDayOfWeek + 7) % 7;
+        FastPersianCalendar result           = new FastPersianCalendar(this);
+        int                 currentDayOfWeek = get(DAY_OF_WEEK);
+        int                 daysToAdd        = (FRIDAY - currentDayOfWeek + 7) % 7;
         if (daysToAdd == 0) {
             daysToAdd = 7; // If it's already Friday, go to next Friday
         }
@@ -1494,7 +1518,7 @@ public class FastPersianCalendar extends Calendar {
      * @return number of months difference (positive if this date is later)
      */
     public int monthsBetween(FastPersianCalendar other) {
-        int yearDiff = this.persianYear - other.persianYear;
+        int yearDiff  = this.persianYear - other.persianYear;
         int monthDiff = this.persianMonth - other.persianMonth;
         return yearDiff * 12 + monthDiff;
     }
@@ -1522,4 +1546,5 @@ public class FastPersianCalendar extends Calendar {
 
         return yearDiff;
     }
+
 }
