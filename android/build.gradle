@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'maven-publish'
+    id 'signing'
 }
 
 android {
@@ -8,8 +9,10 @@ android {
     compileSdk 34
 
     defaultConfig {
-        minSdk 24
+        minSdk 16  // Changed from 24 to support more devices
         targetSdk 34
+        versionCode 200  // Added version code
+        versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -18,17 +21,29 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro"
+        }
+        debug {
+            // Optional: Add debug build type
+            testCoverageEnabled = true
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_25
-        targetCompatibility JavaVersion.VERSION_25
+        sourceCompatibility JavaVersion.VERSION_11  // Fixed: Changed from 25 to 11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
     }
 
     publishing {
-        singleVariant('release') {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+        // Optionally add debug variant
+        singleVariant("debug") {
             withSourcesJar()
         }
     }
@@ -37,9 +52,25 @@ android {
 dependencies {
     implementation 'androidx.annotation:annotation:1.7.0'
 
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+}
+
+// Fix for Javadoc generation on Android
+tasks.withType(Javadoc) {
+    options {
+        encoding = 'UTF-8'
+        charSet = 'UTF-8'
+        addBooleanOption('Xdoclint:none', true)
+        links("https://developer.android.com/reference/")
+    }
+
+    // Exclude generated R and BuildConfig classes
+    exclude '**/R.java', '**/BuildConfig.java', '**/*.kt'
+
+    failOnError false
 }
 
 afterEvaluate {
@@ -47,23 +78,115 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.farashian'
-                artifactId = 'persian-calendar-android'
-                version = '2.0.0'
+
+                // Choose ONE of these groupId options:
+                // Option 1: For GitHub Packages
+                //groupId = 'com.github.mf275.persian-calendar'
+                // Option 2: For Maven Central (recommended)
+                // groupId = 'io.github.mf275.persian-calendar'
+                // Option 3: Custom domain
+                 groupId = 'com.farashian'
+
+                artifactId = 'persian-calendar-android'  // Consistent naming
+                version = android.defaultConfig.versionName
 
                 pom {
                     name = 'Persian Calendar Android'
-                    description = 'Android library for Persian Calendar with Parcelable support'
+                    description = 'Android library for Persian (Jalali) calendar with UI components'
                     url = 'https://github.com/mf275/PersianCalendar'
+                    packaging = 'aar'  // Important for Android libraries
 
                     licenses {
                         license {
-                            name = 'MIT License'
-                            url = 'https://opensource.org/licenses/MIT'
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                         }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'mf275'
+                            name = 'Morteza'
+                            email = 'farashian@gmail.com'
+                        }
+                    }
+
+                    scm {
+                        connection = 'scm:git:git://github.com/mf275/PersianCalendar.git'
+                        developerConnection = 'scm:git:ssh://github.com/mf275/PersianCalendar.git'
+                        url = 'https://github.com/mf275/PersianCalendar'
+                    }
+
+                    // Add issue management
+                    issueManagement {
+                        system = 'GitHub'
+                        url = 'https://github.com/mf275/PersianCalendar/issues'
                     }
                 }
             }
+
+            // Optional: Add debug publication
+            debug(MavenPublication) {
+                from components.debug
+                groupId = 'com.github.mf275.persian-calendar'
+                artifactId = 'persian-calendar-android-debug'
+                version = "${android.defaultConfig.versionName}-debug"
+            }
         }
+
+        repositories {
+            // Maven Central
+            maven {
+                name = "MavenCentral"
+                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                credentials {
+                    username = project.findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
+                    password = project.findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
+                }
+            }
+
+            // Local maven for testing
+            maven {
+                name = "Local"
+                url = layout.buildDirectory.dir("repo")
+            }
+
+            // Optional: GitHub Packages
+            /*
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/mf275/PersianCalendar")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+                }
+            }
+            */
+        }
+    }
+
+    signing {
+        // Only sign if we have the required properties
+        required { gradle.taskGraph.hasTask("publishMavenCentralPublicationToMavenCentralRepository") }
+
+        // Sign all publications
+        sign publishing.publications
+    }
+}
+
+// Helper tasks
+tasks.register('publishToLocal') {
+    dependsOn 'publishReleasePublicationToLocalRepository'
+}
+
+tasks.register('printPublicationInfo') {
+    doLast {
+        println "Android Library Publication Details:"
+        println "  Group: ${publishing.publications.release.groupId}"
+        println "  Artifact: ${publishing.publications.release.artifactId}"
+        println "  Version: ${publishing.publications.release.version}"
+        println "  Packaging: aar"
+        println "  Min SDK: ${android.defaultConfig.minSdk}"
+        println "  Target SDK: ${android.defaultConfig.targetSdk}"
     }
 }

@@ -1,32 +1,48 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
 }
-
-group = 'com.farashian'
-version = '2.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     withSourcesJar()
+    withJavadocJar()
+
+    // Fix for Javadoc generation issues
+    javadoc.options {
+        encoding = 'UTF-8'
+        addBooleanOption('Xdoclint:none', true)
+        addBooleanOption('html5', true)
+    }
 }
 
+// Test task configuration
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
+version = "2.0.0"
+group = "io.github.mf275.persian-calendar"  // Changed to proper format
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
-    testImplementation 'junit:junit:4.13.2'
+    // Add test dependencies if not present
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
 }
 
-test {
-    useJUnit()
-}
-
+// Configure jar task
 jar {
-    archiveBaseName = 'persian-calendar'
     manifest {
         attributes(
-                'Implementation-Title': 'Persian Calendar',
-                'Implementation-Version': version
+                'Implementation-Title': 'Persian Calendar Core',
+                'Implementation-Version': project.version,
+                'Automatic-Module-Name': 'persian.calendar.core'  // For Java Module System
         )
     }
 }
@@ -35,17 +51,20 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifactId = 'persian-calendar-core'
+
+            artifactId = 'persiancalendar-core'
+            version = project.version
 
             pom {
-                name = 'Persian Calendar'
-                description = 'Fast Persian Calendar Implementation'
+                name = 'Persian Calendar Core'
+                description = 'Core Java library for Persian (Jalali) calendar calculations'
                 url = 'https://github.com/mf275/PersianCalendar'
+                packaging = 'jar'  // Added this
 
                 licenses {
                     license {
-                        name = 'MIT License'
-                        url = 'https://opensource.org/licenses/MIT'
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
 
@@ -53,21 +72,60 @@ publishing {
                     developer {
                         id = 'mf275'
                         name = 'Morteza'
+                        email = 'farashian@gmail.com'
                     }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/mf275/PersianCalendar.git'
+                    developerConnection = 'scm:git:ssh://github.com/mf275/PersianCalendar.git'
+                    url = 'https://github.com/mf275/PersianCalendar/tree/main'
+                }
+
+                // Optional: Add issue management
+                issueManagement {
+                    system = 'GitHub'
+                    url = 'https://github.com/mf275/PersianCalendar/issues'
                 }
             }
         }
     }
 
-    // For JitPack
     repositories {
         maven {
-            name = 'GitHubPackages'
-            url = 'https://maven.pkg.github.com/mf275/PersianCalendar'
+            name = "MavenCentral"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             credentials {
-                username = project.findProperty('gpr.user') ?: System.getenv('GITHUB_ACTOR')
-                password = project.findProperty('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+                username = project.findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
+                password = project.findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
             }
         }
+        // Add local maven for testing
+        maven {
+            name = "Local"
+            url = layout.buildDirectory.dir("repo")
+        }
+    }
+}
+
+signing {
+    // Only sign if we have the required properties
+    required { gradle.taskGraph.hasTask("publish") }
+    sign publishing.publications.mavenJava
+}
+
+// Helper task to publish locally for testing
+tasks.register('publishToLocal') {
+    dependsOn 'publishMavenJavaPublicationToLocalRepository'
+}
+
+// Task to print publication info
+tasks.register('printPublicationInfo') {
+    doLast {
+        println "Publication Details:"
+        println "  Group: ${group}"
+        println "  Artifact: persiancalendar-core"
+        println "  Version: ${version}"
+        println "  Java Compatibility: ${java.sourceCompatibility}"
     }
 }
