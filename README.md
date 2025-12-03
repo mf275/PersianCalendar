@@ -57,6 +57,11 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 
 - **`persian-calendar`** - Pure Java library (no Android dependencies)
 - **`persian-calendar-android`** - Android library with UI components
+  
+- | Module                         | Type              | Purpose                                             | Dependencies          |
+  |--------------------------------|-------------------|-----------------------------------------------------|-----------------------|
+  | **`persian-calendar`**         | Pure Java library | Persian calendar calculations and utilities         | Java 11+ only         |
+  | **`persian-calendar-android`** | Android library   | Android UI components and Android-specific features | Android SDK, Java 11+ |
 
 ### JitPack (Recommended)
 
