@@ -24,7 +24,7 @@ tasks.withType(Test) {
 }
 
 version = "2.0.0"
-group = "io.github.mf275.persian-calendar"  // Changed to proper format
+group = "com.github.mf275.persian-calendar"
 
 repositories {
     mavenCentral()
