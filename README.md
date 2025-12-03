@@ -30,8 +30,8 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 ## 📦 Installation
 
 ---
-Add to your `pom.xml`:
-
+#### Add to your `pom.xml`:
+```xml
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -50,7 +50,7 @@ Add to your `pom.xml`:
     <artifactId>persian-calendar-android</artifactId>
     <version>v2.0.0</version>
 </dependency>
-
+```
 ---
 
 ### JitPack (Recommended)
@@ -71,7 +71,7 @@ dependencies {
     implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.0.0")
 }
 
-
+```
 ---
 
 # ⚡ FastPersianDateFormat & FastPersianCalendar 📅
@@ -90,44 +90,52 @@ Using `FastPersianDateFormat`, you can display Shamsi dates with various pattern
 ```java
 import com.farashian.pcalendar.fast.FastPersianDateFormat;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
+import com.farashian.pcalendar.fast.FastPersianDateFormat;
+import com.farashian.pcalendar.fast.FastPersianCalendar;
 
-// Assume we have a date instance
-FastPersianCalendar date = new FastPersianCalendar(); 
+public class DateFormatExample {
+    public static void main(String[] args) {
 
-FastPersianDateFormat formatter = new FastPersianDateFormat();
+        // Create an instance of FastPersianCalendar
+        FastPersianCalendar date = new FastPersianCalendar();
 
-// Various patterns
-formatter.setPattern("yyyy/MM/dd");
-System.out.println("📅 Simple Date: " + formatter.format(date)); // Output: 1404/09/10 (Example)
+        // Create a formatter and set pattern inside a method
+        FastPersianDateFormat formatter = new FastPersianDateFormat();
+        formatter.setPattern("yyyy/MM/dd");
+        
+        System.out.println("📅 Simple Date: " + formatter.format(date)); // Output: 1404/09/10 (Example)
 
-formatter.setPattern("DDDD, d MMMM yyyy");
-formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.FARSI);
-System.out.println("📝 Full Persian Date: " + formatter.format(date)); // Output: یکشنبه, ۱۰ آذر ۱۴۰۴ (Example)
+        formatter.setPattern("DDDD, d MMMM yyyy");
+        formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.FARSI);
+        System.out.println("📝 Full Persian Date: " + formatter.format(date)); // Output: یکشنبه, ۱۰ آذر ۱۴۰۴ (Example)
 
-formatter.setPattern("yyyy-MM-dd HH:mm:ss");
-formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH); // Revert to English numbers
-System.out.println("⏰ Date and Time: " + formatter.format(date)); // Output: 1404-09-10 17:54:30 (Example)
+        formatter.setPattern("yyyy-MM-dd HH:mm:ss");
+        formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH); // Revert to English numbers
+        System.out.println("⏰ Date and Time: " + formatter.format(date)); // Output: 1404-09-10 17:54:30 (Example)
+    }
+}
+
 ```
 
 ### Formatting Patterns
 
-| Pattern | Description | Example (Farsi Output) |
-| :--- | :--- | :--- |
-| `yyyy` | Four-digit year | ۱۴۰۴ |
-| `yy` | Two-digit year | ۰۴ |
-| `MMMM` | Full month name | آذر |
-| `MMM` | Short month name | آذر |
-| `MM` | Month number with leading zero | ۰۹ |
-| `M` | Month number without leading zero | ۹ |
-| `dd` | Day of month with leading zero | ۰۹ |
-| `d` | Day of month without leading zero | ۹ |
-| `DDDD` | Full day name | یکشنبه |
-| `ddd` | Short day name | یکشنبه |
-| `HH` | 24-hour clock | ۱۴ |
-| `hh` | 12-hour clock | ۰۲ |
-| `mm` | Minute | ۰۵ |
-| `ss` | Second | ۰۹ |
-| `a` | AM/PM indicator (ق.ظ / ب.ظ) | ب.ظ |
+| Pattern | Description                       | Example (Farsi Output) |
+|:--------|:----------------------------------|:-----------------------|
+| `yyyy`  | Four-digit year                   | ۱۴۰۴                   |
+| `yy`    | Two-digit year                    | ۰۴                     |
+| `MMMM`  | Full month name                   | آذر                    |
+| `MMM`   | Short month name                  | آذر                    |
+| `MM`    | Month number with leading zero    | ۰۹                     |
+| `M`     | Month number without leading zero | ۹                      |
+| `dd`    | Day of month with leading zero    | ۰۹                     |
+| `d`     | Day of month without leading zero | ۹                      |
+| `DDDD`  | Full day name                     | یکشنبه                 |
+| `ddd`   | Short day name                    | یکشنبه                 |
+| `HH`    | 24-hour clock                     | ۱۴                     |
+| `hh`    | 12-hour clock                     | ۰۲                     |
+| `mm`    | Minute                            | ۰۵                     |
+| `ss`    | Second                            | ۰۹                     |
+| `a`     | AM/PM indicator (ق.ظ / ب.ظ)       | ب.ظ                    |
 
 ---
 
@@ -138,23 +146,28 @@ Use the `add` method in `FastPersianCalendar` to easily perform addition and sub
 ```java
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 
-FastPersianCalendar date = new FastPersianCalendar(1402, 0, 1); // Farvardin 1, 1402
+public class DateExample {
+    public static void main(String[] args) {
+        FastPersianCalendar date = new FastPersianCalendar(1402, 0, 1); // Farvardin 1, 1402
 
-// Add days
-date.add(FastPersianCalendar.DAY_OF_MONTH, 10);
-System.out.println("➕ After 10 days: " + date.getLongDate()); // Output: 1402/01/11
+        // Add days
+        date.add(FastPersianCalendar.DAY_OF_MONTH, 10);
+        System.out.println("➕ After 10 days: " + date.getLongDate()); // Output: 1402/01/11
 
-// Add months
-date.add(FastPersianCalendar.MONTH, 2);
-System.out.println("📆 After 2 months: " + date.getLongDate()); // Output: 1402/03/11
+        // Add months
+        date.add(FastPersianCalendar.MONTH, 2);
+        System.out.println("📆 After 2 months: " + date.getLongDate()); // Output: 1402/03/11
 
-// Add years
-date.add(FastPersianCalendar.YEAR, 1);
-System.out.println("🎊 After 1 year: " + date.getLongDate()); // Output: 1403/03/11
+        // Add years
+        date.add(FastPersianCalendar.YEAR, 1);
+        System.out.println("🎊 After 1 year: " + date.getLongDate()); // Output: 1403/03/11
 
-// Subtract days (using a negative number)
-date.add(FastPersianCalendar.DAY_OF_MONTH, -5);
-System.out.println("➖ 5 days before: " + date.getLongDate()); // Output: 1403/03/06
+        // Subtract days (using a negative number)
+        date.add(FastPersianCalendar.DAY_OF_MONTH, -5);
+        System.out.println("➖ 5 days before: " + date.getLongDate()); // Output: 1403/03/06
+    }
+}
+
 ```
 
 ---
@@ -201,26 +214,32 @@ Comparing two dates and calculating the time difference between them.
 ```java
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 
-FastPersianCalendar date1 = new FastPersianCalendar(1402, 0, 1);
-FastPersianCalendar date2 = new FastPersianCalendar(1402, 0, 15);
+public class DateComparisonExample {
+    public static void main(String[] args) {
 
-// Comparison
-if (date1.before(date2)) {
-    System.out.println("Date1 is before Date2");
+        FastPersianCalendar date1 = new FastPersianCalendar(1402, 0, 1);
+        FastPersianCalendar date2 = new FastPersianCalendar(1402, 0, 15);
+
+        // Comparison
+        if (date1.before(date2)) {
+            System.out.println("Date1 is before Date2");
+        }
+
+        if (date2.after(date1)) {
+            System.out.println("Date2 is after Date1");
+        }
+
+        if (date1.equals(date2)) {
+            System.out.println("Dates are equal");
+        }
+
+        // Difference in days (calculated based on milliseconds)
+        long difference = date2.getTimeInMillis() - date1.getTimeInMillis();
+        long days = difference / (1000 * 60 * 60 * 24);
+        System.out.println("Difference in days: " + days + " days"); // Output: 14 days
+    }
 }
 
-if (date2.after(date1)) {
-    System.out.println("Date2 is after Date1");
-}
-
-if (date1.equals(date2)) {
-    System.out.println("Dates are equal");
-}
-
-// Difference in days (calculated based on milliseconds)
-long difference = date2.getTimeInMillis() - date1.getTimeInMillis();
-long days = difference / (1000 * 60 * 60 * 24);
-System.out.println("Difference in days: " + days + " days"); // Output: 14 days
 ```
 
 ---
@@ -306,13 +325,18 @@ import com.farashian.pcalendar.fast.FastPersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianDateFormat;
 import java.util.TimeZone;
 
-// Set Tehran time zone
-TimeZone timeZone = TimeZone.getTimeZone("Asia/Tehran");
-FastPersianCalendar calendar = new FastPersianCalendar(timeZone);
+public class TimeZoneExample {
+    public static void main(String[] args) {
+        // Set Tehran time zone
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Tehran");
+        FastPersianCalendar calendar = new FastPersianCalendar(timeZone);
 
-// Or in the formatter
-FastPersianDateFormat formatter = new FastPersianDateFormat();
-formatter.setTimeZone(timeZone);
+        // Or in the formatter
+        FastPersianDateFormat formatter = new FastPersianDateFormat();
+        formatter.setTimeZone(timeZone);
+    }
+}
+
 ```
 
 ### Handling Leap Year
@@ -321,18 +345,22 @@ Checking if a year is a leap year and finding the number of days in a month.
 
 ```java
 import com.farashian.pcalendar.fast.FastPersianCalendar;
+public class LeapYearCheck {
+    public static void main(String[] args) {
+        // Assuming FastPersianCalendar is already imported
+        FastPersianCalendar date = new FastPersianCalendar(1403, 11, 30); // Esfand 30, 1403
+        if (date.isLeapYear()) {
+            System.out.println("✅ Year " + date.getYear() + " is a leap year");
+        } else {
+            System.out.println("❌ Year " + date.getYear() + " is not a leap year");
+        }
 
-// Check for leap year
-FastPersianCalendar date = new FastPersianCalendar(1403, 11, 30); // Esfand 30, 1403
-if (date.isLeapYear()) {
-    System.out.println("✅ Year " + date.getYear() + " is a leap year");
-} else {
-    System.out.println("❌ Year " + date.getYear() + " is not a leap year");
+        // Days in Esfand month during a leap year
+        int daysInEsfand = date.getDaysInMonth();
+        System.out.println("📊 Days in Esfand " + date.getYear() + ": " + daysInEsfand + " days"); // Output: 30 days
+    }
 }
 
-// Days in Esfand month during a leap year
-int daysInEsfand = date.getDaysInMonth();
-System.out.println("📊 Days in Esfand " + date.getYear() + ": " + daysInEsfand + " days"); // Output: 30 days
 ```
 
 ---
