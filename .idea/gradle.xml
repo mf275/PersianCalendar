@@ -12,7 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/android" />
-            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/jlibrary" />
             <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>

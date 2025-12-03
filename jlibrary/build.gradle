@@ -49,12 +49,13 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            artifactId = 'persian-calendar-core'
+            groupId = 'com.farashian'
+            artifactId = 'persian-calendar'
             version = project.version
 
             pom {
-                name = 'Persian Calendar Core'
-                description = 'Core Java library for Persian (Jalali) calendar calculations'
+                name = 'Persian Calendar'
+                description = 'Java library for Persian (Jalali) calendar calculations'
                 url = 'https://github.com/mf275/PersianCalendar'
                 packaging = 'jar'  // Added this
 
@@ -121,7 +122,7 @@ tasks.register('printPublicationInfo') {
     doLast {
         println "Publication Details:"
         println "  Group: ${group}"
-        println "  Artifact: persian-calendar-core"
+        println "  Artifact: persian-calendar"
         println "  Version: ${version}"
         println "  Java Compatibility: ${java.sourceCompatibility}"
     }

@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'maven-publish'
     id 'signing'
+    //id 'org.jetbrains.dokka' version '1.9.10'
 }
 
 android {
@@ -9,7 +10,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        minSdk 16  // Changed from 24 to support more devices
+        minSdk 24  // Changed from 24 to support more devices
         targetSdk 34
         versionCode 200  // Added version code
         versionName "2.0.0"
@@ -40,7 +41,7 @@ android {
     publishing {
         singleVariant("release") {
             withSourcesJar()
-            withJavadocJar()
+            //withJavadocJar()
         }
         // Optionally add debug variant
         singleVariant("debug") {
@@ -52,7 +53,8 @@ android {
 dependencies {
     implementation 'androidx.annotation:annotation:1.7.0'
 
-
+    // For documentation generation
+    //compileOnly 'androidx.annotation:annotation:1.7.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 }
@@ -67,7 +69,9 @@ tasks.withType(Javadoc) {
     }
 
     // Exclude generated R and BuildConfig classes
-    exclude '**/R.java', '**/BuildConfig.java', '**/*.kt'
+    exclude '**/R.java', '**/BuildConfig.java', '**/*.kt',
+            '**/*_MembersInjector.java', '**/*Factory.java',
+            '**/*_Impl.java', '**/Dagger*.java'
 
     failOnError false
 }
