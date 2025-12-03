@@ -40,18 +40,23 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 </repositories>
 
 <dependency>
-    <groupId>com.github.mf275.PersianCalendar</groupId>
-    <artifactId>persian-calendar</artifactId>
-    <version>v2.0.0</version>
+<groupId>com.github.mf275.PersianCalendar</groupId>
+<artifactId>persian-calendar</artifactId>
+<version>2.0.0</version>
 </dependency>
 
 <dependency>
-    <groupId>com.github.mf275.PersianCalendar</groupId>
-    <artifactId>persian-calendar-android</artifactId>
-    <version>v2.0.0</version>
+<groupId>com.github.mf275.PersianCalendar</groupId>
+<artifactId>persian-calendar-android</artifactId>
+<version>2.0.0</version>
 </dependency>
 ```
 ---
+
+### Project Modules
+
+- **`persian-calendar`** - Pure Java library (no Android dependencies)
+- **`persian-calendar-android`** - Android library with UI components
 
 ### JitPack (Recommended)
 
