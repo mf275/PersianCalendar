@@ -29,6 +29,7 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 
 ## 📦 Installation
 
+---
 Add to your `pom.xml`:
 
 <repositories>
@@ -50,6 +51,7 @@ Add to your `pom.xml`:
     <version>v2.0.0</version>
 </dependency>
 
+---
 
 ### JitPack (Recommended)
 
