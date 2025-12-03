@@ -17,22 +17,20 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 
 ## 🚀 Features
 
-| ✅ Core | ✅ Formatting | ✅ Utilities |
-|--------|---------------|--------------|
-| `MyPersianCalendar` extends `java.util.Calendar` | `MyPersianDateFormat` with token-based patterns | `isLeapYear()`, `isHoliday()`, `isToday()` |
-| Gregorian ↔ Persian conversion (exact) | Supports **Farsi numerals** (۱۴۰۳) | `plusDays()`, `minusMonths()`, `withFirstDayOfMonth()` |
-| 0-based months (like Java): `FARVARDIN = 0` | 20+ format tokens: `yyyy`, `MMMM`, `dddd`, `a`, etc. | `daysBetween()`, `getAge()`, `isBetween()` |
-| Time zone aware (`Asia/Tehran` ready) | Literal text support: `'Today:' yyyy/MM/dd` | `atStartOfDay()`, `atEndOfDay()` |
-| Leap year table (1200–1600 AH) + algorithm | Parse Persian & Gregorian strings | `getQuarter()`, `getWeekOfYear()`, `getDayOfYear()` |
+| ✅ Core                                                                                                                                                                 | ✅ Formatting                                                                                                                                                     | ✅ Utilities                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [MyPersianCalendar](file://D:\NewProjects\PersianCalendar\jlibrary\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L7-L1288) extends `java.util.Calendar` | `MyPersianDateFormat` with token-based patterns                                                                                                                  | [isLeapYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L353-L355), [isHoliday()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1268-L1270), `isToday()`                                                                                                                                       |
+| Gregorian ↔ Persian conversion (exact)                                                                                                                                 | Supports **Farsi numerals** (۱۴۰۳)                                                                                                                               | [plusDays()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1150-L1154), [minusMonths()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1201-L1203), [withFirstDayOfMonth()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1285-L1289) |
+| 0-based months (like Java): `FARVARDIN = 0`                                                                                                                            | 20+ format tokens: `yyyy`, `MMMM`, `dddd`, [a](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java), etc. | [daysBetween()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1259-L1262), [getAge()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1373-L1375), [isBetween()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1383-L1385)             |
+| Time zone aware (`Asia/Tehran` ready)                                                                                                                                  | Literal text support: `'Today:' yyyy/MM/dd`                                                                                                                      | `atStartOfDay()`, [atEndOfDay()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1342-L1349)                                                                                                                                                                                                                                                                       |
+| Leap year table (1200–1600 AH) + algorithm                                                                                                                             | Parse Persian & Gregorian strings                                                                                                                                | [getQuarter()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1471-L1473), [getWeekOfYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1400-L1403), [getDayOfYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1391-L1394)    |
 
 ---
 
 ## 📦 Installation
 
-
 Add to your `pom.xml`:
 
-```xml
 <repositories>
     <repository>
         <id>jitpack.io</id>
@@ -41,16 +39,39 @@ Add to your `pom.xml`:
 </repositories>
 
 <dependency>
-    <groupId>com.github.mf275</groupId>
+    <groupId>com.github.mf275.PersianCalendar</groupId>
     <artifactId>persian-calendar</artifactId>
     <version>v2.0.0</version>
 </dependency>
-        
-implementation 'com.github.mf275:PersianCalendar:v2.0.0'
 
-This is the English version of the documentation. I have included a link to the Farsi version at the beginning.
+<dependency>
+    <groupId>com.github.mf275.PersianCalendar</groupId>
+    <artifactId>persian-calendar-android</artifactId>
+    <version>v2.0.0</version>
+</dependency>
 
-````markdown
+
+### JitPack (Recommended)
+
+Add JitPack repository to your project:
+
+#### Gradle (Kotlin DSL)
+```kotlin
+repositories {
+    maven(url = "https://jitpack.io")
+}
+
+dependencies {
+    // For Java/Kotlin projects:
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.0.0")
+
+    // For Android projects:
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.0.0")
+}
+
+
+---
+
 # ⚡ FastPersianDateFormat & FastPersianCalendar 📅
 
 A high-speed and optimized library for managing the Shamsi (Jalali) calendar in Java. This library is built upon the standard Java `Calendar` and `DateFormat` classes, providing highly optimized performance for heavy processing tasks.
@@ -64,7 +85,6 @@ A high-speed and optimized library for managing the Shamsi (Jalali) calendar in 
 ## 1. Date Formatting
 
 Using `FastPersianDateFormat`, you can display Shamsi dates with various patterns and control the display of numbers (Farsi/Persian or English/Latin).
-
 ```java
 import com.farashian.pcalendar.fast.FastPersianDateFormat;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
