@@ -1,0 +1,36 @@
+pluginManagement {
+    repositories {
+        // Huawei Maven repository
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://repo.huaweicloud.com/repository/maven/' }
+        maven { url 'https://jitpack.io' }
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven { url 'https://repo.huaweicloud.com/repository/maven/' }
+        maven { url 'https://developer.huawei.com/repo/' }
+        flatDir {
+            dirs("lib")
+        }
+        gradlePluginPortal()
+        maven {
+            url 'https://repo.baidu.com/maven2'
+        }
+        maven { url 'https://jitpack.io' }
+        google()
+        mavenCentral()
+    }
+}
+
+include ':core', ':android', ':sample'

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:fillViewport="true">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+        <!-- Library Selection -->
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Library Selection"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"/>
+
+        <Spinner
+                android:id="@+id/spnLibrary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+        <TextView
+                android:id="@+id/tvFastLibrary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Using Standard Library"
+                android:textColor="@color/teal_700"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Current Date Display -->
+        <TextView
+                android:id="@+id/tvCurrentDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Current Date: "
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="@color/light_gray"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Pattern Selection -->
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pattern"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+        <Spinner
+                android:id="@+id/spnPattern"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+
+        <!-- Custom Pattern -->
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Custom Pattern"
+                android:layout_marginBottom="4dp"/>
+
+        <EditText
+                android:id="@+id/edtCustomPattern"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter custom pattern"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Number Format -->
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Number Format"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+        <Spinner
+                android:id="@+id/spnNumberFormat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Gregorian to Persian -->
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Gregorian to Persian"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+        <EditText
+                android:id="@+id/edit_gregorian_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Gregorian date (yyyy/MM/dd)"
+                android:inputType="text"
+                android:layout_marginBottom="8dp"/>
+
+        <Button
+                android:id="@+id/btn_convert_to_persian"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Convert to Persian"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Persian to Gregorian -->
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Persian to Gregorian"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+        <EditText
+                android:id="@+id/edit_persian_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Persian date (yyyy/MM/dd)"
+                android:inputType="text"
+                android:layout_marginBottom="8dp"/>
+
+        <Button
+                android:id="@+id/btn_convert_to_gregorian"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Convert to Gregorian"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Parse Date -->
+        <Button
+                android:id="@+id/btn_parse_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Parse Date String"
+                android:layout_marginBottom="8dp"/>
+
+        <!-- Format Now -->
+        <Button
+                android:id="@+id/btn_format_now"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Format Current Date"
+                android:layout_marginBottom="8dp"/>
+
+        <!-- Performance Test -->
+        <Button
+                android:id="@+id/btn_test_performance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Run Performance Test"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Results -->
+        <TextView
+                android:id="@+id/tvConvertedDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Converted Date: "
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="@color/light_gray"
+                android:layout_marginBottom="8dp"/>
+
+        <TextView
+                android:id="@+id/tvParsedDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Parsed Date: "
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="@color/light_gray"
+                android:layout_marginBottom="16dp"/>
+
+        <!-- Test Cases -->
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Test Cases"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_test_cases"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="32dp"/>
+
+    </LinearLayout>
+</ScrollView>

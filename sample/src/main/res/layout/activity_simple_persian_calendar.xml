@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/background"
+        tools:context=".SimplePersianCalendarActivity"
+        >
+
+    <!-- App Bar -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="16dp"
+            android:gravity="center_vertical"
+            >
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="📅 Persian Calendar"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary_text"
+                />
+
+        <Button
+                android:id="@+id/btnToday"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Today"
+                android:backgroundTint="@color/primary"
+                android:textColor="@android:color/white"
+                />
+    </LinearLayout>
+
+    <!-- Current Date Display -->
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@color/card_background"
+                >
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Current Date"
+                    android:textSize="14sp"
+                    android:textColor="@color/secondary_text"
+                    android:paddingBottom="8dp"
+                    />
+
+            <TextView
+                    android:id="@+id/tvCurrentDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_text"
+                    android:text="Loading..."
+                    />
+
+            <TextView
+                    android:id="@+id/tvCurrentGregorian"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/secondary_text"
+                    android:paddingTop="4dp"
+                    />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Converter Card -->
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@color/card_background"
+                >
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📅 Date Converter"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_text"
+                    android:paddingBottom="12dp"
+                    />
+
+            <!-- Persian to Gregorian -->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Persian → Gregorian"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_text"
+                    android:paddingBottom="4dp"
+                    />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp"
+                    >
+
+                <EditText
+                        android:id="@+id/edtPersianDate"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:hint="1402/10/25"
+                        android:inputType="number|date"
+                        android:maxLines="1"
+                        android:background="@drawable/edit_text_background"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        />
+
+                <Button
+                        android:id="@+id/btnConvertToGregorian"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="Convert"
+                        android:layout_marginStart="8dp"
+                        android:backgroundTint="@color/primary"
+                        android:textColor="@android:color/white"
+                        />
+            </LinearLayout>
+
+            <!-- Gregorian to Persian -->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gregorian → Persian"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_text"
+                    android:paddingBottom="4dp"
+                    />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                <EditText
+                        android:id="@+id/edtGregorianDate"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:hint="2024/01/15"
+                        android:inputType="number|date"
+                        android:maxLines="1"
+                        android:background="@drawable/edit_text_background"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        />
+
+                <Button
+                        android:id="@+id/btnConvertToPersian"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="Convert"
+                        android:layout_marginStart="8dp"
+                        android:backgroundTint="@color/primary"
+                        android:textColor="@android:color/white"
+                        />
+            </LinearLayout>
+
+            <!-- Result -->
+            <TextView
+                    android:id="@+id/tvPResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/success"
+                    android:visibility="gone"
+                    />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Quick Actions -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            >
+
+        <Button
+                android:id="@+id/btnAddDay"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="+1 Day"
+                android:textSize="15sp"
+                android:layout_marginEnd="4dp"
+                />
+
+        <Button
+                android:id="@+id/btnSubtractDay"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="-1 Day"
+                android:textSize="15sp"
+                android:layout_marginStart="4dp"
+                />
+    </LinearLayout>
+
+    <!-- Date Info -->
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@color/card_background"
+                >
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📊 Date Information"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_text"
+                    android:paddingBottom="12dp"
+                    />
+
+            <TextView
+                    android:id="@+id/tvDayName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_text"
+                    android:paddingBottom="4dp"
+                    />
+
+            <TextView
+                    android:id="@+id/tvMonthInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_text"
+                    android:paddingBottom="4dp"
+                    />
+
+            <TextView
+                    android:id="@+id/tvLeapYear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_text"
+                    />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

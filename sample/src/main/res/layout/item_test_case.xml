@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="12dp"
+              android:background="?android:attr/selectableItemBackground"
+              android:clickable="true"
+              android:focusable="true"
+              android:layout_marginBottom="8dp"
+              android:backgroundTint="@color/light_blue">
+
+    <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test Case Title"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/black"/>
+
+    <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/dark_gray"/>
+
+    <TextView
+            android:id="@+id/tvSample"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/teal_700"/>
+
+</LinearLayout>

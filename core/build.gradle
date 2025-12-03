@@ -1,0 +1,73 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group = 'com.farashian'
+version = '2.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+}
+
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+test {
+    useJUnit()
+}
+
+jar {
+    archiveBaseName = 'persian-calendar'
+    manifest {
+        attributes(
+                'Implementation-Title': 'Persian Calendar',
+                'Implementation-Version': version
+        )
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = 'persian-calendar-core'
+
+            pom {
+                name = 'Persian Calendar'
+                description = 'Fast Persian Calendar Implementation'
+                url = 'https://github.com/mf275/PersianCalendar'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'mf275'
+                        name = 'Morteza'
+                    }
+                }
+            }
+        }
+    }
+
+    // For JitPack
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = 'https://maven.pkg.github.com/mf275/PersianCalendar'
+            credentials {
+                username = project.findProperty('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+                password = project.findProperty('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+    }
+}
