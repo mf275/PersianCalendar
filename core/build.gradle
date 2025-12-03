@@ -26,9 +26,6 @@ tasks.withType(Test) {
 version = "2.0.0"
 group = "com.github.mf275.persian-calendar"
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     // Add test dependencies if not present
@@ -52,7 +49,7 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            artifactId = 'persiancalendar-core'
+            artifactId = 'persian-calendar-core'
             version = project.version
 
             pom {
@@ -124,7 +121,7 @@ tasks.register('printPublicationInfo') {
     doLast {
         println "Publication Details:"
         println "  Group: ${group}"
-        println "  Artifact: persiancalendar-core"
+        println "  Artifact: persian-calendar-core"
         println "  Version: ${version}"
         println "  Java Compatibility: ${java.sourceCompatibility}"
     }
