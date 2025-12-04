@@ -1,4 +1,4 @@
-# 📅 Persian Calendar for Java — `MyPersianCalendar`
+# 📅 Persian Calendar for Java — `MyPersianCalendar` and `FastPersianCalendar` 
 
 [![Java 8+](https://img.shields.io/badge/Java-8%2B-green?logo=java)](https://www.oracle.com/java/)
 [![Android Compatible](https://img.shields.io/badge/Android-Compatible-brightgreen?logo=android)](https://developer.android.com/)
@@ -42,13 +42,13 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.0.0</version>
+<version>2.1.0</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.0.0</version>
+<version>2.1.0</version>
 </dependency>
 ```
 ---
@@ -56,7 +56,7 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 ### Project Modules
 
 - **`persian-calendar`** - Pure Java library (no Android dependencies)
-- **`persian-calendar-android`** - Android library with UI components
+- **`persian-calendar-android`** - Android library
   
 - | Module                         | Type              | Purpose                                             | Dependencies          |
   |--------------------------------|-------------------|-----------------------------------------------------|-----------------------|
@@ -75,13 +75,20 @@ repositories {
 
 dependencies {
     // For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.0.0")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.1.0")
 
     // For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.0.0")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.1.0")
 }
 
 ```
+# what's new
+
+### version 2.1.0
+* Add comprehensive Gregorian date support to both calendar classes
+* Add 20+ new methods for Gregorian date manipulation
+* Improve cross-version Java compatibility (Java 8+)
+* Expand test suite with Gregorian date tests
 ---
 
 # ⚡ FastPersianDateFormat & FastPersianCalendar 📅

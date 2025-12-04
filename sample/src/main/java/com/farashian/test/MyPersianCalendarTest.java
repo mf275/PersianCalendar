@@ -1,18 +1,15 @@
-package com.farashian; // Adjust package as necessary
+package com.farashian.test; // Adjust package as necessary
 
-import com.farashian.pcalendar.fast.FastPersianCalendar;
+
+import com.farashian.pcalendar.MyPersianCalendar;
 
 import java.text.ParseException;
 import java.util.Calendar;
 
-public class FastPersianCalendarTest {
-
-    private static int testCount   = 0;
-    private static int passedCount = 0;
-    private static int failedCount = 0;
+public class MyPersianCalendarTest extends TestBase {
 
     public static void main(String[] args) throws ParseException {
-        System.out.println("=== Running FastPersianCalendar Tests ===\n");
+        System.out.println("=== Running MyPersianCalendar Tests ===\n");
 
         testLeapYearAndInitialization();
         testDateArithmetic();
@@ -50,72 +47,73 @@ public class FastPersianCalendarTest {
         int[] nonLeapYears = {1374, 1376, 1380, 1384, 1388, 1392, 1396, 1400, 1404, 1407, 1411};
 
         for (int year : leapYears) {
-            FastPersianCalendar date = new FastPersianCalendar(year, 11, 30); // Esfand 30
+            MyPersianCalendar date = new MyPersianCalendar(year, 11, 30); // Esfand 30
             assertTrue(date.isLeapYear(), year + " should be a leap year");
             assertEquals(30, date.getDaysInMonth(), "Esfand in " + year + " should have 30 days");
         }
 
         for (int year : nonLeapYears) {
-            FastPersianCalendar date = new FastPersianCalendar(year, 11, 29); // Esfand 29
+            MyPersianCalendar date = new MyPersianCalendar(year, 11, 29); // Esfand 29
             assertFalse(date.isLeapYear(), year + " should NOT be a leap year");
             assertEquals(29, date.getDaysInMonth(), "Esfand in " + year + " should have 29 days");
         }
 
         // Test month day counts
-        FastPersianCalendar date = new FastPersianCalendar(1402, 0, 1); // Farvardin
+        MyPersianCalendar date = new MyPersianCalendar(1402, 0, 1); // Farvardin
         for (int month = 0; month < 6; month++) {
-            date.set(FastPersianCalendar.MONTH, month);
+            date.set(MyPersianCalendar.MONTH, month);
             assertEquals(31, date.getDaysInMonth(), "Month " + month + " should have 31 days");
         }
 
         for (int month = 6; month < 11; month++) {
-            date.set(FastPersianCalendar.MONTH, month);
+            date.set(MyPersianCalendar.MONTH, month);
             assertEquals(30, date.getDaysInMonth(), "Month " + month + " should have 30 days");
         }
 
         System.out.println();
     }
 
+
     // --- Test 2: Date Arithmetic (Add/Subtract) ---
     public static void testDateArithmetic() {
         System.out.println("Test 2: Date Arithmetic");
 
         // Test 1: Simple day addition within month
-        FastPersianCalendar date = new FastPersianCalendar(1402, 0, 15); // Farvardin 15
-        date.add(FastPersianCalendar.DAY_OF_MONTH, 10);
+        MyPersianCalendar date = new MyPersianCalendar(1402, 0, 15); // Farvardin 15
+        date.add(MyPersianCalendar.DAY_OF_MONTH, 10);
         assertEquals(25, date.getDayOfMonth(), "Should be Farvardin 25");
         assertEquals(0, date.getMonth(), "Should still be Farvardin");
 
         // Test 2: Day addition crossing month boundary
         date.setPersianDate(1402, 0, 28); // Farvardin 28
-        date.add(FastPersianCalendar.DAY_OF_MONTH, 5);
+        date.add(MyPersianCalendar.DAY_OF_MONTH, 5);
         assertEquals(2, date.getDayOfMonth(), "Should be Ordibehesht 2");
         assertEquals(1, date.getMonth(), "Should be Ordibehesht (1)");
 
         // Test 3: Month addition
         date.setPersianDate(1402, 10, 15); // Bahman 15
-        date.add(FastPersianCalendar.MONTH, 1);
+        date.add(MyPersianCalendar.MONTH, 1);
         assertEquals(11, date.getMonth(), "Should be Esfand (11)");
         assertEquals(1402, date.getYear());
 
         // Test 4: Month addition crossing year boundary
         date.setPersianDate(1402, 11, 15); // Esfand 15
-        date.add(FastPersianCalendar.MONTH, 1);
+        date.add(MyPersianCalendar.MONTH, 1);
         assertEquals(0, date.getMonth(), "Should be Farvardin (0)");
         assertEquals(1403, date.getYear());
 
         // Test 5: Year addition
         date.setPersianDate(1402, 5, 15); // Shahrivar 15
-        date.add(FastPersianCalendar.YEAR, 1);
+        date.add(MyPersianCalendar.YEAR, 1);
         assertEquals(1403, date.getYear());
         assertEquals(5, date.getMonth(), "Should still be Shahrivar");
 
         // Test 6: Negative addition (subtraction)
         date.setPersianDate(1402, 0, 1); // Farvardin 1
-        date.add(FastPersianCalendar.DAY_OF_MONTH, -1);
+        date.add(MyPersianCalendar.DAY_OF_MONTH, -1);
         assertEquals(1401, date.getYear(), "Should roll back to 1401");
         assertEquals(11, date.getMonth(), "Should be Esfand (11)");
-        int expectedDay = new FastPersianCalendar(1401, 11, 1).isLeapYear() ? 30 : 29;
+        int expectedDay = new MyPersianCalendar(1401, 11, 1).isLeapYear() ? 30 : 29;
         assertEquals(expectedDay, date.getDayOfMonth(), "Should be last day of Esfand 1401");
 
         System.out.println();
@@ -125,7 +123,7 @@ public class FastPersianCalendarTest {
     public static void testDateFormatting() {
         System.out.println("Test 3: Date Formatting");
 
-        FastPersianCalendar date = new FastPersianCalendar(1402, 8, 10, 14, 5, 9); // Azar 10, 14:05:09
+        MyPersianCalendar date = new MyPersianCalendar(1402, 8, 10, 14, 5, 9); // Azar 10, 14:05:09
 
         // Test built-in formatting methods
         System.out.println("Short date: " + date.getShortDate());
@@ -153,7 +151,7 @@ public class FastPersianCalendarTest {
         System.out.println("Test 4: Date Parsing");
 
         // Test parse method
-        FastPersianCalendar date = new FastPersianCalendar();
+        MyPersianCalendar date = new MyPersianCalendar();
 
         // Test valid date parsing
         date.parse("1402/07/20");
@@ -168,7 +166,7 @@ public class FastPersianCalendarTest {
         assertEquals(20, date.getDayOfMonth(), "Day should be 20 with dash delimiter");
 
         // Test parseOrNullToCompat static method
-        FastPersianCalendar parsed1 = FastPersianCalendar.parseOrNullToCompat("1402/07/20");
+        MyPersianCalendar parsed1 = MyPersianCalendar.parseOrNullToCompat("1402/07/20");
         assertNotNull(parsed1, "parseOrNullToCompat should return non-null for valid date");
         if (parsed1 != null) {
             assertEquals(1402, parsed1.getYear(), "Static parse year should be 1402");
@@ -177,19 +175,19 @@ public class FastPersianCalendarTest {
         }
 
         // Test invalid dates
-        FastPersianCalendar parsed2 = FastPersianCalendar.parseOrNullToCompat("invalid");
+        MyPersianCalendar parsed2 = MyPersianCalendar.parseOrNullToCompat("invalid");
         assertNull(parsed2, "parseOrNullToCompat should return null for invalid date");
 
-        FastPersianCalendar parsed3 = FastPersianCalendar.parseOrNullToCompat("1402/13/01");
+        MyPersianCalendar parsed3 = MyPersianCalendar.parseOrNullToCompat("1402/13/01");
         assertNull(parsed3, "parseOrNullToCompat should return null for invalid month");
 
-        FastPersianCalendar parsed4 = FastPersianCalendar.parseOrNullToCompat("1402/01/32");
+        MyPersianCalendar parsed4 = MyPersianCalendar.parseOrNullToCompat("1402/01/32");
         assertNull(parsed4, "parseOrNullToCompat should return null for invalid day");
 
         // Test that parse handles time preservation
         date.setPersianDate(1402, 0, 1);
-        date.set(FastPersianCalendar.HOUR_OF_DAY, 14);
-        date.set(FastPersianCalendar.MINUTE, 30);
+        date.set(MyPersianCalendar.HOUR_OF_DAY, 14);
+        date.set(MyPersianCalendar.MINUTE, 30);
         date.parse("1403/06/15");
         // Date should change, but time might be preserved depending on implementation
         assertEquals(1403, date.getYear());
@@ -202,10 +200,10 @@ public class FastPersianCalendarTest {
     public static void testDateComparison() {
         System.out.println("Test 5: Date Comparison");
 
-        FastPersianCalendar date1 = new FastPersianCalendar(1402, 5, 10); // Shahrivar 10
-        FastPersianCalendar date2 = new FastPersianCalendar(1402, 5, 10); // Shahrivar 10
-        FastPersianCalendar date3 = new FastPersianCalendar(1402, 5, 11); // Shahrivar 11
-        FastPersianCalendar date4 = new FastPersianCalendar(1403, 0, 1);  // Farvardin 1, 1403
+        MyPersianCalendar date1 = new MyPersianCalendar(1402, 5, 10); // Shahrivar 10
+        MyPersianCalendar date2 = new MyPersianCalendar(1402, 5, 10); // Shahrivar 10
+        MyPersianCalendar date3 = new MyPersianCalendar(1402, 5, 11); // Shahrivar 11
+        MyPersianCalendar date4 = new MyPersianCalendar(1403, 0, 1);  // Farvardin 1, 1403
 
         // Test equality using isEqual (helper method we added)
         assertTrue(date1.isEqual(date2), "Dates with same values should be equal");
@@ -221,9 +219,9 @@ public class FastPersianCalendarTest {
         assertTrue(date4.isAfter(date1), "Date 4 should be after Date 1");
 
         // Test daysBetween
-        FastPersianCalendar dateA    = new FastPersianCalendar(1402, 0, 1);
-        FastPersianCalendar dateB    = new FastPersianCalendar(1402, 0, 10);
-        long                daysDiff = dateA.daysBetween(dateB);
+        MyPersianCalendar dateA    = new MyPersianCalendar(1402, 0, 1);
+        MyPersianCalendar dateB    = new MyPersianCalendar(1402, 0, 10);
+        long              daysDiff = dateA.daysBetween(dateB);
         assertEquals(-9, daysDiff, "Should be 9 days difference");
 
         // Test with same date
@@ -237,55 +235,55 @@ public class FastPersianCalendarTest {
     public static void testHelperMethods() {
         System.out.println("Test 6: Helper Methods");
 
-        FastPersianCalendar date = new FastPersianCalendar(1402, 8, 15, 10, 30, 45); // Azar 15
+        MyPersianCalendar date = new MyPersianCalendar(1402, 8, 15, 10, 30, 45); // Azar 15
 
         // Test plus/minus methods
-        FastPersianCalendar nextWeek = date.plusDays(7);
+        MyPersianCalendar nextWeek = date.plusDays(7);
         assertEquals(22, nextWeek.getDayOfMonth(), "Should be Azar 22");
         assertEquals(8, nextWeek.getMonth(), "Should still be Azar");
 
-        FastPersianCalendar lastWeek = date.minusDays(7);
+        MyPersianCalendar lastWeek = date.minusDays(7);
         assertEquals(8, lastWeek.getDayOfMonth(), "Should be Azar 8");
 
-        FastPersianCalendar nextMonth = date.plusMonths(1);
+        MyPersianCalendar nextMonth = date.plusMonths(1);
         assertEquals(9, nextMonth.getMonth(), "Should be Dey (9)");
         assertEquals(1402, nextMonth.getYear());
 
-        FastPersianCalendar lastYear = date.minusYears(1);
+        MyPersianCalendar lastYear = date.minusYears(1);
         assertEquals(1401, lastYear.getYear());
         assertEquals(8, lastYear.getMonth(), "Should still be Azar");
 
         // Test withFirstDayOfMonth / withLastDayOfMonth
-        FastPersianCalendar firstDay = date.withFirstDayOfMonth();
+        MyPersianCalendar firstDay = date.withFirstDayOfMonth();
         assertEquals(1, firstDay.getDayOfMonth(), "Should be 1st day of month");
         assertEquals(8, firstDay.getMonth(), "Should still be Azar");
 
-        FastPersianCalendar lastDay = date.withLastDayOfMonth();
+        MyPersianCalendar lastDay = date.withLastDayOfMonth();
         assertEquals(30, lastDay.getDayOfMonth(), "Azar should have 30 days");
 
         // Test atStartOfDay / atEndOfDay
-        FastPersianCalendar startOfDay = date.atStartOfDay();
+        MyPersianCalendar startOfDay = date.atStartOfDay();
         assertEquals(0, startOfDay.get(Calendar.HOUR_OF_DAY), "Should be 00:00");
         assertEquals(0, startOfDay.get(Calendar.MINUTE), "Should be 00:00");
         assertEquals(0, startOfDay.get(Calendar.SECOND), "Should be 00:00");
 
-        FastPersianCalendar endOfDay = date.atEndOfDay();
+        MyPersianCalendar endOfDay = date.atEndOfDay();
         assertEquals(23, endOfDay.get(Calendar.HOUR_OF_DAY), "Should be 23:59");
         assertEquals(59, endOfDay.get(Calendar.MINUTE), "Should be 23:59");
         assertEquals(59, endOfDay.get(Calendar.SECOND), "Should be 23:59");
 
         // Test isBetween
-        FastPersianCalendar start = new FastPersianCalendar(1402, 0, 1);
-        FastPersianCalendar end   = new FastPersianCalendar(1402, 11, 29);
+        MyPersianCalendar start = new MyPersianCalendar(1402, 0, 1);
+        MyPersianCalendar end   = new MyPersianCalendar(1402, 11, 29);
         assertTrue(date.isBetween(start, end), "Azar 15 should be between Farvardin 1 and Esfand 29");
 
         // Test isOutside range
-        FastPersianCalendar futureDate = new FastPersianCalendar(1403, 0, 1);
+        MyPersianCalendar futureDate = new MyPersianCalendar(1403, 0, 1);
         assertFalse(futureDate.isBetween(start, end), "1403 date should not be in 1402 range");
 
         // Test isHoliday / isWeekend (Friday)
         // Create a known Friday (you might need to adjust based on actual calendar)
-        FastPersianCalendar testFriday = new FastPersianCalendar();
+        MyPersianCalendar testFriday = new MyPersianCalendar();
         // Find a Friday by checking
         for (int i = 0; i < 7; i++) {
             testFriday.addDays(1);
@@ -297,9 +295,9 @@ public class FastPersianCalendarTest {
         }
 
         // Test getAge
-        FastPersianCalendar birthDate = new FastPersianCalendar(1370, 0, 1);
-        FastPersianCalendar now       = new FastPersianCalendar(1402, 0, 1);
-        int                 age       = birthDate.getAge(now);
+        MyPersianCalendar birthDate = new MyPersianCalendar(1370, 0, 1);
+        MyPersianCalendar now       = new MyPersianCalendar(1402, 0, 1);
+        int               age       = birthDate.getAge(now);
         assertEquals(32, age, "Age from 1370 to 1402 should be 32");
 
         // Test with birthday not happened yet this year
@@ -316,129 +314,49 @@ public class FastPersianCalendarTest {
         System.out.println("Test 7: Edge Cases");
 
         // Test minimum year (1)
-        FastPersianCalendar minDate = new FastPersianCalendar(1, 0, 1);
+        MyPersianCalendar minDate = new MyPersianCalendar(1, 0, 1);
         assertEquals(1, minDate.getYear(), "Minimum year should be 1");
 
         // Test adding to minimum year
-        minDate.add(FastPersianCalendar.YEAR, -1);
+        minDate.add(MyPersianCalendar.YEAR, -1);
         assertEquals(1, minDate.getYear(), "Year should not go below 1");
 
         // Test maximum day in month adjustment
-        FastPersianCalendar date = new FastPersianCalendar(1402, 0, 31); // Farvardin 31
-        date.set(FastPersianCalendar.MONTH, 1); // Ordibehesht has 31 days too, so should be OK
+        MyPersianCalendar date = new MyPersianCalendar(1402, 0, 31); // Farvardin 31
+        date.set(MyPersianCalendar.MONTH, 1); // Ordibehesht has 31 days too, so should be OK
         assertEquals(31, date.getDayOfMonth(), "Day should remain 31");
 
         date.setPersianDate(1402, 0, 31);
-        date.set(FastPersianCalendar.MONTH, 6); // Mehr has 30 days, should adjust to 30
+        date.set(MyPersianCalendar.MONTH, 6); // Mehr has 30 days, should adjust to 30
         assertEquals(30, date.getDayOfMonth(), "Day should adjust to 30 for 30-day month");
 
         // Test leap year adjustment
         date.setPersianDate(1403, 10, 30); // Bahman 30 in leap year 1403
-        date.set(FastPersianCalendar.MONTH, 11); // Esfand in leap year has 30 days
+        date.set(MyPersianCalendar.MONTH, 11); // Esfand in leap year has 30 days
         assertEquals(30, date.getDayOfMonth(), "Day should remain 30 in leap year Esfand");
 
         date.setPersianDate(1402, 10, 30); // Bahman 30 in non-leap year 1402
-        date.set(FastPersianCalendar.MONTH, 11); // Esfand in non-leap year has 29 days
+        date.set(MyPersianCalendar.MONTH, 11); // Esfand in non-leap year has 29 days
         assertEquals(29, date.getDayOfMonth(), "Day should adjust to 29 in non-leap year Esfand");
 
         // Test clone method
-        FastPersianCalendar original = new FastPersianCalendar(1402, 5, 15, 10, 30, 45);
-        FastPersianCalendar clone    = original.clone();
+        MyPersianCalendar original = new MyPersianCalendar(1402, 5, 15, 10, 30, 45);
+        MyPersianCalendar clone    = original.clone();
         assertTrue(original.isEqual(clone), "Clone should be equal to original");
         assertEquals(original.getTimeInMillis(), clone.getTimeInMillis(), "Clone should have same time");
 
         // Test roll method
         date.setPersianDate(1402, 11, 15); // Esfand 15
-        date.roll(FastPersianCalendar.MONTH, true); // Roll forward
+        date.roll(MyPersianCalendar.MONTH, true); // Roll forward
         assertEquals(0, date.getMonth(), "Should roll to Farvardin");
         assertEquals(1403, date.getYear(), "Should increment year when rolling from Esfand");
 
         date.setPersianDate(1402, 0, 15); // Farvardin 15
-        date.roll(FastPersianCalendar.MONTH, false); // Roll backward
+        date.roll(MyPersianCalendar.MONTH, false); // Roll backward
         assertEquals(11, date.getMonth(), "Should roll to Esfand");
         assertEquals(1401, date.getYear(), "Should decrement year when rolling from Farvardin");
 
         System.out.println();
     }
 
-    // --- Additional Assertion Methods ---
-    public static void assertNotNull(Object obj, String message) {
-        testCount++;
-        if (obj == null) {
-            System.err.println("❌ FAIL: " + message + " - expected: not null but was: null");
-            failedCount++;
-        } else {
-            passedCount++;
-        }
-    }
-
-    public static void assertNull(Object obj, String message) {
-        testCount++;
-        if (obj != null) {
-            System.err.println("❌ FAIL: " + message + " - expected: null but was: " + obj);
-            failedCount++;
-        } else {
-            passedCount++;
-        }
-    }
-
-    public static void assertFalse(boolean condition, String message) {
-        testCount++;
-        if (condition) {
-            System.err.println("❌ FAIL: " + message + " - expected: <false> but was: <true>");
-            failedCount++;
-        } else {
-            passedCount++;
-        }
-    }
-
-    public static void assertTrue(boolean condition, String message) {
-        testCount++;
-        if (!condition) {
-            System.err.println("❌ FAIL: " + message + " - expected: <true> but was: <false>");
-            failedCount++;
-        } else {
-            passedCount++;
-        }
-    }
-
-    public static void assertEquals(int expected, int actual) {
-        testCount++;
-        if (expected != actual) {
-            System.err.println("❌ FAIL: expected: " + expected + " but was: " + actual);
-            failedCount++;
-        } else {
-            passedCount++;
-        }
-    }
-
-    public static void assertEquals(int expected, int actual, String message) {
-        testCount++;
-        if (expected != actual) {
-            System.err.println("❌ FAIL: " + message + " - expected: " + expected + " but was: " + actual);
-            failedCount++;
-        } else {
-            passedCount++;
-        }
-    }
-
-    public static void assertEquals(long expected, long actual, String message) {
-        testCount++;
-        if (expected != actual) {
-            System.err.println("❌ FAIL: " + message + " - expected: " + expected + " but was: " + actual);
-            failedCount++;
-        } else {
-            passedCount++;
-        }
-    }
-
-    public static void assertEquals(String expected, String actual, String message) {
-        testCount++;
-        if (!expected.equals(actual)) {
-            System.err.println("❌ FAIL: " + message + " - expected: \"" + expected + "\" but was: \"" + actual + "\"");
-            failedCount++;
-        } else {
-            passedCount++;
-        }
-    }
 }

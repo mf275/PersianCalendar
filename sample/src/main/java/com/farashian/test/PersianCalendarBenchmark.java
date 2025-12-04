@@ -1,5 +1,6 @@
-package com.farashian.pcalendar;
+package com.farashian.test;
 
+import com.farashian.pcalendar.MyPersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 
 import java.util.Calendar;

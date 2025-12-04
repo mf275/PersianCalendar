@@ -1,5 +1,6 @@
 package com.farashian.test.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -35,11 +35,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static androidx.core.content.ContextCompat.getSystemService;
 import static com.farashian.pcalendar.fast.FastPersianCalendar.gregorianToJalaliFast;
-import static com.google.android.material.internal.ViewUtils.hideKeyboard;
 
-public class PersianCalendarActivity extends AppCompatActivity {
+public class PersianCalendarActivity extends Activity {
 
     // UI Components
     private Spinner spnLibrary;

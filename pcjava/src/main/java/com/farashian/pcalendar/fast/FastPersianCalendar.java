@@ -1,7 +1,5 @@
 package com.farashian.pcalendar.fast;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import com.farashian.pcalendar.MyPCConstants;
 
 import java.util.*;
@@ -12,7 +10,7 @@ import static com.farashian.pcalendar.MyPCConstants.PERSIAN_LOCALE;
  * High-performance Persian Calendar with complete field computation
  * Fixed all field computation issues and critical bugs
  */
-public class FastPersianCalendar extends Calendar implements Parcelable {
+public class FastPersianCalendar extends Calendar {
 
     public static final int FIRST_DAY_OF_WEEK      = Calendar.SATURDAY;
     public static final int WEEKDAY_HOLIDAY_NUMBER = Calendar.FRIDAY;
@@ -99,114 +97,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         setInternalField(SECOND, second);
         isDirty = true;
     }
-
-    // Parcelable constructor
-    protected FastPersianCalendar(Parcel in) {
-        // Call default constructor
-        this();
-
-        // Read the time
-        long timeInMillis = in.readLong();
-        setTimeInMillis(timeInMillis);
-
-        // Read Persian date fields
-        this.persianYear  = in.readInt();
-        this.persianMonth = in.readInt();
-        this.persianDay   = in.readInt();
-
-        // Read cache state
-        this.lastComputedTime = in.readLong();
-        this.isDirty          = in.readByte() != 0;
-
-        // Read timezone if present
-        if (in.readByte() == 1) {
-            String tzId = in.readString();
-            if (tzId != null) {
-                setTimeZone(TimeZone.getTimeZone(tzId));
-                gCal.setTimeZone(getTimeZone());
-            }
-        }
-
-        // Sync gCal with the time
-        gCal.setTimeInMillis(timeInMillis);
-
-        // Force computation
-        computeFields();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<FastPersianCalendar> CREATOR = new Creator<FastPersianCalendar>() {
-        @Override
-        public FastPersianCalendar createFromParcel(Parcel in) {
-            return new FastPersianCalendar(in);
-        }
-
-        @Override
-        public FastPersianCalendar[] newArray(int size) {
-            return new FastPersianCalendar[size];
-        }
-    };
-
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        ensureComputed();
-
-        // Write time
-        dest.writeLong(getTimeInMillis());
-
-        // Write Persian date fields
-        dest.writeInt(persianYear);
-        dest.writeInt(persianMonth);
-        dest.writeInt(persianDay);
-
-        // Write cache state
-        dest.writeLong(lastComputedTime);
-        dest.writeByte((byte) (isDirty ? 1 : 0));
-
-        // Write timezone
-        TimeZone tz = getTimeZone();
-        if (tz != null) {
-            dest.writeByte((byte) 1);
-            dest.writeString(tz.getID());
-        } else {
-            dest.writeByte((byte) 0);
-        }
-    }
-
-
-    public void readFromParcel(Parcel in) {
-        // Read time
-        long timeInMillis = in.readLong();
-        setTimeInMillis(timeInMillis);
-
-        // Read Persian date fields
-        this.persianYear  = in.readInt();
-        this.persianMonth = in.readInt();
-        this.persianDay   = in.readInt();
-
-        // Read cache state
-        this.lastComputedTime = in.readLong();
-        this.isDirty          = in.readByte() != 0;
-
-        // Read timezone
-        if (in.readByte() == 1) {
-            String tzId = in.readString();
-            if (tzId != null) {
-                setTimeZone(TimeZone.getTimeZone(tzId));
-                gCal.setTimeZone(getTimeZone());
-            }
-        }
-
-        // Sync and compute
-        gCal.setTimeInMillis(timeInMillis);
-        computeFields();
-    }
-
 
     // === PUBLIC API METHODS ===
 
@@ -351,17 +241,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
             // Invalidate fields since time changed
             areFieldsSet = false;
-        }
-    }
-
-    protected void computeFields1() {
-        if (time != lastComputedTime || !areFieldsSet) {
-            computePersianFromGregorianFast();
-            lastComputedTime = time;
-            isDirty          = false;
-
-            // Compute all calendar fields
-            computeAllFields();
         }
     }
 
@@ -1105,6 +984,456 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                 : MyPCConstants.MONTH_NAMES_IN_ENGLISH[month];
     }
 
+// === GREGORIAN DATE METHODS (0-BASED MONTHS) ===
+
+    /**
+     * Get Gregorian year from the underlying GregorianCalendar
+     * @return Gregorian year
+     */
+    public int getGrgYear() {
+        complete(); // Ensure fields are computed
+        return gCal.get(Calendar.YEAR);
+    }
+
+    /**
+     * Get Gregorian month (0-based: 0=January, 11=December)
+     * @return Gregorian month (0-11)
+     */
+    public int getGrgMonth() {
+        complete(); // Ensure fields are computed
+        return gCal.get(Calendar.MONTH);
+    }
+
+    /**
+     * Get Gregorian day of month (1-31)
+     * @return Gregorian day of month
+     */
+    public int getGrgDay() {
+        complete(); // Ensure fields are computed
+        return gCal.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * Get Gregorian week of year (ISO 8601 week numbering)
+     * @return Gregorian week of year (1-53)
+     */
+    public int getGrgWeekOfYear() {
+        complete(); // Ensure fields are computed
+        return gCal.get(Calendar.WEEK_OF_YEAR);
+    }
+
+    /**
+     * Get Gregorian week of month
+     * @return Gregorian week of month (1-6)
+     */
+    public int getGrgWeekOfMonth() {
+        complete(); // Ensure fields are computed
+        return gCal.get(Calendar.WEEK_OF_MONTH);
+    }
+
+    /**
+     * Get Gregorian day of week (Calendar.SUNDAY=1, Calendar.SATURDAY=7)
+     * @return Gregorian day of week
+     */
+    public int getGrgDayOfWeek() {
+        complete(); // Ensure fields are computed
+        return gCal.get(Calendar.DAY_OF_WEEK);
+    }
+
+    /**
+     * Get Gregorian day of week name
+     * @param locale locale for weekday name
+     * @return Gregorian weekday name
+     */
+    public String getGrgDayOfWeekName(Locale locale) {
+        complete(); // Ensure fields are computed
+        int dayOfWeek = gCal.get(Calendar.DAY_OF_WEEK);
+
+        // Map to Persian names if needed
+        if (locale.getLanguage().equals("fa")) {
+            String[] persianWeekdays = {"یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه",
+                    "پنجشنبه", "جمعه", "شنبه"};
+            // Calendar.DAY_OF_WEEK: 1=SUNDAY, 2=MONDAY, ..., 7=SATURDAY
+            return persianWeekdays[dayOfWeek - 1];
+        } else {
+            return gCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);
+        }
+    }
+
+    /**
+     * Get Gregorian month name
+     * @param locale locale for month name
+     * @return Gregorian month name
+     */
+    public String getGrgMonthName(Locale locale) {
+        complete(); // Ensure fields are computed
+        return gCal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
+    }
+
+    /**
+     * Get Gregorian month length (days in month)
+     * @return number of days in current Gregorian month
+     */
+    public int getGrgMonthLength() {
+        complete(); // Ensure fields are computed
+        return gCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * Get Gregorian month length for specific year and month
+     * @param year Gregorian year
+     * @param month 0-based Gregorian month (0=January)
+     * @return number of days in the month
+     */
+    public static int getGrgMonthLength(int year, int month) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+
+        // Fast switch statement
+        switch (month) {
+            case 0:  // January
+            case 2:  // March
+            case 4:  // May
+            case 6:  // July
+            case 7:  // August
+            case 9:  // October
+            case 11: // December
+                return 31;
+            case 3:  // April
+            case 5:  // June
+            case 8:  // September
+            case 10: // November
+                return 30;
+            case 1:  // February
+                // Leap year calculation
+                return ((year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)) ? 29 : 28;
+            default:
+                return 31;
+        }
+    }
+    /**
+     * Get Gregorian month name (fast version without Calendar)
+     * @param month 0-based Gregorian month (0=January)
+     * @param locale locale for month name
+     * @return month name
+     */
+    public static String getGrgMonthNameFast(int month, Locale locale) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+
+        if (locale.getLanguage().equals("fa")) {
+            String[] persianMonths = {
+                    "ژانویه", "فوریه", "مارس", "آوریل", "می", "ژوئن",
+                    "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
+            };
+            return persianMonths[month];
+        } else {
+            String[] englishMonths = {
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+            };
+            return englishMonths[month];
+        }
+    }
+
+    /**
+     * Get Gregorian month short name (3-letter abbreviation)
+     * @param month 0-based Gregorian month (0=January)
+     * @param locale locale for month name
+     * @return month short name
+     */
+    public static String getGrgMonthShortName(int month, Locale locale) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+
+        if (locale.getLanguage().equals("fa")) {
+            String[] persianShortMonths = {
+                    "ژان", "فور", "مار", "آور", "می", "ژوئ",
+                    "ژوئ", "اوت", "سپت", "اکت", "نوا", "دسا"
+            };
+            return persianShortMonths[month];
+        } else {
+            String[] englishShortMonths = {
+                    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            };
+            return englishShortMonths[month];
+        }
+    }
+
+    /**
+     * Static method: Get Gregorian month name without creating calendar instance
+     * @param month 0-based Gregorian month (0=January)
+     * @param locale locale for month name
+     * @return Gregorian month name
+     */
+    public static String getGrgMonthNameStatic(int month, Locale locale) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+
+        // Create a temporary calendar just for getting the month name
+        Calendar temp = new GregorianCalendar(locale);
+        temp.set(Calendar.MONTH, month);
+        temp.set(Calendar.DAY_OF_MONTH, 1);
+        return temp.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
+    }
+
+    /**
+     * Get Gregorian month name with number (e.g., "January (01)")
+     * @param locale locale for month name
+     * @return formatted month name with number
+     */
+    public String getGrgMonthNameWithNumber(Locale locale) {
+        complete(); // Ensure fields are computed
+        String monthName = getGrgMonthName(locale);
+        int monthNumber = getGrgMonth() + 1; // Convert to 1-based
+        return String.format(locale, "%s (%02d)", monthName, monthNumber);
+    }
+
+    /**
+     * Convert Gregorian date to Persian date
+     * @param year Gregorian year
+     * @param month 0-based Gregorian month (0=January)
+     * @param day Gregorian day
+     * @return Persian date as FastPersianCalendar
+     */
+    public static FastPersianCalendar fromGregorian(int year, int month, int day) {
+        FastPersianCalendar result = new FastPersianCalendar();
+        result.setGrgDate(year, month, day);
+        return result;
+    }
+
+    /**
+     * Convert Gregorian date to Persian date (1-based month)
+     * @param year Gregorian year
+     * @param month1Based 1-based Gregorian month (1=January)
+     * @param day Gregorian day
+     * @return Persian date as FastPersianCalendar
+     */
+    public static FastPersianCalendar fromGregorian1Based(int year, int month1Based, int day) {
+        return fromGregorian(year, month1Based - 1, day);
+    }
+
+    /**
+     * Get current Gregorian date
+     * @return current Gregorian date as FastPersianCalendar
+     */
+    public static FastPersianCalendar currentGregorian() {
+        FastPersianCalendar result = new FastPersianCalendar();
+        // Set to current time (which is already Gregorian)
+        return result;
+    }
+
+
+    /**
+     * Get full Gregorian date as string
+     * @param locale locale for formatting
+     * @return formatted Gregorian date
+     */
+    public String getGrgLongDate(Locale locale) {
+        complete(); // Ensure fields are computed
+        return String.format(locale, "%s, %d %s %d",
+                             getGrgDayOfWeekName(locale),
+                             getGrgDay(),
+                             getGrgMonthName(locale),
+                             getGrgYear());
+    }
+
+    /**
+     * Get Gregorian date in ISO format (YYYY-MM-DD)
+     * @return ISO formatted date
+     */
+    public String getGrgIsoDate() {
+        complete(); // Ensure fields are computed
+        return String.format(Locale.US, "%04d-%02d-%02d",
+                             getGrgYear(),
+                             getGrgMonth() + 1, // Convert to 1-based for ISO
+                             getGrgDay());
+    }
+
+    /**
+     * Get Gregorian date with 0-based month format
+     * @param delimiter delimiter between parts
+     * @return formatted date with 0-based month
+     */
+    public String getGrgShortDate(String delimiter) {
+        complete(); // Ensure fields are computed
+        return getGrgYear() + delimiter +
+               String.format("%02d", getGrgMonth()) + delimiter + // 0-based month
+               String.format("%02d", getGrgDay());
+    }
+
+    /**
+     * Get Gregorian date with 1-based month format (traditional)
+     * @param delimiter delimiter between parts
+     * @return formatted date with 1-based month
+     */
+    public String getGrgShortDate1Based(String delimiter) {
+        complete(); // Ensure fields are computed
+        return getGrgYear() + delimiter +
+               String.format("%02d", getGrgMonth() + 1) + delimiter + // 1-based month
+               String.format("%02d", getGrgDay());
+    }
+
+    /**
+     * Check if current Gregorian date is today
+     * @return true if Gregorian date is today
+     */
+    public boolean isGrgToday() {
+        GregorianCalendar today = new GregorianCalendar();
+        today.setTimeZone(getTimeZone());
+        today.setTime(new Date());
+
+        return today.get(Calendar.YEAR) == getGrgYear() &&
+               today.get(Calendar.MONTH) == getGrgMonth() &&
+               today.get(Calendar.DAY_OF_MONTH) == getGrgDay();
+    }
+
+    /**
+     * Get Gregorian date as Date object
+     * @return Date object representing the Gregorian date
+     */
+    public Date getGrgDate() {
+        complete(); // Ensure fields are computed
+        return gCal.getTime();
+    }
+
+    /**
+     * Get Gregorian date as milliseconds
+     * @return milliseconds since epoch
+     */
+    public long getGrgTimeInMillis() {
+        complete(); // Ensure fields are computed
+        return gCal.getTimeInMillis();
+    }
+
+    /**
+     * Set Gregorian date
+     * @param year Gregorian year
+     * @param month 0-based Gregorian month (0=January)
+     * @param day day of month (1-31)
+     */
+    public void setGrgDate(int year, int month, int day) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+        if (day < 1 || day > getGrgMonthLength(year, month)) {
+            throw new IllegalArgumentException("Invalid day for month: " + day);
+        }
+
+        gCal.set(year, month, day);
+        setTimeInMillis(gCal.getTimeInMillis());
+    }
+
+    /**
+     * Set Gregorian date with 1-based month (convenience method)
+     * @param year Gregorian year
+     * @param month1Based 1-based Gregorian month (1=January)
+     * @param day day of month (1-31)
+     */
+    public void setGrgDate1Based(int year, int month1Based, int day) {
+        if (month1Based < 1 || month1Based > 12) {
+            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month1Based);
+        }
+        setGrgDate(year, month1Based - 1, day);
+    }
+
+    /**
+     * Add days to Gregorian date
+     * @param days number of days to add (can be negative)
+     */
+    public void addGrgDays(int days) {
+        complete(); // Ensure fields are computed
+        gCal.add(Calendar.DAY_OF_MONTH, days);
+        setTimeInMillis(gCal.getTimeInMillis());
+    }
+
+    /**
+     * Add months to Gregorian date
+     * @param months number of months to add (can be negative)
+     */
+    public void addGrgMonths(int months) {
+        complete(); // Ensure fields are computed
+        gCal.add(Calendar.MONTH, months);
+        setTimeInMillis(gCal.getTimeInMillis());
+    }
+
+    /**
+     * Add years to Gregorian date
+     * @param years number of years to add (can be negative)
+     */
+    public void addGrgYears(int years) {
+        complete(); // Ensure fields are computed
+        gCal.add(Calendar.YEAR, years);
+        setTimeInMillis(gCal.getTimeInMillis());
+    }
+
+    /**
+     * Get difference in days between this Gregorian date and another
+     * @param other the other date
+     * @return number of days difference
+     */
+    public long grgDaysBetween(FastPersianCalendar other) {
+        long thisMillis = this.getGrgTimeInMillis();
+        long otherMillis = other.getGrgTimeInMillis();
+        return Math.abs(thisMillis - otherMillis) / (1000 * 60 * 60 * 24);
+    }
+
+    /**
+     * Check if Gregorian year is leap year
+     * @param year Gregorian year
+     * @return true if leap year
+     */
+    public static boolean isGrgLeapYear(int year) {
+        return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
+    }
+
+    /**
+     * Check if current Gregorian year is leap year
+     * @return true if leap year
+     */
+    public boolean isGrgLeapYear() {
+        return isGrgLeapYear(getGrgYear());
+    }
+
+    /**
+     * Get day of year for Gregorian date (1-365/366)
+     * @return day of year
+     */
+    public int getGrgDayOfYear() {
+        complete(); // Ensure fields are computed
+        return gCal.get(Calendar.DAY_OF_YEAR);
+    }
+
+    /**
+     * Get the first day of week for Gregorian calendar
+     * @return first day of week (Calendar.SUNDAY or Calendar.MONDAY)
+     */
+    public int getGrgFirstDayOfWeek() {
+        return gCal.getFirstDayOfWeek();
+    }
+
+    /**
+     * Check if Gregorian date is weekend (Saturday or Sunday)
+     * @return true if Saturday or Sunday
+     */
+    public boolean isGrgWeekend() {
+        int dayOfWeek = getGrgDayOfWeek();
+        return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
+    }
+
+    /**
+     * Check if Gregorian date is weekday (Monday to Friday)
+     * @return true if Monday to Friday
+     */
+    public boolean isGrgWeekday() {
+        return !isGrgWeekend();
+    }
+
     public static String formatToTwoDigits(int num, Locale locale) {
         return String.format(locale, "%02d", num);
     }
@@ -1757,64 +2086,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                 FastPersianDateFormat formatter = new FastPersianDateFormat(pattern);
                 return formatter.format(this);
         }
-    }
-
-    /**
-     * Get as Android Bundle (for passing between activities)
-     */
-    public android.os.Bundle toBundle() {
-        ensureComputed();
-
-        android.os.Bundle bundle = new android.os.Bundle();
-        bundle.putLong("timeInMillis", getTimeInMillis());
-        bundle.putInt("persianYear", getYear());
-        bundle.putInt("persianMonth", getMonth());
-        bundle.putInt("persianDay", getDayOfMonth());
-        bundle.putInt("hour", get(HOUR_OF_DAY));
-        bundle.putInt("minute", get(MINUTE));
-        bundle.putInt("second", get(SECOND));
-        bundle.putString("timeZone", getTimeZone().getID());
-        return bundle;
-    }
-
-    /**
-     * Create from Android Bundle
-     */
-    public static FastPersianCalendar fromBundle(android.os.Bundle bundle) {
-        if (bundle == null) {
-            return new FastPersianCalendar();
-        }
-
-        FastPersianCalendar calendar = new FastPersianCalendar();
-
-        if (bundle.containsKey("timeInMillis")) {
-            calendar.setTimeInMillis(bundle.getLong("timeInMillis"));
-        } else if (bundle.containsKey("persianYear")) {
-            int year  = bundle.getInt("persianYear", 1400);
-            int month = bundle.getInt("persianMonth", 0);
-            int day   = bundle.getInt("persianDay", 1);
-
-            calendar.setPersianDate(year, month, day);
-
-            if (bundle.containsKey("hour")) {
-                calendar.set(HOUR_OF_DAY, bundle.getInt("hour"));
-            }
-            if (bundle.containsKey("minute")) {
-                calendar.set(MINUTE, bundle.getInt("minute"));
-            }
-            if (bundle.containsKey("second")) {
-                calendar.set(SECOND, bundle.getInt("second"));
-            }
-        }
-
-        if (bundle.containsKey("timeZone")) {
-            String tzId = bundle.getString("timeZone");
-            if (tzId != null && !tzId.isEmpty()) {
-                calendar.setTimeZone(TimeZone.getTimeZone(tzId));
-            }
-        }
-
-        return calendar;
     }
 
     /**

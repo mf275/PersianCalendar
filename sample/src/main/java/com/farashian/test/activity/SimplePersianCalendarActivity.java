@@ -1,5 +1,6 @@
 package com.farashian.test.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,7 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.farashian.pcalendar.MyPersianCalendar;
 import com.farashian.pcalendar.MyPersianDateFormat;
@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class SimplePersianCalendarActivity extends AppCompatActivity {
+public class SimplePersianCalendarActivity extends Activity {
 
     // UI Components
     private TextView tvCurrentDate, tvCurrentGregorian, tvConversionResult;

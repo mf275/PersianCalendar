@@ -1,11 +1,11 @@
 package com.farashian.test.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.farashian.pcalendar.MyPersianCalendar;
 import com.farashian.test.R;
@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class MinimalPersianCalendarActivity extends AppCompatActivity {
+public class MinimalPersianCalendarActivity extends Activity {
 
     private TextView txtDate;
     private MyPersianCalendar calendar;

@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "PersianCalendar"
-include ':jlibrary', ':android', ':sample'
+include ':pcjava', ':pcandroid', ':sample'
