@@ -280,12 +280,12 @@ src/
 
 ### Version Differences
 
-| Feature | Standard Version (`MyPersian...`) | Fast Version (`FastPersian...`) |
-| :--- | :--- | :--- |
-| **Speed** | Adequate | **Excellent** |
-| **Memory** | Medium | **Optimized** |
-| **Features** | Complete | Complete |
-| **Usage** | General | Heavy/Intensive Processing |
+| Feature      | Standard Version (`MyPersian...`) | Fast Version (`FastPersian...`) |
+|:-------------|:----------------------------------|:--------------------------------|
+| **Speed**    | Adequate                          | **Excellent**                   |
+| **Memory**   | Medium                            | **Optimized**                   |
+| **Features** | Complete                          | Complete                        |
+| **Usage**    | General                           | Heavy/Intensive Processing      |
 
 ---
 
