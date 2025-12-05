@@ -1,4 +1,4 @@
-jdk: openjdk11
+jdk: openjdk17
 
 install:
   - ./gradlew :lib:publishToMavenLocal :android:publishToMavenLocal
