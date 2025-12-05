@@ -42,13 +42,13 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.1.4</version>
+<version>2.1.5</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.1.4</version>
+<version>2.1.5</version>
 </dependency>
 ```
 ---
@@ -75,16 +75,16 @@ repositories {
 
 dependencies {
     // For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.1.4")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.1.5")
 
     // For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.1.4")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.1.5")
 }
 
 ```
 # what's new
 
-### version 2.1.4
+### version 2.1.5
 * Add comprehensive Gregorian date support to both calendar classes
 * Add 20+ new methods for Gregorian date manipulation
 * Improve cross-version Java compatibility (Java 8+)
