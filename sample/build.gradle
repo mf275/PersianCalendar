@@ -12,13 +12,13 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true      // CRITICAL: Enable code shrinking
-            shrinkResources true    // CRITICAL: Enable resource shrinking
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
-            minifyEnabled false      // CRITICAL: Enable code shrinking
+            minifyEnabled false
         }
     }
 }
