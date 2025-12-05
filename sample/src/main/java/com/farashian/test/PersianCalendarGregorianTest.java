@@ -67,7 +67,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
         // Test 5: Set Gregorian date
         System.out.println("\nTest 5 - Set Gregorian Date:");
         MyPersianCalendar pc3 = new MyPersianCalendar();
-        pc3.setGrgDate(2024, 5, 15); // June 15, 2024
+        pc3.setGregorianDate(2024, 5, 15); // June 15, 2024
         System.out.println("  Set to: 2024-06-15");
         System.out.println("  Got: " + pc3.getGrgYear() + "-" + 
                           (pc3.getGrgMonth() + 1) + "-" + pc3.getGrgDay());
@@ -79,7 +79,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
         // Test 6: Gregorian date operations
         System.out.println("\nTest 6 - Gregorian Date Operations:");
         MyPersianCalendar pc4 = new MyPersianCalendar();
-        pc4.setGrgDate(2024, 0, 31); // January 31, 2024
+        pc4.setGregorianDate(2024, 0, 31); // January 31, 2024
         pc4.addGrgDays(1); // Add 1 day = February 1, 2024
         System.out.println("  Jan 31 + 1 day = " + pc4.getGrgYear() + "-" + 
                           (pc4.getGrgMonth() + 1) + "-" + pc4.getGrgDay());
@@ -105,7 +105,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
         // Test 8: Gregorian date formatting
         System.out.println("\nTest 8 - Gregorian Date Formatting:");
         MyPersianCalendar pc5 = new MyPersianCalendar();
-        pc5.setGrgDate(2024, 11, 25); // December 25, 2024
+        pc5.setGregorianDate(2024, 11, 25); // December 25, 2024
         System.out.println("  ISO: " + pc5.getGrgIsoDate());
         System.out.println("  Long (EN): " + pc5.getGrgLongDate(Locale.ENGLISH));
         System.out.println("  Short 0-based: " + pc5.getGrgShortDate("/"));
@@ -152,7 +152,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
         // Test 4: Month operations
         System.out.println("\nTest 4 - Month Operations:");
         FastPersianCalendar fpc3 = new FastPersianCalendar();
-        fpc3.setGrgDate(2024, 1, 28); // February 28, 2024
+        fpc3.setGregorianDate(2024, 1, 28); // February 28, 2024
         System.out.println("  Initial: " + fpc3.getGrgYear() + "-" + 
                           (fpc3.getGrgMonth() + 1) + "-" + fpc3.getGrgDay());
         System.out.println("  Month Length: " + fpc3.getGrgMonthLength() + " days");
@@ -177,7 +177,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
         // Test 6: Gregorian date formatting
         System.out.println("\nTest 6 - Date Formatting:");
         FastPersianCalendar fpc4 = new FastPersianCalendar();
-        fpc4.setGrgDate(2024, 5, 21); // June 21, 2024
+        fpc4.setGregorianDate(2024, 5, 21); // June 21, 2024
         System.out.println("  ISO: " + fpc4.getGrgIsoDate());
         System.out.println("  Long: " + fpc4.getGrgLongDate(Locale.ENGLISH));
         System.out.println("  Short: " + fpc4.getGrgShortDate("/"));

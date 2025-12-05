@@ -46,8 +46,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     private       boolean           isDirty          = true;
 
     // Thread-local for temporary calculations
-    private static final ThreadLocal<int[]> tempArrayCache =
+    private static final ThreadLocal<int[]> tempArrayCache  =
             ThreadLocal.withInitial(() -> new int[3]);
+    private static final int[]              PERSIAN_OFFSETS = {0, 1, 2, 3, 4, 5, 6, 0};
 
     // === CONSTRUCTORS ===
 
@@ -231,7 +232,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
     public int getDaysInMonth(int year, int month) {
         if (month < 0 || month > 11) {
-            throw new IllegalArgumentException("Month must be between 0 and 11");
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
 
         if (month < 6) {
@@ -246,7 +247,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     // Static utility method
     public static int getDaysInMonthStatic(int year, int month) {
         if (month < 0 || month > 11) {
-            throw new IllegalArgumentException("Month must be between 0 and 11");
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
 
         if (month < 6) {
@@ -313,6 +314,20 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public void setPersianDate(int year, int month, int day) {
         validateDate(year, month, day);
         setPersianDateInternal(year, month, day);
+    }
+
+
+    /**
+     * Converts Java Calendar weekday constant to Persian calendar offset.
+     * Persian week starts on Saturday (0), while Java Calendar uses Sunday-based constants.
+     *
+     * @param javaDayOfWeek Java Calendar weekday constant (Calendar.SUNDAY to Calendar.SATURDAY)
+     * @return Persian offset (0-6) where 0=Saturday, 1=Sunday, ..., 6=Friday
+     */
+
+    private int calculatePersianOffset(int javaDayOfWeek) {
+        if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
+        return PERSIAN_OFFSETS[javaDayOfWeek];
     }
 
     public void parse(String dateString) {
@@ -967,6 +982,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
         return firstDayOfWeek;
     }
+
     @Override
     public int getGreatestMinimum(int field) {
         return getMinimum(field);
@@ -1222,6 +1238,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                 return 31;
         }
     }
+
     /**
      * Get Gregorian month name (fast version without Calendar)
      * @param month 0-based Gregorian month (0=January)
@@ -1299,8 +1316,8 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      */
     public String getGrgMonthNameWithNumber(Locale locale) {
         complete(); // Ensure fields are computed
-        String monthName = getGrgMonthName(locale);
-        int monthNumber = getGrgMonth() + 1; // Convert to 1-based
+        String monthName   = getGrgMonthName(locale);
+        int    monthNumber = getGrgMonth() + 1; // Convert to 1-based
         return String.format(locale, "%s (%02d)", monthName, monthNumber);
     }
 
@@ -1313,7 +1330,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      */
     public static FastPersianCalendar fromGregorian(int year, int month, int day) {
         FastPersianCalendar result = new FastPersianCalendar();
-        result.setGrgDate(year, month, day);
+        result.setGregorianDate(year, month, day);
         return result;
     }
 
@@ -1427,7 +1444,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param month 0-based Gregorian month (0=January)
      * @param day day of month (1-31)
      */
-    public void setGrgDate(int year, int month, int day) {
+    public void setGregorianDate(int year, int month, int day) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
@@ -1445,11 +1462,11 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param month1Based 1-based Gregorian month (1=January)
      * @param day day of month (1-31)
      */
-    public void setGrgDate1Based(int year, int month1Based, int day) {
+    public void setGregorianDate1Based(int year, int month1Based, int day) {
         if (month1Based < 1 || month1Based > 12) {
             throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month1Based);
         }
-        setGrgDate(year, month1Based - 1, day);
+        setGregorianDate(year, month1Based - 1, day);
     }
 
     /**
@@ -1488,7 +1505,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return number of days difference
      */
     public long grgDaysBetween(FastPersianCalendar other) {
-        long thisMillis = this.getGrgTimeInMillis();
+        long thisMillis  = this.getGrgTimeInMillis();
         long otherMillis = other.getGrgTimeInMillis();
         return Math.abs(thisMillis - otherMillis) / (1000 * 60 * 60 * 24);
     }
