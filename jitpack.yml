@@ -1,13 +1,13 @@
 jdk: openjdk17
 
 install:
-  - ./gradlew :lib:publishToMavenLocal :android:publishToMavenLocal
+  - ./gradlew :pcalendar:publishToMavenLocal :pcalendar-android:publishToMavenLocal
 
 # Explicit module mapping for Jitpack
 jitpack:
   artifact:
-    - "lib/build/publications/mavenJava/pom-default.xml"
-    - "android/build/publications/release/pom-default.xml"
+    - "pcalendar/build/publications/mavenJava/pom-default.xml"
+    - "pcalendar-android/build/publications/release/pom-default.xml"
   artifactId:
     - "persian-calendar"
     - "persian-calendar-android"
