@@ -42,13 +42,13 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.1.6</version>
+<version>2.2.0</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.1.6</version>
+<version>2.2.0</version>
 </dependency>
 ```
 ---
@@ -75,16 +75,16 @@ repositories {
 
 dependencies {
     // For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.1.6")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.2.0")
 
     // For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.1.6")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.2.0")
 }
 
 ```
 # what's new
 
-### version 2.1.6
+### version 2.2.0
 * Persian Calendar Weekday Support - Added calculatePersianOffset() method for converting 
 * between Java Calendar weekdays and Persian calendar offsets
 
