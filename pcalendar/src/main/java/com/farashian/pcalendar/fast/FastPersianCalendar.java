@@ -214,7 +214,7 @@ public class FastPersianCalendar extends Calendar {
      * @return Persian offset (0-6) where 0=Saturday, 1=Sunday, ..., 6=Friday
      */
 
-    private int calculatePersianOffset(int javaDayOfWeek) {
+    public int calculatePersianOffset(int javaDayOfWeek) {
         if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
         return PERSIAN_OFFSETS[javaDayOfWeek];
     }

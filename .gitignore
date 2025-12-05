@@ -99,3 +99,15 @@ replay_pid*
 /.gradle/buildOutputCleanup/outputFiles.bin
 /.gradle/vcs-1/gc.properties
 /.gradle/file-system.probe
+/.gradle/8.14.3/checksums/checksums.lock
+/.gradle/8.14.3/checksums/md5-checksums.bin
+/.gradle/8.14.3/checksums/sha1-checksums.bin
+/.gradle/8.14.3/checksums/sha256-checksums.bin
+/.gradle/8.14.3/checksums/sha512-checksums.bin
+/.gradle/8.14.3/executionHistory/executionHistory.bin
+/.gradle/8.14.3/executionHistory/executionHistory.lock
+/.gradle/8.14.3/fileChanges/last-build.bin
+/.gradle/8.14.3/fileHashes/fileHashes.bin
+/.gradle/8.14.3/fileHashes/fileHashes.lock
+/.gradle/8.14.3/fileHashes/resourceHashesCache.bin
+/.gradle/8.14.3/gc.properties
