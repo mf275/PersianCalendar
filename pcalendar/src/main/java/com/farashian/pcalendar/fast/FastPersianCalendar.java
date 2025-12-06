@@ -183,13 +183,13 @@ public class FastPersianCalendar extends Calendar {
     }
 
     public String getLongDate() {
-        complete(); // Ensure all fields are computed
+        //complete(); // Ensure all fields are computed
         return getLongDate(
                 persianYear, persianMonth, persianDay, get(DAY_OF_WEEK), locale);
     }
 
     public String getLongDateTime() {
-        complete(); // Ensure all fields are computed
+        //complete(); // Ensure all fields are computed
         return getLongDateTime(
                 persianYear, persianMonth, persianDay, get(DAY_OF_WEEK),
                 get(HOUR_OF_DAY), get(MINUTE), get(SECOND), locale);
@@ -367,7 +367,8 @@ public class FastPersianCalendar extends Calendar {
         int dayOfWeek = fields[DAY_OF_WEEK];
 
         // Calculate week of year (Persian year starts with Farvardin 1 = Saturday)
-        int weekOfYear = (dayOfYear - 1 + ((dayOfWeek - Calendar.SATURDAY + 7) % 7)) / 7 + 1;
+        // Use the actual first day of week (Saturday for Persian)
+int weekOfYear = (dayOfYear - 1 + ((dayOfWeek - FIRST_DAY_OF_WEEK + 7) % 7)) / 7 + 1;
         fields[WEEK_OF_YEAR] = weekOfYear;
 
         // Calculate week of month
@@ -913,7 +914,7 @@ public class FastPersianCalendar extends Calendar {
 
     // Helper method to get first day of month
     private int getFirstDayOfMonth() {
-        // Save current day
+        /*// Save current day
         int currentDay = get(DAY_OF_MONTH);
 
         // Set to first day of month
@@ -923,7 +924,9 @@ public class FastPersianCalendar extends Calendar {
         // Restore original day
         set(DAY_OF_MONTH, currentDay);
 
-        return firstDayOfWeek;
+        return firstDayOfWeek;*/
+
+        return calculateFirstDayOfMonth();
     }
 
     @Override
@@ -1801,7 +1804,7 @@ public class FastPersianCalendar extends Calendar {
      * @return day of year
      */
     public int getDayOfYear() {
-        complete(); // Ensure fields are computed
+        //complete(); // Ensure fields are computed
         return get(DAY_OF_YEAR);
     }
 
@@ -1810,7 +1813,7 @@ public class FastPersianCalendar extends Calendar {
      * @return week of year (1-53)
      */
     public int getWeekOfYear() {
-        complete(); // Ensure fields are computed
+        //complete(); // Ensure fields are computed
         return get(WEEK_OF_YEAR);
     }
 
@@ -1819,7 +1822,7 @@ public class FastPersianCalendar extends Calendar {
      * @return week of month (1-6)
      */
     public int getWeekOfMonth() {
-        complete(); // Ensure fields are computed
+        //complete(); // Ensure fields are computed
         return get(WEEK_OF_MONTH);
     }
 

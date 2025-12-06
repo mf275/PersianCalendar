@@ -640,18 +640,18 @@ public class MyPersianCalendar extends Calendar {
     }
 
     public String getWeekdayName() {
-        complete(); // Ensure fields are computed
+        //complete(); // Ensure fields are computed
         return getWeekdayName(get(DAY_OF_WEEK), locale);
     }
 
     public String getLongDate() {
-        complete(); // Ensure all fields are computed
+        //complete(); // Ensure all fields are computed
         return getLongDate(
                 getYear(), getMonth(), getDayOfMonth(), get(DAY_OF_WEEK), locale);
     }
 
     public String getLongDateTime() {
-        complete(); // Ensure all fields are computed
+        //complete(); // Ensure all fields are computed
         return getLongDateTime(
                 getYear(), getMonth(), getDayOfMonth(), get(DAY_OF_WEEK),
                 get(HOUR_OF_DAY), get(MINUTE), get(SECOND), locale);
@@ -827,7 +827,8 @@ public class MyPersianCalendar extends Calendar {
         int dayOfWeek = fields[DAY_OF_WEEK];
 
         // Calculate week of year (Persian year starts with Farvardin 1)
-        int weekOfYear = (dayOfYear - 1 + ((dayOfWeek - Calendar.SATURDAY + 7) % 7)) / 7 + 1;
+        // Use the actual first day of week (Saturday for Persian)
+int weekOfYear = (dayOfYear - 1 + ((dayOfWeek - FIRST_DAY_OF_WEEK + 7) % 7)) / 7 + 1;
         fields[WEEK_OF_YEAR] = weekOfYear;
 
         // Calculate week of month
@@ -1815,7 +1816,7 @@ public class MyPersianCalendar extends Calendar {
      * @return day of year
      */
     public int getDayOfYear() {
-        complete(); // Ensure fields are computed
+        //complete(); // Ensure fields are computed
         return get(DAY_OF_YEAR);
     }
 
@@ -1824,7 +1825,7 @@ public class MyPersianCalendar extends Calendar {
      * @return week of year (1-53)
      */
     public int getWeekOfYear() {
-        complete(); // Ensure fields are computed
+        //complete(); // Ensure fields are computed
         return get(WEEK_OF_YEAR);
     }
 
@@ -1833,7 +1834,7 @@ public class MyPersianCalendar extends Calendar {
      * @return week of month (1-6)
      */
     public int getWeekOfMonth() {
-        complete(); // Ensure fields are computed
+        //complete(); // Ensure fields are computed
         return get(WEEK_OF_MONTH);
     }
 

@@ -723,8 +723,56 @@ public class PersianCalendarActivity extends Activity {
             tvCurrentDate.setText("Error: " + e.getMessage());
         }
     }
-    
+
     private void runPerformanceTest() {
+        new Thread(() -> {
+            int iterations = 10000;
+
+            // Test MyPersianCalendar
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < iterations; i++) {
+                MyPersianCalendar cal = new MyPersianCalendar();
+                MyPersianDateFormat.format(cal, "yyyy/MM/dd HH:mm:ss");
+            }
+            long myLibTime = System.currentTimeMillis() - startTime;
+
+            // Test FastPersianCalendar
+            startTime = System.currentTimeMillis();
+            for (int i = 0; i < iterations; i++) {
+                FastPersianCalendar cal = new FastPersianCalendar();
+                FastPersianDateFormat.format(cal, "yyyy/MM/dd HH:mm:ss");
+            }
+            long fastLibTime = System.currentTimeMillis() - startTime;
+
+            runOnUiThread(() -> {
+                String comparisonText;
+                double percentage;
+
+                if (fastLibTime < myLibTime) {
+                    // Fast is faster
+                    percentage = ((double) (myLibTime - fastLibTime) / myLibTime) * 100;
+                    comparisonText = String.format(Locale.US, "Fast library is %.1f%% faster", percentage);
+                } else {
+                    // Fast is slower
+                    percentage = ((double) (fastLibTime - myLibTime) / myLibTime) * 100;
+                    comparisonText = String.format(Locale.US, "Fast library is %.1f%% slower", percentage);
+                }
+
+                String result = String.format(Locale.US,
+                                              "Performance Test (%d iterations):\n" +
+                                              "MyPersianCalendar: %d ms\n" +
+                                              "FastPersianCalendar: %d ms\n" +
+                                              "%s",
+                                              iterations, myLibTime, fastLibTime,
+                                              comparisonText);
+
+                tvConvertedDate.setText(result);
+                showToast("Performance test completed");
+            });
+        }).start();
+    }
+    
+    private void runPerformanceTestold() {
         new Thread(() -> {
             int iterations = 10000;
             
