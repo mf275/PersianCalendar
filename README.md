@@ -42,13 +42,13 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.2.0</version>
+<version>2.2.1</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.2.0</version>
+<version>2.2.1</version>
 </dependency>
 ```
 ---
@@ -75,14 +75,30 @@ repositories {
 
 dependencies {
     // For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.2.0")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.2.1")
 
     // For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.2.0")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.2.1")
 }
 
 ```
 # what's new
+
+### version 2.2.1
+* fix: Correct Persian day of week calculation and remove redundant complete()
+
+* - Remove redundant complete() call from getDayOfWeek() method
+  (get() already calls complete() internally)
+* - Fix computeAllCalendarFields() to convert Gregorian day of week
+  to Persian using calculatePersianOffset()
+* - Update calculateFirstDayOfMonth() to return Persian day of week
+* - Ensure Persian calendar correctly shows Saturday-first week
+  with proper offset conversion (Saturday=7, Sunday=1, etc.)
+* - Add Georgian offset calculation methods for Gregorian calendar support
+
+* Previously, getDayOfWeek() was returning Gregorian values because
+  computeFields() was using gCal.get(DAY_OF_WEEK) directly without
+  conversion to Persian system.
 
 ### version 2.2.0
 * Persian Calendar Weekday Support - Added calculatePersianOffset() method for converting 

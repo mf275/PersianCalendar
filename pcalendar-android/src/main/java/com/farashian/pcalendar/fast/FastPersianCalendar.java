@@ -50,6 +50,14 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             ThreadLocal.withInitial(() -> new int[3]);
     private static final int[]              PERSIAN_OFFSETS = {0, 1, 2, 3, 4, 5, 6, 0};
 
+    // Gregorian offsets (US convention: Sunday-first)
+    // SUNDAY=0, MONDAY=1, TUESDAY=2, WEDNESDAY=3, THURSDAY=4, FRIDAY=5, SATURDAY=6
+    private static final int[] GREGORIAN_OFFSETS = {0, 0, 1, 2, 3, 4, 5, 6};
+
+    // Gregorian offsets (ISO convention: Monday-first)
+    // MONDAY=0, TUESDAY=1, WEDNESDAY=2, THURSDAY=3, FRIDAY=4, SATURDAY=5, SUNDAY=6
+    private static final int[] ISO_OFFSETS = {0, 6, 0, 1, 2, 3, 4, 5};
+
     // === CONSTRUCTORS ===
 
     public FastPersianCalendar() {
@@ -330,6 +338,24 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return PERSIAN_OFFSETS[javaDayOfWeek];
     }
 
+    /**
+     * Calculate offset for Gregorian calendar (US convention: Sunday-first week)
+     * Returns 0-6 where 0=Sunday, 1=Monday, ..., 6=Saturday
+     */
+    public int calculateGeorgianOffset(int javaDayOfWeek) {
+        if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
+        return GREGORIAN_OFFSETS[javaDayOfWeek];
+    }
+
+    /**
+     * Calculate offset for Gregorian calendar (ISO convention: Monday-first week)
+     * Returns 0-6 where 0=Monday, 1=Tuesday, ..., 6=Sunday
+     */
+    public int calculateGeorgianOffsetISO(int javaDayOfWeek) {
+        if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
+        return ISO_OFFSETS[javaDayOfWeek];
+    }
+
     public void parse(String dateString) {
         FastPersianCalendar parsed = parseOrNullToCompat(dateString);
         if (parsed != null) {
@@ -403,7 +429,26 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         fields[MILLISECOND] = gCal.get(MILLISECOND);
 
         // CRITICAL FIX: Use Gregorian's properly computed day-of-week
-        fields[DAY_OF_WEEK] = gCal.get(DAY_OF_WEEK);
+        // Get Gregorian day of week
+        int gregorianDayOfWeek = gCal.get(DAY_OF_WEEK);
+
+        // Convert to Persian day of week using your offset
+        int persianOffset = calculatePersianOffset(gregorianDayOfWeek);
+
+        // Convert offset to Calendar constant
+        // Your PERSIAN_OFFSETS: Saturday=0, Sunday=1, Monday=2, ..., Friday=6
+        // Calendar expects: Sunday=1, Monday=2, ..., Saturday=7
+
+        // Map: Saturday(0)→7, Sunday(1)→1, Monday(2)→2, Tuesday(3)→3,
+        // Wednesday(4)→4, Thursday(5)→5, Friday(6)→6
+        int persianDayOfWeek;
+        if (persianOffset == 0) {
+            persianDayOfWeek = Calendar.SATURDAY;  // 7
+        } else {
+            persianDayOfWeek = persianOffset;      // 1-6
+        }
+
+        fields[DAY_OF_WEEK] = persianDayOfWeek;
 
         // Calculate proper Persian day of year and week fields
         fields[DAY_OF_YEAR] = calculateDayOfYear();
@@ -457,14 +502,23 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         persianDay = 1;
         computeGregorianFromPersianFast();
 
-        // Get day of week for first day
-        int firstDayOfWeek = gCal.get(DAY_OF_WEEK);
+        // Get Gregorian day of week for first day
+        int gregorianDayOfWeek = gCal.get(DAY_OF_WEEK);
+
+        // Convert to Persian
+        int persianOffset = calculatePersianOffset(gregorianDayOfWeek);
+        int persianDayOfWeek;
+        if (persianOffset == 0) {
+            persianDayOfWeek = Calendar.SATURDAY;  // 7
+        } else {
+            persianDayOfWeek = persianOffset;      // 1-6
+        }
 
         // Restore original state
         persianDay = savedDay;
         computeGregorianFromPersianFast();
 
-        return firstDayOfWeek;
+        return persianDayOfWeek;
     }
 
     /**
@@ -1016,7 +1070,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * Fast method to get day of week (1-7, where 1=Sunday, 7=Saturday)
      */
     public int getDayOfWeek() {
-        complete();
         return get(DAY_OF_WEEK);
     }
 
