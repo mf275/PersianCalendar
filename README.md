@@ -82,6 +82,15 @@ dependencies {
 }
 
 ```
+## 💰 Support My Work
+
+If you’d like to support development of **PersianCalendar**, you can donate using the following crypto wallets:
+
+- **TON:** `UQAEX3w2Shyl7CPSYn7Dj0DoAOCNfzj1grovWAfbP0vieKK9`
+- **TRC20 (USDT):** `TNqksvpBScW5bA9aP3ouhbq821YeAnMQWd`
+
+Thank you for helping keep this project alive!
+
 # what's new
 
 ### version 2.2.1
