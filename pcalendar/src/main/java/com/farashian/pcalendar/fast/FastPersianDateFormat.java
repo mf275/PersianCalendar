@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Fast Persian Date Formatter - Direct replacement of MyPersianCalendar with FastPersianCalendar
+ * Fast Persian Date Formatter - Direct replacement of PersianCalendar with FastPersianCalendar
  */
 public class FastPersianDateFormat {
 

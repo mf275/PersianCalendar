@@ -8,7 +8,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
     withSourcesJar()
-    withJavadocJar()
+    //withJavadocJar()
 
     // Fix for Javadoc generation issues
     javadoc.options {
@@ -16,6 +16,14 @@ java {
         addBooleanOption('Xdoclint:none', true)
         addBooleanOption('html5', true)
     }
+//    packagingOptions {
+//        pickFirst 'resource-files//fonts/DejaVuLGCSans.wof'
+//        exclude 'assets/fonts/*'
+//        exclude 'resource-files/fonts/*'
+//        exclude '**/*.ttf'
+//        exclude '**/*.otf'
+//        exclude '**/fonts/'
+//    }
 }
 
 // Test task configuration
@@ -23,7 +31,7 @@ tasks.withType(Test) {
     useJUnitPlatform()
 }
 
-version = "2.2.1"
+version = "2.3.0"
 group = "com.github.mf275.persian-calendar"
 
 

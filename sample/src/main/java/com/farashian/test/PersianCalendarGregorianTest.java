@@ -1,6 +1,6 @@
 package com.farashian.test;
 
-import com.farashian.pcalendar.MyPersianCalendar;
+import com.farashian.pcalendar.PersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 
 import java.util.*;
@@ -10,7 +10,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
     public static void main(String[] args) {
         System.out.println("=== Testing Persian Calendar Gregorian Methods ===\n");
         
-        testMyPersianCalendar();
+        testPersianCalendar();
         repeat("=", 50, true);
         testFastPersianCalendar();
         
@@ -18,12 +18,12 @@ public class PersianCalendarGregorianTest  extends TestBase {
     }
     
     
-    private static void testMyPersianCalendar() {
-        System.out.println("Testing MyPersianCalendar Gregorian Methods");
+    private static void testPersianCalendar() {
+        System.out.println("Testing PersianCalendar Gregorian Methods");
         repeat("-", 40, false);
         
         // Test 1: Current date
-        MyPersianCalendar pc1 = new MyPersianCalendar();
+        PersianCalendar pc1 = new PersianCalendar();
         System.out.println("Test 1 - Current Date:");
         System.out.println("  Persian Date: " + pc1.getLongDate());
         System.out.println("  Gregorian Date: " + pc1.getGrgYear() + "-" + 
@@ -35,7 +35,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
         System.out.println("  Gregorian Month Length: " + pc1.getGrgMonthLength());
         
         // Test 2: Specific Persian date (Farvardin 1, 1403 = March 21, 2024)
-        MyPersianCalendar pc2 = new MyPersianCalendar(1403, 0, 1); // Farvardin 1, 1403
+        PersianCalendar pc2 = new PersianCalendar(1403, 0, 1); // Farvardin 1, 1403
         System.out.println("\nTest 2 - Persian New Year 1403:");
         System.out.println("  Persian: Farvardin 1, 1403");
         System.out.println("  Gregorian: " + pc2.getGrgYear() + "-" + 
@@ -47,26 +47,26 @@ public class PersianCalendarGregorianTest  extends TestBase {
         
         // Test 3: Static month length methods
         System.out.println("\nTest 3 - Static Month Length Calculations:");
-        System.out.println("  Feb 2024 (leap): " + MyPersianCalendar.getGrgMonthLength(2024, 1) + " days");
-        System.out.println("  Feb 2023: " + MyPersianCalendar.getGrgMonthLength(2023, 1) + " days");
-        System.out.println("  Feb 2100 (not leap): " + MyPersianCalendar.getGrgMonthLength(2100, 1) + " days");
-        System.out.println("  Feb 2000 (leap): " + MyPersianCalendar.getGrgMonthLength(2000, 1) + " days");
-        assertEquals(29, MyPersianCalendar.getGrgMonthLength(2024, 1));
-        assertEquals(28, MyPersianCalendar.getGrgMonthLength(2023, 1));
-        assertEquals(28, MyPersianCalendar.getGrgMonthLength(2100, 1));
-        assertEquals(29, MyPersianCalendar.getGrgMonthLength(2000, 1));
+        System.out.println("  Feb 2024 (leap): " + PersianCalendar.getGrgMonthLength(2024, 1) + " days");
+        System.out.println("  Feb 2023: " + PersianCalendar.getGrgMonthLength(2023, 1) + " days");
+        System.out.println("  Feb 2100 (not leap): " + PersianCalendar.getGrgMonthLength(2100, 1) + " days");
+        System.out.println("  Feb 2000 (leap): " + PersianCalendar.getGrgMonthLength(2000, 1) + " days");
+        assertEquals(29, PersianCalendar.getGrgMonthLength(2024, 1));
+        assertEquals(28, PersianCalendar.getGrgMonthLength(2023, 1));
+        assertEquals(28, PersianCalendar.getGrgMonthLength(2100, 1));
+        assertEquals(29, PersianCalendar.getGrgMonthLength(2000, 1));
         
         // Test 4: Static month name methods
         System.out.println("\nTest 4 - Static Month Name Methods:");
-        System.out.println("  Month 0 (EN): " + MyPersianCalendar.getGrgMonthNameStatic(0, Locale.ENGLISH));
-        System.out.println("  Month 0 (FA): " + MyPersianCalendar.getGrgMonthNameStatic(0, new Locale("fa")));
-        System.out.println("  Fast Month 0 (EN): " + MyPersianCalendar.getGrgMonthNameFast(0, Locale.ENGLISH));
-        System.out.println("  Fast Month 0 (FA): " + MyPersianCalendar.getGrgMonthNameFast(0, new Locale("fa")));
-        assertEquals("January", MyPersianCalendar.getGrgMonthNameStatic(0, Locale.ENGLISH));
+        System.out.println("  Month 0 (EN): " + PersianCalendar.getGrgMonthNameStatic(0, Locale.ENGLISH));
+        System.out.println("  Month 0 (FA): " + PersianCalendar.getGrgMonthNameStatic(0, new Locale("fa")));
+        System.out.println("  Fast Month 0 (EN): " + PersianCalendar.getGrgMonthNameFast(0, Locale.ENGLISH));
+        System.out.println("  Fast Month 0 (FA): " + PersianCalendar.getGrgMonthNameFast(0, new Locale("fa")));
+        assertEquals("January", PersianCalendar.getGrgMonthNameStatic(0, Locale.ENGLISH));
         
         // Test 5: Set Gregorian date
         System.out.println("\nTest 5 - Set Gregorian Date:");
-        MyPersianCalendar pc3 = new MyPersianCalendar();
+        PersianCalendar pc3 = new PersianCalendar();
         pc3.setGregorianDate(2024, 5, 15); // June 15, 2024
         System.out.println("  Set to: 2024-06-15");
         System.out.println("  Got: " + pc3.getGrgYear() + "-" + 
@@ -78,7 +78,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
         
         // Test 6: Gregorian date operations
         System.out.println("\nTest 6 - Gregorian Date Operations:");
-        MyPersianCalendar pc4 = new MyPersianCalendar();
+        PersianCalendar pc4 = new PersianCalendar();
         pc4.setGregorianDate(2024, 0, 31); // January 31, 2024
         pc4.addGrgDays(1); // Add 1 day = February 1, 2024
         System.out.println("  Jan 31 + 1 day = " + pc4.getGrgYear() + "-" + 
@@ -93,18 +93,18 @@ public class PersianCalendarGregorianTest  extends TestBase {
         
         // Test 7: Leap year checks
         System.out.println("\nTest 7 - Leap Year Checks:");
-        System.out.println("  2024 is leap: " + MyPersianCalendar.isGrgLeapYear(2024));
-        System.out.println("  2023 is leap: " + MyPersianCalendar.isGrgLeapYear(2023));
-        System.out.println("  2100 is leap: " + MyPersianCalendar.isGrgLeapYear(2100));
-        System.out.println("  2000 is leap: " + MyPersianCalendar.isGrgLeapYear(2000));
-        assertTrue(MyPersianCalendar.isGrgLeapYear(2024));
-        assertFalse(MyPersianCalendar.isGrgLeapYear(2023));
-        assertFalse(MyPersianCalendar.isGrgLeapYear(2100));
-        assertTrue(MyPersianCalendar.isGrgLeapYear(2000));
+        System.out.println("  2024 is leap: " + PersianCalendar.isGrgLeapYear(2024));
+        System.out.println("  2023 is leap: " + PersianCalendar.isGrgLeapYear(2023));
+        System.out.println("  2100 is leap: " + PersianCalendar.isGrgLeapYear(2100));
+        System.out.println("  2000 is leap: " + PersianCalendar.isGrgLeapYear(2000));
+        assertTrue(PersianCalendar.isGrgLeapYear(2024));
+        assertFalse(PersianCalendar.isGrgLeapYear(2023));
+        assertFalse(PersianCalendar.isGrgLeapYear(2100));
+        assertTrue(PersianCalendar.isGrgLeapYear(2000));
         
         // Test 8: Gregorian date formatting
         System.out.println("\nTest 8 - Gregorian Date Formatting:");
-        MyPersianCalendar pc5 = new MyPersianCalendar();
+        PersianCalendar pc5 = new PersianCalendar();
         pc5.setGregorianDate(2024, 11, 25); // December 25, 2024
         System.out.println("  ISO: " + pc5.getGrgIsoDate());
         System.out.println("  Long (EN): " + pc5.getGrgLongDate(Locale.ENGLISH));
@@ -113,7 +113,7 @@ public class PersianCalendarGregorianTest  extends TestBase {
         assertEquals("2024-12-25", pc5.getGrgIsoDate());
         assertTrue(pc5.getGrgLongDate(Locale.ENGLISH).contains("December"));
         
-        System.out.println("\n✓ All MyPersianCalendar tests passed!");
+        System.out.println("\n✓ All PersianCalendar tests passed!");
     }
     
     private static void testFastPersianCalendar() {

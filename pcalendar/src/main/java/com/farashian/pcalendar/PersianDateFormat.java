@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
-import static com.farashian.pcalendar.MyPCConstants.leapYears;
+import static com.farashian.pcalendar.PCConstants.leapYears;
 
-public class MyPersianDateFormat {
+public class PersianDateFormat {
     
     // Number Format
     public enum PersianDateNumberCharacter {
@@ -29,27 +29,27 @@ public class MyPersianDateFormat {
     );
 
     // Formatter functions
-    private static final Map<String, BiFunction<MyPersianCalendar, Locale, String>> FORMATTERS = 
+    private static final Map<String, BiFunction<PersianCalendar, Locale, String>> FORMATTERS = 
         createFormatters();
 
     // === CONSTRUCTORS ===
     
-    public MyPersianDateFormat() {
-        this.locale = MyPCConstants.PERSIAN_LOCALE;
+    public PersianDateFormat() {
+        this.locale = PCConstants.PERSIAN_LOCALE;
     }
     
-    public MyPersianDateFormat(String pattern) {
+    public PersianDateFormat(String pattern) {
         this();
         this.pattern = pattern;
     }
     
-    public MyPersianDateFormat(String pattern, PersianDateNumberCharacter numberCharacter) {
+    public PersianDateFormat(String pattern, PersianDateNumberCharacter numberCharacter) {
         this();
         this.pattern = pattern;
         this.numberCharacter = numberCharacter;
     }
     
-    public MyPersianDateFormat(String pattern, PersianDateNumberCharacter numberCharacter, Locale locale) {
+    public PersianDateFormat(String pattern, PersianDateNumberCharacter numberCharacter, Locale locale) {
         this.pattern = pattern;
         this.numberCharacter = numberCharacter;
         this.locale = locale;
@@ -71,15 +71,15 @@ public class MyPersianDateFormat {
 
     // === STATIC FORMAT METHODS ===
     
-    public static String format(MyPersianCalendar date, String pattern) {
-        return format(date, pattern, PersianDateNumberCharacter.ENGLISH, MyPCConstants.PERSIAN_LOCALE);
+    public static String format(PersianCalendar date, String pattern) {
+        return format(date, pattern, PersianDateNumberCharacter.ENGLISH, PCConstants.PERSIAN_LOCALE);
     }
     
-    public static String format(MyPersianCalendar date, String pattern, PersianDateNumberCharacter numberCharacter) {
-        return format(date, pattern, numberCharacter, MyPCConstants.PERSIAN_LOCALE);
+    public static String format(PersianCalendar date, String pattern, PersianDateNumberCharacter numberCharacter) {
+        return format(date, pattern, numberCharacter, PCConstants.PERSIAN_LOCALE);
     }
     
-    public static String format(MyPersianCalendar date, String pattern, 
+    public static String format(PersianCalendar date, String pattern, 
                                PersianDateNumberCharacter numberCharacter, Locale locale) {
         if (pattern == null) pattern = "DDDD, d MMMM yyyy HH:mm:ss";
         
@@ -122,17 +122,17 @@ public class MyPersianDateFormat {
 
     // === INSTANCE FORMAT METHOD ===
     
-    public String format(MyPersianCalendar date) {
+    public String format(PersianCalendar date) {
         return format(date, this.pattern, this.numberCharacter, this.locale);
     }
 
     // === PARSING METHODS ===
     
-    public MyPersianCalendar parse(String date) throws ParseException {
+    public PersianCalendar parse(String date) throws ParseException {
         return parse(date, this.pattern);
     }
     
-    public MyPersianCalendar parse(String date, String pattern) throws ParseException {
+    public PersianCalendar parse(String date, String pattern) throws ParseException {
         // For simplicity, we'll use a regex-based parser for common patterns
         // This can be enhanced for more complex parsing
         
@@ -181,7 +181,7 @@ public class MyPersianDateFormat {
         // Validate the parsed values
         validateParsedDate(values);
         
-        return new MyPersianCalendar(
+        return new PersianCalendar(
             values.get("year"),
             values.get("month"),
             values.get("day"),
@@ -191,22 +191,22 @@ public class MyPersianDateFormat {
         );
     }
     
-    public MyPersianCalendar parseGrg(String date) throws ParseException {
+    public PersianCalendar parseGrg(String date) throws ParseException {
         return parseGrg(date, "yyyy/MM/dd");
     }
     
-    public MyPersianCalendar parseGrg(String date, String pattern) throws ParseException {
+    public PersianCalendar parseGrg(String date, String pattern) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.US);
         Date grgDate = sdf.parse(date);
-        MyPersianCalendar persianCalendar = new MyPersianCalendar();
+        PersianCalendar persianCalendar = new PersianCalendar();
         persianCalendar.setTimeInMillis(grgDate.getTime());
         return persianCalendar;
     }
 
     // === PRIVATE HELPER METHODS ===
     
-    private static Map<String, BiFunction<MyPersianCalendar, Locale, String>> createFormatters() {
-        Map<String, BiFunction<MyPersianCalendar, Locale, String>> formatters = new HashMap<>();
+    private static Map<String, BiFunction<PersianCalendar, Locale, String>> createFormatters() {
+        Map<String, BiFunction<PersianCalendar, Locale, String>> formatters = new HashMap<>();
         
         // Year
         formatters.put("yyyy", (cal, loc) -> String.format(loc, "%04d", cal.getYear()));
@@ -219,32 +219,32 @@ public class MyPersianDateFormat {
         formatters.put("M", (cal, loc) -> String.valueOf(cal.getMonth() + 1));
         
         // Day
-        formatters.put("dddd", (cal, loc) -> getWeekdayName(cal.get(MyPersianCalendar.DAY_OF_WEEK), loc));
-        formatters.put("ddd", (cal, loc) -> getShortDayName(cal.get(MyPersianCalendar.DAY_OF_WEEK), loc));
+        formatters.put("dddd", (cal, loc) -> getWeekdayName(cal.get(PersianCalendar.DAY_OF_WEEK), loc));
+        formatters.put("ddd", (cal, loc) -> getShortDayName(cal.get(PersianCalendar.DAY_OF_WEEK), loc));
         formatters.put("dd", (cal, loc) -> String.format(loc, "%02d", cal.getDayOfMonth()));
         formatters.put("d", (cal, loc) -> String.valueOf(cal.getDayOfMonth()));
         
         // Hour
-        formatters.put("HH", (cal, loc) -> String.format(loc, "%02d", cal.get(MyPersianCalendar.HOUR_OF_DAY)));
-        formatters.put("H", (cal, loc) -> String.valueOf(cal.get(MyPersianCalendar.HOUR_OF_DAY)));
+        formatters.put("HH", (cal, loc) -> String.format(loc, "%02d", cal.get(PersianCalendar.HOUR_OF_DAY)));
+        formatters.put("H", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.HOUR_OF_DAY)));
         formatters.put("hh", (cal, loc) -> {
-            int hour12 = cal.get(MyPersianCalendar.HOUR_OF_DAY) % 12;
+            int hour12 = cal.get(PersianCalendar.HOUR_OF_DAY) % 12;
             hour12 = hour12 == 0 ? 12 : hour12;
             return String.format(loc, "%02d", hour12);
         });
         formatters.put("h", (cal, loc) -> {
-            int hour12 = cal.get(MyPersianCalendar.HOUR_OF_DAY) % 12;
+            int hour12 = cal.get(PersianCalendar.HOUR_OF_DAY) % 12;
             hour12 = hour12 == 0 ? 12 : hour12;
             return String.valueOf(hour12);
         });
         
         // Minute
-        formatters.put("mm", (cal, loc) -> String.format(loc, "%02d", cal.get(MyPersianCalendar.MINUTE)));
-        formatters.put("m", (cal, loc) -> String.valueOf(cal.get(MyPersianCalendar.MINUTE)));
+        formatters.put("mm", (cal, loc) -> String.format(loc, "%02d", cal.get(PersianCalendar.MINUTE)));
+        formatters.put("m", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.MINUTE)));
         
         // Second
-        formatters.put("ss", (cal, loc) -> String.format(loc, "%02d", cal.get(MyPersianCalendar.SECOND)));
-        formatters.put("s", (cal, loc) -> String.valueOf(cal.get(MyPersianCalendar.SECOND)));
+        formatters.put("ss", (cal, loc) -> String.format(loc, "%02d", cal.get(PersianCalendar.SECOND)));
+        formatters.put("s", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.SECOND)));
         
         // AM/PM
         formatters.put("a", (cal, loc) -> getAmPm(cal, loc, false));
@@ -282,8 +282,8 @@ public class MyPersianDateFormat {
         }
     }
     
-    private static String getAmPm(MyPersianCalendar cal, Locale locale, boolean uppercase) {
-        int hour = cal.get(MyPersianCalendar.HOUR_OF_DAY);
+    private static String getAmPm(PersianCalendar cal, Locale locale, boolean uppercase) {
+        int hour = cal.get(PersianCalendar.HOUR_OF_DAY);
         boolean isAm = hour < 12;
         
         if (locale.getLanguage().equals("fa")) {
@@ -339,16 +339,16 @@ public class MyPersianDateFormat {
 
     // === UTILITY METHODS FOR EXTERNAL USE ===
     
-    public static String getMonthName(MyPersianCalendar date) {
-        return getMonthName(date.getMonth(), MyPCConstants.PERSIAN_LOCALE);
+    public static String getMonthName(PersianCalendar date) {
+        return getMonthName(date.getMonth(), PCConstants.PERSIAN_LOCALE);
     }
     
-    public static String getDayName(MyPersianCalendar date) {
-        return getWeekdayName(date.get(MyPersianCalendar.DAY_OF_WEEK),
-                                      MyPCConstants.PERSIAN_LOCALE);
+    public static String getDayName(PersianCalendar date) {
+        return getWeekdayName(date.get(PersianCalendar.DAY_OF_WEEK),
+                              PCConstants.PERSIAN_LOCALE);
     }
     
-    public static boolean isLeapYear(MyPersianCalendar date) {
+    public static boolean isLeapYear(PersianCalendar date) {
         return isLeapYear(date.getYear());
     }
 
@@ -358,8 +358,8 @@ public class MyPersianDateFormat {
 
         boolean isPersian = locale.getLanguage().equals("fa");
         return isPersian
-                ? MyPCConstants.WEEKDAY_NAMES[index]
-                : MyPCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
+                ? PCConstants.WEEKDAY_NAMES[index]
+                : PCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
     }
 
     public static String getMonthName(int month, Locale locale) {
@@ -368,9 +368,9 @@ public class MyPersianDateFormat {
         }
 
         if (locale.getLanguage().equals("fa")) {
-            return MyPCConstants.MONTH_NAMES[month];
+            return PCConstants.PERSIAN_MONTH_NAMES[month];
         }
-        return MyPCConstants.MONTH_NAMES_IN_ENGLISH[month];
+        return PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
     }
 
     public static boolean isLeapYear(int year) {

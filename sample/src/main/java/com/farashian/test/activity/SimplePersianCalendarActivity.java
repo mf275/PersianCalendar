@@ -11,8 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.farashian.pcalendar.MyPersianCalendar;
-import com.farashian.pcalendar.MyPersianDateFormat;
+import com.farashian.pcalendar.PersianCalendar;
+import com.farashian.pcalendar.PersianDateFormat;
 import com.farashian.test.R;
 
 import java.text.SimpleDateFormat;
@@ -29,8 +29,8 @@ public class SimplePersianCalendarActivity extends Activity {
     private Button btnAddDay, btnSubtractDay;
     
     // Calendar
-    private MyPersianCalendar persianCalendar;
-    private boolean useFastLibrary = false; // Switch between libraries
+    private PersianCalendar persianCalendar;
+    private boolean         useFastLibrary = false; // Switch between libraries
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class SimplePersianCalendarActivity extends Activity {
         setContentView(R.layout.activity_simple_persian_calendar);
         
         // Initialize calendar
-        persianCalendar = new MyPersianCalendar();
+        persianCalendar = new PersianCalendar();
         
         // Initialize UI
         initViews();
@@ -71,7 +71,7 @@ public class SimplePersianCalendarActivity extends Activity {
     private void setupListeners() {
         // Today button
         btnToday.setOnClickListener(v -> {
-            persianCalendar = new MyPersianCalendar();
+            persianCalendar = new PersianCalendar();
             updateCurrentDate();
             showMessage("Reset to today");
         });
@@ -84,13 +84,13 @@ public class SimplePersianCalendarActivity extends Activity {
         
         // Add/Subtract days
         btnAddDay.setOnClickListener(v -> {
-            persianCalendar.add(MyPersianCalendar.DAY_OF_MONTH, 1);
+            persianCalendar.add(PersianCalendar.DAY_OF_MONTH, 1);
             updateCurrentDate();
             showMessage("Added 1 day");
         });
         
         btnSubtractDay.setOnClickListener(v -> {
-            persianCalendar.add(MyPersianCalendar.DAY_OF_MONTH, -1);
+            persianCalendar.add(PersianCalendar.DAY_OF_MONTH, -1);
             updateCurrentDate();
             showMessage("Subtracted 1 day");
         });
@@ -146,15 +146,15 @@ public class SimplePersianCalendarActivity extends Activity {
     private void updateDateInfo() {
         try {
             // Day name
-            String dayName = MyPersianDateFormat.getDayName(persianCalendar);
+            String dayName = PersianDateFormat.getDayName(persianCalendar);
             tvDayName.setText("📅 Day: " + dayName);
 
             // Month info - USE getDaysInMonth() instead of getActualMaximum()
-            String monthName = MyPersianDateFormat.getMonthName(persianCalendar);
+            String monthName = PersianDateFormat.getMonthName(persianCalendar);
 
             // CORRECT WAY: Use the Persian calendar's method
             int daysInMonth = persianCalendar.getDaysInMonth(); // Your custom method
-            // OR: int daysInMonth = MyPersianCalendar.getDaysInMonth(
+            // OR: int daysInMonth = PersianCalendar.getDaysInMonth(
             //     persianCalendar.getYear(),
             //     persianCalendar.getMonth()
             // );
@@ -162,7 +162,7 @@ public class SimplePersianCalendarActivity extends Activity {
             tvMonthInfo.setText("📆 Month: " + monthName + " (" + daysInMonth + " days)");
 
             // Leap year
-            boolean isLeap = MyPersianDateFormat.isLeapYear(persianCalendar);
+            boolean isLeap = PersianDateFormat.isLeapYear(persianCalendar);
             tvLeapYear.setText(isLeap ? "🌟 Leap Year" : "📅 Common Year");
 
         } catch (Exception e) {
@@ -173,16 +173,16 @@ public class SimplePersianCalendarActivity extends Activity {
     private void updateDateInfo1() {
         try {
             // Day name
-            String dayName = MyPersianDateFormat.getDayName(persianCalendar);
+            String dayName = PersianDateFormat.getDayName(persianCalendar);
             tvDayName.setText("📅 Day: " + dayName);
             
             // Month info
-            String monthName = MyPersianDateFormat.getMonthName(persianCalendar);
-            int daysInMonth = persianCalendar.getActualMaximum(MyPersianCalendar.DAY_OF_MONTH);
+            String monthName = PersianDateFormat.getMonthName(persianCalendar);
+            int daysInMonth = persianCalendar.getActualMaximum(PersianCalendar.DAY_OF_MONTH);
             tvMonthInfo.setText("📆 Month: " + monthName + " (" + daysInMonth + " days)");
             
             // Leap year
-            boolean isLeap = MyPersianDateFormat.isLeapYear(persianCalendar);
+            boolean isLeap = PersianDateFormat.isLeapYear(persianCalendar);
             tvLeapYear.setText(isLeap ? "🌟 Leap Year" : "📅 Common Year");
             
         } catch (Exception e) {
@@ -269,7 +269,7 @@ public class SimplePersianCalendarActivity extends Activity {
         }
     }
     
-    private String formatPersianDate(MyPersianCalendar calendar) {
+    private String formatPersianDate(PersianCalendar calendar) {
         return String.format(Locale.US, "%04d/%02d/%02d",
                 calendar.getYear(),
                 calendar.getMonth() + 1,

@@ -25,7 +25,7 @@ replay_pid*
 /target/apidocs/com/farashian/class-use/Main.html
 /target/apidocs/com/farashian/class-use/MainFastTest.html
 /target/apidocs/com/farashian/pcalendar/class-use/MyPCConstants.html
-/target/apidocs/com/farashian/pcalendar/class-use/MyPersianCalendar.html
+/target/apidocs/com/farashian/pcalendar/class-use/persianCalendar.html
 /target/apidocs/com/farashian/pcalendar/class-use/MyPersianDateFormat.html
 /target/apidocs/com/farashian/pcalendar/class-use/MyPersianDateFormat.PersianDateNumberCharacter.html
 /target/apidocs/com/farashian/pcalendar/class-use/PersianCalendarBenchmark.html
@@ -40,7 +40,7 @@ replay_pid*
 /target/apidocs/com/farashian/pcalendar/fast/package-tree.html
 /target/apidocs/com/farashian/pcalendar/fast/package-use.html
 /target/apidocs/com/farashian/pcalendar/MyPCConstants.html
-/target/apidocs/com/farashian/pcalendar/MyPersianCalendar.html
+/target/apidocs/com/farashian/pcalendar/persianCalendar.html
 /target/apidocs/com/farashian/pcalendar/MyPersianDateFormat.html
 /target/apidocs/com/farashian/pcalendar/MyPersianDateFormat.PersianDateNumberCharacter.html
 /target/apidocs/com/farashian/pcalendar/package-frame.html
@@ -111,3 +111,4 @@ replay_pid*
 /.gradle/8.14.3/fileHashes/fileHashes.lock
 /.gradle/8.14.3/fileHashes/resourceHashesCache.bin
 /.gradle/8.14.3/gc.properties
+/pcalendar-android/src/main/java/com/farashian/pcalendar/vue/

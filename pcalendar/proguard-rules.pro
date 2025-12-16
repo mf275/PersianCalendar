@@ -18,5 +18,5 @@
 -keep class com.farashian.pcalendar.fast.FastPersianCalendar { *; }
 -keep class com.farashian.pcalendar.fast.FastPersianDateFormat { *; }
 
--keep class com.farashian.pcalendar.MyPersianCalendar { *; }
+-keep class com.farashian.pcalendar.PersianCalendar { *; }
 -keep class com.farashian.pcalendar.MyPersianDateFormat { *; }

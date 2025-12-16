@@ -1,14 +1,14 @@
 package com.farashian.test;
 
-import com.farashian.pcalendar.MyPersianCalendar;
-import com.farashian.pcalendar.MyPersianDateFormat;
+import com.farashian.pcalendar.PersianCalendar;
+import com.farashian.pcalendar.PersianDateFormat;
 
 import java.text.ParseException;
 
 //Autor Morteza
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== MyPersianCalendar & MyPersianDateFormat Test ===\n");
+        System.out.println("=== PersianCalendar & PersianDateFormat Test ===\n");
 
         // Test 1: Basic Calendar Creation
         System.out.println("1. BASIC CALENDAR CREATION");
@@ -16,7 +16,7 @@ public class Main {
         System.out.println("========================================");
 
 
-        MyPersianCalendar now = new MyPersianCalendar();
+        PersianCalendar now = new PersianCalendar();
         System.out.println("Current Persian Date: " + now.getLongDate());
         System.out.println("Current DateTime: " + now.getLongDateTime());
         System.out.println("Short Date: " + now.getShortDate());
@@ -31,7 +31,7 @@ public class Main {
         System.out.println("========================================");
 
 
-        MyPersianCalendar specificDate = new MyPersianCalendar(1402, 9, 15); // 15 Dey 1402
+        PersianCalendar specificDate = new PersianCalendar(1402, 9, 15); // 15 Dey 1402
         System.out.println("Specific Date: " + specificDate.getLongDate());
         System.out.println("Day of Week: " + specificDate.getWeekdayName());
         System.out.println("Month Name: " + specificDate.getMonthName());
@@ -44,7 +44,7 @@ public class Main {
         System.out.println("========================================");
 
 
-        MyPersianDateFormat formatter = new MyPersianDateFormat();
+        PersianDateFormat formatter = new PersianDateFormat();
 
         // Test different patterns
         String[] testPatterns = {
@@ -72,7 +72,7 @@ public class Main {
         System.out.println("========================================");
 
 
-        formatter.setNumberCharacter(MyPersianDateFormat.PersianDateNumberCharacter.FARSI);
+        formatter.setNumberCharacter(PersianDateFormat.PersianDateNumberCharacter.FARSI);
         formatter.setPattern("yyyy/MM/dd HH:mm:ss");
         System.out.println("With Farsi numbers: " + formatter.format(now));
 
@@ -80,7 +80,7 @@ public class Main {
         System.out.println("Full date Farsi: " + formatter.format(now));
 
         // Switch back to English
-        formatter.setNumberCharacter(MyPersianDateFormat.PersianDateNumberCharacter.ENGLISH);
+        formatter.setNumberCharacter(PersianDateFormat.PersianDateNumberCharacter.ENGLISH);
         System.out.println();
 
         // Test 5: Static Format Methods
@@ -89,17 +89,17 @@ public class Main {
         System.out.println("========================================");
 
 
-        String staticFormatted = MyPersianDateFormat.format(
+        String staticFormatted = PersianDateFormat.format(
                 now,
                 "yyyy-MM-dd HH:mm",
-                MyPersianDateFormat.PersianDateNumberCharacter.ENGLISH
+                PersianDateFormat.PersianDateNumberCharacter.ENGLISH
         );
         System.out.println("Static format: " + staticFormatted);
 
-        String staticFarsi = MyPersianDateFormat.format(
+        String staticFarsi = PersianDateFormat.format(
                 now,
                 "DDDD, d MMMM yyyy",
-                MyPersianDateFormat.PersianDateNumberCharacter.FARSI
+                PersianDateFormat.PersianDateNumberCharacter.FARSI
         );
         System.out.println("Static Farsi: " + staticFarsi);
         System.out.println();
@@ -111,10 +111,10 @@ public class Main {
 
 
         try {
-            MyPersianCalendar parsedDate = formatter.parse("1402/10/15", "yyyy/MM/dd");
+            PersianCalendar parsedDate = formatter.parse("1402/10/15", "yyyy/MM/dd");
             System.out.println("Parsed date: " + parsedDate.getLongDate());
 
-            MyPersianCalendar parsedWithTime = formatter.parse("1402/10/15 14:30", "yyyy/MM/dd HH:mm");
+            PersianCalendar parsedWithTime = formatter.parse("1402/10/15 14:30", "yyyy/MM/dd HH:mm");
             System.out.println("Parsed with time: " + parsedWithTime.getLongDateTime());
 
         } catch (ParseException e) {
@@ -129,7 +129,7 @@ public class Main {
 
 
         try {
-            MyPersianCalendar fromGregorian = formatter.parseGrg("2024-01-05", "yyyy-MM-dd");
+            PersianCalendar fromGregorian = formatter.parseGrg("2024-01-05", "yyyy-MM-dd");
             System.out.println("From Gregorian 2024-01-05: " + fromGregorian.getLongDate());
         } catch (ParseException e) {
             System.out.println("Gregorian parse error: " + e.getMessage());
@@ -142,19 +142,19 @@ public class Main {
         System.out.println("========================================");
 
 
-        MyPersianCalendar testDate = new MyPersianCalendar(1402, 0, 1); // 1 Farvardin 1402
+        PersianCalendar testDate = new PersianCalendar(1402, 0, 1); // 1 Farvardin 1402
         System.out.println("Original: " + testDate.getLongDate());
 
         // Add 10 days
-        testDate.add(MyPersianCalendar.DAY_OF_MONTH, 10);
+        testDate.add(PersianCalendar.DAY_OF_MONTH, 10);
         System.out.println("After adding 10 days: " + testDate.getLongDate());
 
         // Add 2 months
-        testDate.add(MyPersianCalendar.MONTH, 2);
+        testDate.add(PersianCalendar.MONTH, 2);
         System.out.println("After adding 2 months: " + testDate.getLongDate());
 
         // Add 1 year
-        testDate.add(MyPersianCalendar.YEAR, 1);
+        testDate.add(PersianCalendar.YEAR, 1);
         System.out.println("After adding 1 year: " + testDate.getLongDate());
         System.out.println();
 
@@ -164,8 +164,8 @@ public class Main {
         System.out.println("========================================");
 
 
-        MyPersianCalendar date1 = new MyPersianCalendar(1402, 0, 1);
-        MyPersianCalendar date2 = new MyPersianCalendar(1402, 0, 15);
+        PersianCalendar date1 = new PersianCalendar(1402, 0, 1);
+        PersianCalendar date2 = new PersianCalendar(1402, 0, 15);
 
         System.out.println("Date 1: " + date1.getLongDate());
         System.out.println("Date 2: " + date2.getLongDate());
@@ -181,14 +181,14 @@ public class Main {
 
 
         // Leap year test
-        MyPersianCalendar leapYear = new MyPersianCalendar(1403, 11, 30); // Esfand in leap year
+        PersianCalendar leapYear = new PersianCalendar(1403, 11, 30); // Esfand in leap year
         System.out.println("Leap year Esfand 30: " + leapYear.getLongDate());
         System.out.println("Is 1403 leap year: " + leapYear.isLeapYear());
 
         // Month boundaries
-        MyPersianCalendar firstOfMonth = new MyPersianCalendar(1402, 5, 31); // Last day of Shahrivar
+        PersianCalendar firstOfMonth = new PersianCalendar(1402, 5, 31); // Last day of Shahrivar
         System.out.println("Last day of Shahrivar: " + firstOfMonth.getLongDate());
-        firstOfMonth.add(MyPersianCalendar.DAY_OF_MONTH, 1);
+        firstOfMonth.add(PersianCalendar.DAY_OF_MONTH, 1);
         System.out.println("Next day: " + firstOfMonth.getLongDate());
 
         System.out.println("\n=== All Tests Completed Successfully ===");

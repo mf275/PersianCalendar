@@ -1,10 +1,12 @@
 package com.farashian.pcalendar.fast;
 
-import com.farashian.pcalendar.MyPCConstants;
+import com.farashian.pcalendar.IsDateUtils;
+import com.farashian.pcalendar.PCConstants;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.MyPCConstants.PERSIAN_LOCALE;
+import static com.farashian.pcalendar.IsDateUtils.convertGregorianToIslamic;
+import static com.farashian.pcalendar.PCConstants.PERSIAN_LOCALE;
 
 /**
  * High-performance Persian Calendar with complete field computation
@@ -211,6 +213,169 @@ public class FastPersianCalendar extends Calendar {
     public void setPersianDate(int year, int month, int day) {
         validateDate(year, month, day);
         setPersianDateInternal(year, month, day);
+    }
+
+    // === ISLAMIC/HIJRI DATE METHODS ===
+
+    /**
+     * Check if current Islamic year is leap year
+     * @return true if leap year
+     */
+    public boolean isIslamicLeapYear() {
+        return IsDateUtils.isIslamicLeapYear(getIslamicYear());
+    }
+
+    /**
+     * Get Islamic (Hijri) year
+     * @return Islamic year
+     */
+    public int getIslamicYear() {
+        complete(); // Ensure fields are computed
+        return convertGregorianToIslamic(getGrgYear(), getGrgMonth(), getGrgDay())[0];
+    }
+
+    /**
+     * Get Islamic (Hijri) month (1-based: 1=Muharram, 12=Dhu al-Hijjah)
+     * @return Islamic month (1-12)
+     */
+    public int getIslamicMonth() {
+        complete(); // Ensure fields are computed
+        return convertGregorianToIslamic(getGrgYear(), getGrgMonth(), getGrgDay())[1];
+    }
+
+    /**
+     * Get Islamic (Hijri) day of month (1-30)
+     * @return Islamic day
+     */
+    public int getIslamicDay() {
+        complete(); // Ensure fields are computed
+        return convertGregorianToIslamic(getGrgYear(), getGrgMonth(), getGrgDay())[2];
+    }
+
+    /**
+     * Get Islamic (Hijri) month name
+     * @param locale locale for month name
+     * @return Islamic month name
+     */
+    public String getIslamicMonthName(Locale locale) {
+        int month = getIslamicMonth();
+        return getIslamicMonthName(month, locale);
+    }
+
+    /**
+     * Static method: Get Islamic month name
+     * @param month Islamic month (1-12)
+     * @param locale locale for month name
+     * @return Islamic month name
+     */
+    public static String getIslamicMonthName(int month, Locale locale) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Islamic month must be between 1 and 12, got: " + month);
+        }
+
+        if (locale.getLanguage().equals("fa")) {
+            String[] persianIslamicMonths = {
+                    "محرم", "صفر", "ربیع‌الاول", "ربیع‌الثانی",
+                    "جمادی‌الاول", "جمادی‌الثانی", "رجب", "شعبان",
+                    "رمضان", "شوال", "ذی‌القعده", "ذی‌الحجه"
+            };
+            return persianIslamicMonths[month - 1];
+        } else if (locale.getLanguage().equals("ar")) {
+            String[] arabicIslamicMonths = {
+                    "مُحَرَّم", "صَفَر", "رَبيع الأوّل", "رَبيع الثاني",
+                    "جُمادى الأولى", "جُمادى الآخرة", "رَجَب", "شَعْبان",
+                    "رَمَضان", "شَوّال", "ذو القعدة", "ذو الحجة"
+            };
+            return arabicIslamicMonths[month - 1];
+        } else {
+            String[] englishIslamicMonths = {
+                    "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",
+                    "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sha'ban",
+                    "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"
+            };
+            return englishIslamicMonths[month - 1];
+        }
+    }
+
+    /**
+     * Get Islamic (Hijri) date as formatted string
+     * @param locale locale for formatting
+     * @return formatted Islamic date
+     */
+    public String getIslamicLongDate(Locale locale) {
+        int year = getIslamicYear();
+        int month = getIslamicMonth();
+        int day = getIslamicDay();
+
+        return String.format(locale, "%d %s %d",
+                             day, getIslamicMonthName(month, locale), year);
+    }
+
+    /**
+     * Get Islamic (Hijri) date as int array [year, month, day]
+     * @return int array containing {islamicYear, islamicMonth, islamicDay}
+     */
+    public int[] getIslamicDate() {
+        complete(); // Ensure fields are computed
+        return convertGregorianToIslamic(getGrgYear(), getGrgMonth(), getGrgDay());
+    }
+
+    /**
+     * Get Islamic (Hijri) date with custom formatting
+     * @param delimiter delimiter between parts (e.g., "/", "-")
+     * @return formatted Islamic date string (e.g., "1445/9/15")
+     */
+    public String getIslamicShortDate(String delimiter) {
+        int[] islamicDate = getIslamicDate();
+        return String.format(Locale.US, "%04d%s%02d%s%02d",
+                             islamicDate[0], delimiter,
+                             islamicDate[1], delimiter,
+                             islamicDate[2]);
+    }
+
+    /**
+     * Get Islamic (Hijri) date with default formatting (YYYY/MM/DD)
+     * @return formatted Islamic date string
+     */
+    public String getIslamicShortDate() {
+        return getIslamicShortDate("/");
+    }
+
+    /**
+     * Get Islamic (Hijri) date with month name
+     * @param locale locale for month name
+     * @return formatted Islamic date with month name (e.g., "15 Ramadan 1445")
+     */
+    public String getIslamicDateWithMonthName(Locale locale) {
+        int[] islamicDate = getIslamicDate();
+        return String.format(locale, "%d %s %d",
+                             islamicDate[2],
+                             getIslamicMonthName(islamicDate[1], locale),
+                             islamicDate[0]);
+    }
+
+    /**
+     * Get all Islamic date components separately
+     * @return Map containing year, month, and day
+     */
+    public Map<String, Integer> getIslamicDateComponents() {
+        int[] date = getIslamicDate();
+        Map<String, Integer> components = new HashMap<>();
+        components.put("year", date[0]);
+        components.put("month", date[1]);
+        components.put("day", date[2]);
+        return components;
+    }
+
+    /**
+     * Static method to get Islamic date from Gregorian date
+     * @param year Gregorian year
+     * @param month Gregorian month (0-based: 0=January)
+     * @param day Gregorian day
+     * @return int array [islamicYear, islamicMonth, islamicDay]
+     */
+    public static int[] getIslamicDateFromGregorian(int year, int month, int day) {
+        return convertGregorianToIslamic(year, month, day);
     }
 
 
@@ -1041,8 +1206,8 @@ int weekOfYear = (dayOfYear - 1 + ((dayOfWeek - FIRST_DAY_OF_WEEK + 7) % 7)) / 7
         if (index < 0) index += 7;
 
         return locale.getLanguage().equals("fa")
-                ? MyPCConstants.WEEKDAY_NAMES[index]
-                : MyPCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
+                ? PCConstants.WEEKDAY_NAMES[index]
+                : PCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
     }
 
     public static String getMonthName(int month, Locale locale) {
@@ -1051,8 +1216,8 @@ int weekOfYear = (dayOfYear - 1 + ((dayOfWeek - FIRST_DAY_OF_WEEK + 7) % 7)) / 7
         }
 
         return locale.getLanguage().equals("fa")
-                ? MyPCConstants.MONTH_NAMES[month]
-                : MyPCConstants.MONTH_NAMES_IN_ENGLISH[month];
+                ? PCConstants.MONTH_NAMES[month]
+                : PCConstants.MONTH_NAMES_IN_ENGLISH[month];
     }
 
 // === GREGORIAN DATE METHODS (0-BASED MONTHS) ===

@@ -2,12 +2,11 @@ package com.farashian.test.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 
-import com.farashian.pcalendar.MyPersianCalendar;
+import com.farashian.pcalendar.PersianCalendar;
 import com.farashian.test.R;
 
 import java.text.SimpleDateFormat;
@@ -16,15 +15,15 @@ import java.util.Locale;
 
 public class MinimalPersianCalendarActivity extends Activity {
 
-    private TextView txtDate;
-    private MyPersianCalendar calendar;
+    private TextView        txtDate;
+    private PersianCalendar calendar;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minimal_persian);
         
-        calendar = new MyPersianCalendar();
+        calendar = new PersianCalendar();
         txtDate = findViewById(R.id.txtDate);
         
         Button btnPrev = findViewById(R.id.btnPrev);
@@ -34,17 +33,17 @@ public class MinimalPersianCalendarActivity extends Activity {
         updateDate();
         
         btnPrev.setOnClickListener(v -> {
-            calendar.add(MyPersianCalendar.DAY_OF_MONTH, -1);
+            calendar.add(PersianCalendar.DAY_OF_MONTH, -1);
             updateDate();
         });
         
         btnNext.setOnClickListener(v -> {
-            calendar.add(MyPersianCalendar.DAY_OF_MONTH, 1);
+            calendar.add(PersianCalendar.DAY_OF_MONTH, 1);
             updateDate();
         });
         
         btnToday.setOnClickListener(v -> {
-            calendar = new MyPersianCalendar();
+            calendar = new PersianCalendar();
             updateDate();
         });
     }

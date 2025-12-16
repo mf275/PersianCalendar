@@ -3,7 +3,7 @@ package com.farashian.pcalendar;
 
 import java.util.*;
 
-public class MyPCConstants {
+public class FPCConstants {
     /*public static final Set<Integer> leapYears = Set.of(
             1201, 1205, 1210, 1214, 1218, 1222, 1226, 1230, 1234, 1238, 1243,
             1247, 1251, 1255, 1259, 1263, 1267, 1271, 1276, 1280, 1284, 1288,
@@ -44,10 +44,21 @@ public class MyPCConstants {
             "ی", "د", "س", "چ", "پ", "ج", "ش"
     };
 
-    public static final String[] MONTH_NAMES = {
+    public static final String[] PERSIAN_MONTH_NAMES = {
             "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
             "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
     };
+
+    public static final String[] HIJRI_MONTH_NAMES = {
+            "محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانیه",
+            "رجب", "شعبان", "رمضان", "شوال", "ذیقعده", "ذیحجه"
+    };
+
+    public static final String[] GREGORIAN_MONTH_NAMES = {
+            "ژانویه", "فوریه", "مارس", "آپریل", "می", "ژوئن",
+            "جولای", "آگوست", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
+    };
+
 
     public static final String[] WEEKDAY_NAMES_IN_ENGLISH = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
@@ -57,7 +68,7 @@ public class MyPCConstants {
             "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
     };
 
-    public static final String[] MONTH_NAMES_IN_ENGLISH = {
+    public static final String[] PERSIAN_MONTH_NAMES_IN_ENGLISH = {
             "Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar",
             "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"
     };

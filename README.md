@@ -1,4 +1,4 @@
-# 📅 Persian Calendar for Java — `MyPersianCalendar` and `FastPersianCalendar` 
+# 📅 Persian Calendar for Java — `persianCalendar` and `FastPersianCalendar` 
 
 [![Java 8+](https://img.shields.io/badge/Java-8%2B-green?logo=java)](https://www.oracle.com/java/)
 [![Android Compatible](https://img.shields.io/badge/Android-Compatible-brightgreen?logo=android)](https://developer.android.com/)
@@ -17,13 +17,13 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 
 ## 🚀 Features
 
-| ✅ Core                                                                                                                                          | ✅ Formatting                                                                                                                                                     | ✅ Utilities                                                                                                                                                                                                                                                                                                                                                                                                                    |
-|-------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [MyPersianCalendar](\PersianCalendar\pcjava\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L7-L1288) extends `java.util.Calendar` | `MyPersianDateFormat` with token-based patterns                                                                                                                  | [isLeapYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L353-L355), [isHoliday()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1268-L1270), `isToday()`                                                                                                                                       |
-| Gregorian ↔ Persian conversion (exact)                                                                                                          | Supports **Farsi numerals** (۱۴۰۳)                                                                                                                               | [plusDays()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1150-L1154), [minusMonths()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1201-L1203), [withFirstDayOfMonth()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1285-L1289) |
-| 0-based months (like Java): `FARVARDIN = 0`                                                                                                     | 20+ format tokens: `yyyy`, `MMMM`, `dddd`, [a](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java), etc. | [daysBetween()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1259-L1262), [getAge()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1373-L1375), [isBetween()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1383-L1385)             |
-| Time zone aware (`Asia/Tehran` ready)                                                                                                           | Literal text support: `'Today:' yyyy/MM/dd`                                                                                                                      | `atStartOfDay()`, [atEndOfDay()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1342-L1349)                                                                                                                                                                                                                                                                       |
-| Leap year table (1200–1600 AH) + algorithm                                                                                                      | Parse Persian & Gregorian strings                                                                                                                                | [getQuarter()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1471-L1473), [getWeekOfYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1400-L1403), [getDayOfYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\MyPersianCalendar.java#L1391-L1394)    |
+| ✅ Core                                                                                                                                      | ✅ Formatting                                                                                                                                                   | ✅ Utilities                                                                                                                                                                                                                                                                                                                                                                                                              |
+|---------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [PersianCalendar](\PersianCalendar\pcjava\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L7-L1288) extends `java.util.Calendar` | `PersianDateFormat` with token-based patterns                                                                                                                  | [isLeapYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L353-L355), [isHoliday()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1268-L1270), `isToday()`                                                                                                                                     |
+| Gregorian ↔ Persian conversion (exact)                                                                                                      | Supports **Farsi numerals** (۱۴۰۳)                                                                                                                             | [plusDays()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1150-L1154), [minusMonths()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1201-L1203), [withFirstDayOfMonth()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1285-L1289) |
+| 0-based months (like Java): `FARVARDIN = 0`                                                                                                 | 20+ format tokens: `yyyy`, `MMMM`, `dddd`, [a](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java), etc. | [daysBetween()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1259-L1262), [getAge()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1373-L1375), [isBetween()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1383-L1385)             |
+| Time zone aware (`Asia/Tehran` ready)                                                                                                       | Literal text support: `'Today:' yyyy/MM/dd`                                                                                                                    | `atStartOfDay()`, [atEndOfDay()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1342-L1349)                                                                                                                                                                                                                                                                   |
+| Leap year table (1200–1600 AH) + algorithm                                                                                                  | Parse Persian & Gregorian strings                                                                                                                              | [getQuarter()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1471-L1473), [getWeekOfYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1400-L1403), [getDayOfYear()](file://D:\NewProjects\PersianCalendar\android\src\main\java\com\farashian\pcalendar\PersianCalendar.java#L1391-L1394)    |
 
 ---
 
@@ -42,13 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.2.1</version>
+<version>2.3.0</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.2.1</version>
+<version>2.3.0</version>
+</dependency>
+<dependency>
+<groupId>com.github.mf275.PersianCalendar</groupId>
+<artifactId>fast-persian-calendar-android</artifactId>
+<version>2.3.0</version>
 </dependency>
 ```
 ---
@@ -57,11 +62,13 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 
 - **`persian-calendar`** - Pure Java library (no Android dependencies)
 - **`persian-calendar-android`** - Android library
+- **`fast-persian-calendar-android`** - Android library for FastPersianCalendar
   
-- | Module                         | Type              | Purpose                                             | Dependencies          |
-  |--------------------------------|-------------------|-----------------------------------------------------|-----------------------|
-  | **`persian-calendar`**         | Pure Java library | Persian calendar calculations and utilities         | Java 11+ only         |
-  | **`persian-calendar-android`** | Android library   | Android UI components and Android-specific features | Android SDK, Java 11+ |
+- | Module                              | Type              | Purpose                                     | Dependencies          |
+  |-------------------------------------|-------------------|---------------------------------------------|-----------------------|
+  | **`persian-calendar`**              | Pure Java library | Persian calendar calculations and utilities | Java 11+ only         |
+  | **`persian-calendar-android`**      | Android library   | Android-specific features                   | Android SDK, Java 11+ |
+  | **`fast-persian-calendar-android`** | Android library   | Android-specific features                   | Android SDK, Java 11+ |
 
 ### JitPack (Recommended)
 
@@ -92,6 +99,12 @@ If you’d like to support development of **PersianCalendar**, you can donate us
 Thank you for helping keep this project alive!
 
 # what's new
+
+### version 2.3.0
+* - Separated the fast version of PersianCalendar.
+* - Add DateUtils and some useful methods
+* - Persian ↔ Gregorian conversion (toPersianDate(), toDate())
+* - Multiple date formats (full, dash, slash, timestamp styles)
 
 ### version 2.2.1
 * fix: Correct Persian day of week calculation and remove redundant complete()
@@ -299,9 +312,9 @@ The library includes both a standard version and a high-speed version. The `Fast
 ```text
 src/
 ├── com/farashian/pcalendar/
-│   ├── MyPersianCalendar.java      # Standard Calendar version
-│   ├── MyPersianDateFormat.java    # Standard Formatter
-│   ├── MyPCConstants.java          # Application constants
+│   ├── PersianCalendar.java      # Standard Calendar version
+│   ├── PersianDateFormat.java    # Standard Formatter
+│   ├── PCConstants.java          # Application constants
 │   └── fast/                       # High-speed versions
 │       ├── FastPersianCalendar.java    # High-speed Calendar
 │       └── FastPersianDateFormat.java  # High-speed Formatter
@@ -320,10 +333,10 @@ src/
 
 ## 6. 📊 Performance Test
 
-An example performance test comparing the speed of the standard and fast versions:
+Here's a simple test main class for your DateUtils class:
 
 ```java
-import com.farashian.pcalendar.MyPersianCalendar;
+import com.farashian.pcalendar.PersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 
 public class PerformanceTest {
@@ -333,8 +346,8 @@ public class PerformanceTest {
         // Standard Version Test
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            MyPersianCalendar date = new MyPersianCalendar();
-            date.add(MyPersianCalendar.DAY_OF_MONTH, i);
+            PersianCalendar date = new PersianCalendar();
+            date.add(persianCalendar.DAY_OF_MONTH, i);
         }
         long end = System.currentTimeMillis();
         System.out.println("⏳ Standard Version Time: " + (end - start) + " ms");
@@ -504,5 +517,96 @@ public class Debugging {
         System.out.println("Day of Week (based on Calendar): " + date.get(Calendar.DAY_OF_WEEK));
     }
 }
+```
+
+```java
+
+import com.farashian.pcalendar.DateUtils;
+import com.farashian.pcalendar.PersianCalendar;
+import com.farashian.pcalendar.YMD;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+public class TestDateUtils {
+    
+    public static void main(String[] args) {
+        System.out.println("=== Testing DateUtils ===\n");
+        
+        // Test 1: Basic Persian date formatting
+        System.out.println("🔍 Current Persian Dates:");
+        System.out.println("Now (full): " + DateUtils.nowFullDateWithDayFarsi());
+        System.out.println("Now (dash): " + DateUtils.nowDashDateFarsi());
+        System.out.println("Now (slash): " + DateUtils.nowSlashDateFarsi());
+        System.out.println("Day of week: " + DateUtils.nowFarsiDay());
+        System.out.println("Time: " + DateUtils.getNowTime());
+        System.out.println("Time with seconds: " + DateUtils.getNowTimeWithSeconds());
+        System.out.println("DateTime: " + DateUtils.getFarsiDateWithTime());
+        System.out.println();
+        
+        // Test 2: Timestamp formatting
+        System.out.println("📅 Timestamp Formats:");
+        System.out.println("Timestamp dash: " + DateUtils.nowTimeStampDashFarsi());
+        System.out.println("Timestamp underscore: " + DateUtils.nowTimeStampUnderscoreFarsi());
+        System.out.println("Custom pattern (yyyy/MM/dd HH:mm): " + DateUtils.nowFarsi("yyyy/MM/dd HH:mm"));
+        System.out.println();
+        
+        // Test 3: Date conversion
+        System.out.println("🔄 Date Conversions:");
+        Date            currentDate = new Date();
+        PersianCalendar persianDate = DateUtils.toPersianDate(currentDate);
+        System.out.println("Current Gregorian date: " + currentDate);
+        System.out.println("Converted to Persian: " + DateUtils.getFarsiFullDate(currentDate));
+        
+        // Convert back
+        Date convertedBack = DateUtils.toDate(persianDate);
+        System.out.println("Converted back to Gregorian: " + convertedBack);
+        System.out.println();
+        
+        // Test 4: Date manipulation
+        System.out.println("⚙️ Date Manipulation:");
+        long startOfDay = DateUtils.getStartDate(System.currentTimeMillis());
+        long endOfDay = DateUtils.getEndDate(System.currentTimeMillis());
+        System.out.println("Start of today (UTC): " + new Date(startOfDay));
+        System.out.println("End of today (UTC): " + new Date(endOfDay));
+        
+        // Add one day
+        Date tomorrow = DateUtils.addOneDay(currentDate);
+        System.out.println("Tomorrow: " + tomorrow);
+        System.out.println();
+        
+        // Test 5: Date before now
+        System.out.println("⏮️ Past Dates:");
+        String threeDaysAgo = DateUtils.dateBeforeNowFarsi(3);
+        System.out.println("3 days ago (Persian): " + threeDaysAgo);
+        
+        long threeDaysAgoMillis = DateUtils.dateBeforeNow(3);
+        System.out.println("3 days ago (millis): " + threeDaysAgoMillis);
+        System.out.println();
+        
+        // Test 6: Islamic calendar conversion
+        System.out.println("🌙 Islamic Calendar Conversion:");
+        GregorianCalendar gregorian = new GregorianCalendar(2024, Calendar.MARCH, 11);
+        YMD               hijriDate = DateUtils.islamicFromGregorian(gregorian);
+        System.out.println("Gregorian: " + gregorian.getTime());
+        System.out.println("Iranian Hijri: " + hijriDate);
+        
+        // Check if valid
+        if (DateUtils.isValidIranianHijriDate(hijriDate)) {
+            System.out.println("Valid Iranian Hijri date");
+            int dayOfYear = DateUtils.getDayOfIranianHijriYear(hijriDate);
+            System.out.println("Day of year: " + dayOfYear);
+        }
+        
+        // Test official data lookup
+        System.out.println("Has official data for 1444 AH: " + DateUtils.hasOfficialData(1444));
+        System.out.println("Month length for 1444-1: " + DateUtils.getOfficialMonthLength(1444, 1));
+        System.out.println();
+        
+        System.out.println("=== Test Complete ===");
+    }
+}
+
 ```
 ````

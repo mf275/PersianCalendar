@@ -1,6 +1,6 @@
 package com.farashian.test;
 
-import com.farashian.pcalendar.MyPersianCalendar;
+import com.farashian.pcalendar.PersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 
 import java.util.Calendar;
@@ -28,7 +28,7 @@ public class PersianCalendarBenchmark {
     
     private static void testOriginalCalendar(int iterations) {
         for (int i = 0; i < iterations; i++) {
-            MyPersianCalendar cal = new MyPersianCalendar(1400 + (i % 3), i % 12, (i % 28) + 1);
+            PersianCalendar cal = new PersianCalendar(1400 + (i % 3), i % 12, (i % 28) + 1);
             cal.add(Calendar.DAY_OF_MONTH, 1);
             String formatted = cal.getShortDate();
         }

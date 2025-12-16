@@ -11,6 +11,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/fpcalendar-android" />
             <option value="$PROJECT_DIR$/pcalendar" />
             <option value="$PROJECT_DIR$/pcalendar-android" />
             <option value="$PROJECT_DIR$/sample" />
