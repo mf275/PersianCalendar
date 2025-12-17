@@ -18,6 +18,7 @@ public class FPCConstants {
 
 
     public static final Set<Integer> leapYears;
+
     static {
         Set<Integer> temp = new HashSet<>();
         temp.addAll(Arrays.asList(
@@ -33,6 +34,7 @@ public class FPCConstants {
         ));
         leapYears = Collections.unmodifiableSet(temp);
     }
+
     public static final Locale PERSIAN_LOCALE = new Locale("fa", "IR");
 
 
@@ -47,6 +49,11 @@ public class FPCConstants {
     public static final String[] PERSIAN_MONTH_NAMES = {
             "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
             "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+    };
+
+    public static final String[] PERSIAN_MONTH_NAMES_SHORT = {
+            "فرو", "ارد", "خرو", "تیر", "مرد", "شهـر",
+            "مهر", "آبـان", "آذر", "دی", "بهـم", "اسف"
     };
 
     public static final String[] HIJRI_MONTH_NAMES = {
@@ -71,5 +78,20 @@ public class FPCConstants {
     public static final String[] PERSIAN_MONTH_NAMES_IN_ENGLISH = {
             "Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar",
             "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"
+    };
+
+    public static final String[] PERSIAN_MONTH_NAMES_ENGLISH_SHORT = {
+            "Far", // Farvardin
+            "Ord", // Ordibehesht
+            "Kho", // Khordad
+            "Tir", // Tir
+            "Mor", // Mordad
+            "Sha", // Shahrivar
+            "Meh", // Mehr
+            "Aba", // Aban
+            "Aza", // Azar
+            "Dey", // Dey
+            "Bah", // Bahman
+            "Esf"  // Esfand
     };
 }

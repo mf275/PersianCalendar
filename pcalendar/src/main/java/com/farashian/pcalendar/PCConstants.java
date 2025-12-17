@@ -49,6 +49,11 @@ public class PCConstants {
             "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
     };
 
+    public static final String[] PERSIAN_MONTH_NAMES_SHORT = {
+            "فرو", "ارد", "خرو", "تیر", "مرد", "شهـر",
+            "مهر", "آبـان", "آذر", "دی", "بهـم", "اسف"
+    };
+
     public static final String[] HIJRI_MONTH_NAMES = {
             "محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانیه",
             "رجب", "شعبان", "رمضان", "شوال", "ذیقعده", "ذیحجه"
@@ -71,5 +76,20 @@ public class PCConstants {
     public static final String[] PERSIAN_MONTH_NAMES_IN_ENGLISH = {
             "Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar",
             "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"
+    };
+
+    public static final String[] PERSIAN_MONTH_NAMES_ENGLISH_SHORT = {
+            "Far", // Farvardin
+            "Ord", // Ordibehesht
+            "Kho", // Khordad
+            "Tir", // Tir
+            "Mor", // Mordad
+            "Sha", // Shahrivar
+            "Meh", // Mehr
+            "Aba", // Aban
+            "Aza", // Azar
+            "Dey", // Dey
+            "Bah", // Bahman
+            "Esf"  // Esfand
     };
 }

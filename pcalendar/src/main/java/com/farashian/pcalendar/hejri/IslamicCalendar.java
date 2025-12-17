@@ -1,11 +1,14 @@
 package com.farashian.pcalendar.hejri;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.farashian.pcalendar.IranianHijriConverter.getIranianHijriMonthData;
+import static com.farashian.pcalendar.util.IranianHijriConverter.getIranianHijriMonthData;
 
 public class IslamicCalendar extends Calendar {
     private int[] today = {1446, 1, 1};
@@ -47,7 +50,11 @@ public class IslamicCalendar extends Calendar {
         hijriMonthsDays = getIranianHijriMonthData();
     }
 
-    
+    public IslamicCalendar(Locale us) {
+        this(new HashMap<>());
+    }
+
+
     public int[] jalaliToHijri(int year, int month, int day) {
         year += 1595;
         

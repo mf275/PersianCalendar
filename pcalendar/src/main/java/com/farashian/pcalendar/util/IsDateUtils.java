@@ -1,4 +1,4 @@
-package com.farashian.pcalendar;
+package com.farashian.pcalendar.util;
 
 public class IsDateUtils {
     /**

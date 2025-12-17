@@ -3,10 +3,10 @@ package com.farashian.pcalendar;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.IranianHijriConverter.islamicFromGregorian;
+import static com.farashian.pcalendar.util.IranianHijriConverter.islamicFromGregorian;
 import static com.farashian.pcalendar.PCConstants.PERSIAN_LOCALE;
 import static com.farashian.pcalendar.PCConstants.leapYears;
-import static com.farashian.pcalendar.PCalendarUtils.*;
+import static com.farashian.pcalendar.util.PCalendarUtils.*;
 
 public class PersianCalendar extends Calendar {
 
@@ -1331,6 +1331,21 @@ public class PersianCalendar extends Calendar {
             return PCConstants.PERSIAN_MONTH_NAMES[month];
         }
         return PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
+    }
+
+    public String getMonthNameShort() {
+        return getMonthNameShort(getMonth(), locale);
+
+    }
+
+    public static String getMonthNameShort(int month, Locale locale) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+
+        return locale.getLanguage().equals("fa")
+                ? FPCConstants.PERSIAN_MONTH_NAMES_SHORT[month]
+                : FPCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month];
     }
 
     /**

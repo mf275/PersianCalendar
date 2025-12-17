@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
+import static com.farashian.pcalendar.PCConstants.PERSIAN_MONTH_NAMES_SHORT;
+
 
 @Keep
 public final class PersianDateFormat {
@@ -331,11 +333,13 @@ public final class PersianDateFormat {
         formatters.put("dddd", (cal, loc) -> getWeekdayName(cal.get(PersianCalendar.DAY_OF_WEEK), loc));
         formatters.put("ddd", (cal, loc) -> getShortDayName(cal.get(PersianCalendar.DAY_OF_WEEK), loc));
         formatters.put("dd", (cal, loc) -> String.format(loc, "%02d", cal.getDayOfMonth()));
-        formatters.put("d", (cal, loc) -> String.valueOf(cal.getDayOfMonth()));
+        formatters.put("d", (cal, loc) -> String.format(loc, "%d", cal.getDayOfMonth()));
+        //formatters.put("d", (cal, loc) -> String.valueOf(cal.getDayOfMonth()));
         
         // Hour
         formatters.put("HH", (cal, loc) -> String.format(loc, "%02d", cal.get(PersianCalendar.HOUR_OF_DAY)));
-        formatters.put("H", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.HOUR_OF_DAY)));
+        formatters.put("H", (cal, loc) -> String.format(loc, "%d", cal.get(PersianCalendar.HOUR_OF_DAY)));
+        //formatters.put("H", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.HOUR_OF_DAY)));
         formatters.put("hh", (cal, loc) -> {
             int hour12 = cal.get(PersianCalendar.HOUR_OF_DAY) % 12;
             hour12 = hour12 == 0 ? 12 : hour12;
@@ -364,7 +368,7 @@ public final class PersianDateFormat {
     
     @NonNull
     private static String getShortMonthName(int month, @NonNull Locale locale) {
-        String fullName = getMonthName(month, locale);
+        String fullName = PERSIAN_MONTH_NAMES_SHORT[month];
         if (locale.getLanguage().equals("fa")) {
             // For Persian, return the full name as short name (common in Persian)
             return fullName;

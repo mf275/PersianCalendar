@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.farashian.pcalendar.FPCConstants.PERSIAN_MONTH_NAMES_SHORT;
+
 /**
  * Fast Persian Date Formatter - Optimized for Android
  */
@@ -215,7 +217,7 @@ public final class FastPersianDateFormat {
 
     @NonNull
     private String getShortMonthName(@NonNull FastPersianCalendar calendar) {
-        String fullName = calendar.getMonthName();
+        String fullName = calendar.getMonthNameShort();
         if (locale.getLanguage().equals("fa")) {
             return fullName; // Persian doesn't typically use short month names
         }

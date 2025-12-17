@@ -1,7 +1,9 @@
-package com.farashian.pcalendar;
+package com.farashian.pcalendar.util;
 
 
-import android.icu.util.IslamicCalendar;
+import com.farashian.pcalendar.PersianCalendar;
+import com.farashian.pcalendar.PersianDateFormat;
+import com.farashian.pcalendar.YMD;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -15,15 +17,15 @@ public class DateUtils {
     public static int      THIS_YEAR;
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    static              PersianDateFormat dayOfWeek           = new PersianDateFormat("EEEE"); // Day of week
-    static              PersianDateFormat fullDateWithDay     = new PersianDateFormat("EEEE dd MMMM yyyy");
+    static PersianDateFormat dayOfWeek       = new PersianDateFormat("EEEE"); // Day of week
+    static PersianDateFormat fullDateWithDay = new PersianDateFormat("EEEE dd MMMM yyyy");
     static              PersianDateFormat fullDate            = new PersianDateFormat("dd MMMM yyyy");
-    static              PersianDateFormat dashDate            = new PersianDateFormat("dd-MMM-yyyy");
+    static              PersianDateFormat dashDate_           = new PersianDateFormat("dd-MMM-yyyy");
     static              PersianDateFormat dateTime            = new PersianDateFormat("dd MMMM yyyy HH:mm");
     static              PersianDateFormat timestampDash       = new PersianDateFormat("yyyy-MM-dd-HH:mm");
     static              PersianDateFormat timestampUnderscore = new PersianDateFormat("yyyy-MM-dd_HH-mm");
     static              PersianDateFormat slashDate           = new PersianDateFormat("yyyy/MM/dd");
-    static              PersianDateFormat dashDateOnly        = new PersianDateFormat("yyyy-MM-dd");
+    static              PersianDateFormat dashDate            = new PersianDateFormat("yyyy-MM-dd");
     static              PersianDateFormat time                = new PersianDateFormat("HH:mm");
     static              PersianDateFormat timeWithSeconds     = new PersianDateFormat("HH:mm:ss");
     public static final String            TIMESTAMP_FORMAT    = "yyyyMMdd_HHmmss";
@@ -80,7 +82,7 @@ public class DateUtils {
 
     public static String nowFarsiDashDate() {
         PersianCalendar pdate = new PersianCalendar();
-        return dashDateOnly.format(pdate);
+        return dashDate.format(pdate);
     }
 
     public static String getFarsidate(String pattern) {
@@ -119,7 +121,7 @@ public class DateUtils {
         return null;
     }
 
-    public static String toDateString(PersianCalendar date) {
+    public static String toSlashDate(PersianCalendar date) {
         if (date == null) return null;
         return slashDate.format(date);
     }
@@ -344,7 +346,7 @@ public class DateUtils {
 
         // Calculate days difference
         long diffMillis = gc.getTimeInMillis() - epoch.getTimeInMillis();
-        int daysDiff = (int) (diffMillis / (1000 * 60 * 60 * 24));
+        int  daysDiff   = (int) (diffMillis / (1000 * 60 * 60 * 24));
 
         // Now use the month length table to convert daysDiff to YMD
         return null;// convertDaysToIranianHijri(daysDiff);

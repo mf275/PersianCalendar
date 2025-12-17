@@ -1449,6 +1449,21 @@ public class PersianCalendar extends Calendar implements Parcelable {
         return PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
     }
 
+    public String getMonthNameShort() {
+        return getMonthNameShort(getMonth(), locale);
+
+    }
+
+    public static String getMonthNameShort(int month, Locale locale) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+
+        return locale.getLanguage().equals("fa")
+                ? PCConstants.PERSIAN_MONTH_NAMES_SHORT[month]
+                : PCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month];
+    }
+
     /**
      * Get the day of week as Persian name
      */

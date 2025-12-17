@@ -130,10 +130,10 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
 
         // Get date components from GregorianCalendar
-        int year = georgianCalendar.get(Calendar.YEAR);
-        int month = georgianCalendar.get(Calendar.MONTH);
-        int day = georgianCalendar.get(Calendar.DAY_OF_MONTH);
-        int hour = georgianCalendar.get(Calendar.HOUR_OF_DAY);
+        int year   = georgianCalendar.get(Calendar.YEAR);
+        int month  = georgianCalendar.get(Calendar.MONTH);
+        int day    = georgianCalendar.get(Calendar.DAY_OF_MONTH);
+        int hour   = georgianCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = georgianCalendar.get(Calendar.MINUTE);
         int second = georgianCalendar.get(Calendar.SECOND);
 
@@ -168,9 +168,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         } else if (calendar instanceof FastPersianCalendar) {
             // Copy from another FastPersianCalendar
             FastPersianCalendar other = (FastPersianCalendar) calendar;
-            this.persianYear = other.persianYear;
+            this.persianYear  = other.persianYear;
             this.persianMonth = other.persianMonth;
-            this.persianDay = other.persianDay;
+            this.persianDay   = other.persianDay;
             setTimeInMillis(other.getTimeInMillis());
         } else {
             // Generic Calendar - use time in millis
@@ -336,7 +336,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         int maxDays = getGrgMonthLength(year, month); // Convert 1-based to 0-based for the method
         if (day < 1 || day > maxDays) {
             throw new IllegalArgumentException("Day must be between 1 and " + maxDays +
-                                               " for month " + month  + "/" + year + ", got: " + day);
+                                               " for month " + month + "/" + year + ", got: " + day);
         }
     }
 
@@ -1270,6 +1270,21 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return locale.getLanguage().equals("fa")
                 ? FPCConstants.PERSIAN_MONTH_NAMES[month]
                 : FPCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
+    }
+
+    public String getMonthNameShort() {
+        return getMonthNameShort(getMonth(), locale);
+
+    }
+
+    public static String getMonthNameShort(int month, Locale locale) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+
+        return locale.getLanguage().equals("fa")
+                ? FPCConstants.PERSIAN_MONTH_NAMES_SHORT[month]
+                : FPCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month];
     }
 
 // === GREGORIAN DATE METHODS (0-BASED MONTHS) ===

@@ -2,6 +2,8 @@ package com.farashian.pcalendar;
 
 
 import android.icu.util.IslamicCalendar;
+import android.os.Build;
+import androidx.annotation.RequiresApi;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianDateFormat;
 
@@ -17,18 +19,19 @@ public class FDateUtils {
     public static int      THIS_YEAR;
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    static FastPersianDateFormat dayOfWeek       = new FastPersianDateFormat("EEEE"); // Day of week
-    static FastPersianDateFormat fullDateWithDay = new FastPersianDateFormat("EEEE dd MMMM yyyy");
-    static              FastPersianDateFormat fullDate            = new FastPersianDateFormat("dd MMMM yyyy");
-    static              FastPersianDateFormat dashDate            = new FastPersianDateFormat("dd-MMM-yyyy");
-    static              FastPersianDateFormat dateTime            = new FastPersianDateFormat("dd MMMM yyyy HH:mm");
-    static              FastPersianDateFormat timestampDash       = new FastPersianDateFormat("yyyy-MM-dd-HH:mm");
-    static              FastPersianDateFormat timestampUnderscore = new FastPersianDateFormat("yyyy-MM-dd_HH-mm");
-    static              FastPersianDateFormat slashDate           = new FastPersianDateFormat("yyyy/MM/dd");
-    static              FastPersianDateFormat dashDateOnly        = new FastPersianDateFormat("yyyy-MM-dd");
-    static              FastPersianDateFormat time                = new FastPersianDateFormat("HH:mm");
-    static              FastPersianDateFormat timeWithSeconds     = new FastPersianDateFormat("HH:mm:ss");
-    public static final String              TIMESTAMP_FORMAT    = "yyyyMMdd_HHmmss";
+    static FastPersianDateFormat dayOfWeek           = new FastPersianDateFormat("dddd"); // Day of week
+    static FastPersianDateFormat fullDateWithDay     = new FastPersianDateFormat("dddd dd MMMM yyyy");
+    static FastPersianDateFormat fullDate            = new FastPersianDateFormat("dd MMMM yyyy");
+    static FastPersianDateFormat dashDate1           = new FastPersianDateFormat("dd-MMM-yyyy");
+    static FastPersianDateFormat dateTime            = new FastPersianDateFormat("dd MMMM yyyy HH:mm");
+    static FastPersianDateFormat timestampDash       = new FastPersianDateFormat("yyyy-MM-dd-HH:mm");
+    static FastPersianDateFormat timestampUnderscore = new FastPersianDateFormat("yyyy-MM-dd_HH-mm");
+    static FastPersianDateFormat slashDate           = new FastPersianDateFormat("yyyy/MM/dd");
+    static FastPersianDateFormat dashDate            = new FastPersianDateFormat("yyyy-MM-dd");
+    static FastPersianDateFormat time                = new FastPersianDateFormat("HH:mm");
+    static FastPersianDateFormat timeWithSeconds     = new FastPersianDateFormat("HH:mm:ss");
+
+    public static final String TIMESTAMP_FORMAT = "yyyyMMdd_HHmmss";
 
     static {
         THIS_YEAR = new FastPersianCalendar().getYear();
@@ -38,20 +41,40 @@ public class FDateUtils {
         return System.currentTimeMillis();
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     public static Date from(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        }
+
+        return null;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     public static Date from(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        }
+
+        return null;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     public static LocalDate fromDate(Date date) {
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+
+        return null;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     public static LocalDateTime asLocalDateTime(Date date) {
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        }
+
+        return null;
     }
 
     public static String getTimeStamp() {
@@ -82,7 +105,7 @@ public class FDateUtils {
 
     public static String nowFarsiDashDate() {
         FastPersianCalendar pdate = new FastPersianCalendar();
-        return dashDateOnly.format(pdate);
+        return dashDate.format(pdate);
     }
 
     public static String getFarsidate(String pattern) {
@@ -121,7 +144,7 @@ public class FDateUtils {
         return null;
     }
 
-    public static String toDateString(FastPersianCalendar date) {
+    public static String toSlashDate(FastPersianCalendar date) {
         if (date == null) return null;
         return slashDate.format(date);
     }
@@ -341,12 +364,12 @@ public class FDateUtils {
 
     public static FYMD islamicFromGregorian2(GregorianCalendar gc) {
         // Tabular conversion
-        IslamicCalendar islamicCalendar = new IslamicCalendar(new Locale("fa")) ;
+        IslamicCalendar islamicCalendar = new IslamicCalendar(new Locale("fa"));
         islamicCalendar.setTime(gc.getTime());
 
-        int year = islamicCalendar.get(Calendar.YEAR);
+        int year  = islamicCalendar.get(Calendar.YEAR);
         int month = islamicCalendar.get(Calendar.MONTH) + 1;
-        int day = islamicCalendar.get(Calendar.DAY_OF_MONTH);
+        int day   = islamicCalendar.get(Calendar.DAY_OF_MONTH);
 
         // Simple correction: Iran often lags tabular by 1 day
         day -= 1;
@@ -369,11 +392,12 @@ public class FDateUtils {
 
         // Calculate days difference
         long diffMillis = gc.getTimeInMillis() - epoch.getTimeInMillis();
-        int daysDiff = (int) (diffMillis / (1000 * 60 * 60 * 24));
+        int  daysDiff   = (int) (diffMillis / (1000 * 60 * 60 * 24));
 
         // Now use the month length table to convert daysDiff to FYMD
         return null;// convertDaysToIranianHijri(daysDiff);
     }
+
     public static GregorianCalendar islamicToGregorian(IslamicCalendar islamicCalendar) {
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(islamicCalendar.getTime());
@@ -390,6 +414,7 @@ public class FDateUtils {
     }
 
     private static final HashMap<Integer, int[]> HIJRI_MONTH_DATA = getIranianHijriMonthData();
+
     /**
      * Check if a given Hijri year/month falls within the official data range
      * @param year - Hijri year
@@ -453,9 +478,9 @@ public class FDateUtils {
         islamicCalendar.setTime(gc.getTime());
 
         // Get year, month, day from standard Islamic calendar
-        int year = islamicCalendar.get(Calendar.YEAR);
+        int year  = islamicCalendar.get(Calendar.YEAR);
         int month = islamicCalendar.get(Calendar.MONTH) + 1; // Convert 0-index to 1-index
-        int day = islamicCalendar.get(Calendar.DAY_OF_MONTH);
+        int day   = islamicCalendar.get(Calendar.DAY_OF_MONTH);
 
         // Adjust for Iranian Hijri using official table for years 1340-1448
         if (HIJRI_MONTH_DATA.containsKey(year)) {
@@ -510,7 +535,7 @@ public class FDateUtils {
         }
 
         int[] monthLengths = HIJRI_MONTH_DATA.get(hijriDate.year);
-        int dayOfYear = hijriDate.day;
+        int   dayOfYear    = hijriDate.day;
 
         for (int i = 0; i < hijriDate.month - 1; i++) {
             dayOfYear += monthLengths[i];
@@ -645,7 +670,8 @@ public class FDateUtils {
         hijriData.put(1445, new int[]{30, 30, 30, 29, 30, 29, 29, 30, 29, 30, 29, 29});
         hijriData.put(1446, new int[]{30, 30, 30, 29, 30, 30, 29, 30, 29, 29, 29, 30});
         hijriData.put(1447, new int[]{29, 30, 30, 29, 30, 30, 30, 29, 30, 29, 29, 29});
-        hijriData.put(1448, new int[]{30, 29, 30, 29, 30, 30, 30, 29, 30, 29, 30, 29}); // Note: Last 2 months added from pattern
+        hijriData.put(1448, new int[]{30, 29, 30, 29, 30, 30, 30, 29, 30, 29, 30,
+                29}); // Note: Last 2 months added from pattern
 
         return hijriData;
     }

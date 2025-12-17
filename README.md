@@ -42,18 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.3.0</version>
+<version>2.3.1</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.3.0</version>
+<version>2.3.1</version>
 </dependency>
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>fast-persian-calendar-android</artifactId>
-<version>2.3.0</version>
+<version>2.3.1</version>
 </dependency>
 ```
 ---
@@ -188,7 +188,7 @@ public class DateFormatExample {
 | `M`     | Month number without leading zero | ۹                      |
 | `dd`    | Day of month with leading zero    | ۰۹                     |
 | `d`     | Day of month without leading zero | ۹                      |
-| `DDDD`  | Full day name                     | یکشنبه                 |
+| `dddd`  | Full day name                     | یکشنبه                 |
 | `ddd`   | Short day name                    | یکشنبه                 |
 | `HH`    | 24-hour clock                     | ۱۴                     |
 | `hh`    | 12-hour clock                     | ۰۲                     |
@@ -210,20 +210,27 @@ public class DateExample {
         FastPersianCalendar date = new FastPersianCalendar(1402, 0, 1); // Farvardin 1, 1402
 
         // Add days
-        date.add(FastPersianCalendar.DAY_OF_MONTH, 10);
+        date.addDays(10);
         System.out.println("➕ After 10 days: " + date.getLongDate()); // Output: 1402/01/11
 
         // Add months
-        date.add(FastPersianCalendar.MONTH, 2);
+        date.addMonths(2);
         System.out.println("📆 After 2 months: " + date.getLongDate()); // Output: 1402/03/11
 
+        
         // Add years
-        date.add(FastPersianCalendar.YEAR, 1);
+        date.addYears(1);
         System.out.println("🎊 After 1 year: " + date.getLongDate()); // Output: 1403/03/11
-
+        
         // Subtract days (using a negative number)
-        date.add(FastPersianCalendar.DAY_OF_MONTH, -5);
+        date.addDays(-5);
         System.out.println("➖ 5 days before: " + date.getLongDate()); // Output: 1403/03/06
+
+        // Add days  Get a copy of this calendar with days added
+        FastPersianCalendar nDate = date.plusDays(10);
+        System.out.println("➕ After 10 days: " + date.getLongDate()); // Output: 1403/03/06
+        System.out.println("➕ After 10 days: " + nDate.getLongDate()); // Output: 1403/03/16
+
     }
 }
 
@@ -521,7 +528,7 @@ public class Debugging {
 
 ```java
 
-import com.farashian.pcalendar.DateUtils;
+import com.farashian.pcalendar.util.DateUtils;
 import com.farashian.pcalendar.PersianCalendar;
 import com.farashian.pcalendar.YMD;
 
