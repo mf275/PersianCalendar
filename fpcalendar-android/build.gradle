@@ -25,7 +25,7 @@ android {
         }
         debug {
             // Optional: Add debug build type
-            testCoverageEnabled = true
+            testCoverageEnabled = false
         }
     }
 
@@ -87,13 +87,13 @@ afterEvaluate {
                 // Option 2: For Maven Central (recommended)
                 // groupId = 'io.github.mf275.persian-calendar'
                 // Option 3: Custom domain
-                 groupId = 'com.farashian'
+                groupId = 'com.farashian'
 
                 artifactId = 'fast-persian-calendar-android'  // Consistent naming
                 version = android.defaultConfig.versionName
 
                 pom {
-                    name = 'Persian Calendar Android'
+                    name = 'Fast Persian Calendar Android'
                     description = 'Android library for Persian (Jalali) calendar with UI components'
                     url = 'https://github.com/mf275/PersianCalendar'
                     packaging = 'aar'  // Important for Android libraries
