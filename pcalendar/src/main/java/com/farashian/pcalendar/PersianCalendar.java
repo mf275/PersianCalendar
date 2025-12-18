@@ -1344,8 +1344,8 @@ public class PersianCalendar extends Calendar {
         }
 
         return locale.getLanguage().equals("fa")
-                ? FPCConstants.PERSIAN_MONTH_NAMES_SHORT[month]
-                : FPCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month];
+                ? PCConstants.PERSIAN_MONTH_NAMES_SHORT[month]
+                : PCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month];
     }
 
     /**
