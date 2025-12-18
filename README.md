@@ -42,18 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.3.1</version>
+<version>2.3.2</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.3.1</version>
+<version>2.3.2</version>
 </dependency>
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>fast-persian-calendar-android</artifactId>
-<version>2.3.1</version>
+<version>2.3.2</version>
 </dependency>
 ```
 ---
@@ -82,12 +82,12 @@ repositories {
 
 dependencies {
     // For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.3.1")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.3.2")
 
     // For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.3.1")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.3.2")
     //or
-    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.3.1")
+    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.3.2")
 }
 
 ```
@@ -102,7 +102,7 @@ Thank you for helping keep this project alive!
 
 # what's new
 
-### version 2.3.0
+### version 2.3.2
 * - Separated the fast version of PersianCalendar.
 * - Add DateUtils and some useful methods
 * - Persian ↔ Gregorian conversion (toPersianDate(), toDate())
