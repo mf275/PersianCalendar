@@ -7,6 +7,7 @@ install:
 jitpack:
   artifact:
     - "pcalendar/build/publications/mavenJava/pom-default.xml"
+    - "fpcalendar-android/build/publications/release/pom-default.xml"
     - "pcalendar-android/build/publications/release/pom-default.xml"
   artifactId:
     - "persian-calendar"
