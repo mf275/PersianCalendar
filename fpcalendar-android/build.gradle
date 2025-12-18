@@ -132,7 +132,7 @@ afterEvaluate {
             /* debug(MavenPublication) {
                  from components.debug
                  groupId = 'com.github.mf275.persian-calendar'
-                 artifactId = 'persian-calendar-android-debug'
+                 artifactId = 'fast-persian-calendar-android-debug'
                  version = "${android.defaultConfig.versionName}-debug"
              }*/
         }
