@@ -11,3 +11,4 @@ jitpack:
   artifactId:
     - "persian-calendar"
     - "persian-calendar-android"
+    - "fast-persian-calendar-android"
