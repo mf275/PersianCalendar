@@ -10,5 +10,5 @@ jitpack:
     - "pcalendar-android/build/publications/release/pom-default.xml"
   artifactId:
     - "persian-calendar"
-    - "persian-calendar-android"
     - "fast-persian-calendar-android"
+    - "persian-calendar-android"
