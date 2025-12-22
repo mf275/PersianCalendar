@@ -3,6 +3,7 @@ package com.farashian.pcalendar;
 
 import android.icu.util.IslamicCalendar;
 import android.os.Build;
+import androidx.annotation.RequiresApi;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -12,22 +13,23 @@ import java.time.ZoneId;
 import java.util.*;
 
 public class DateUtils {
-    private static final HashMap<Integer, int[]> HIJRI_MONTH_DATA = getIranianHijriMonthData();
-    public static        int                     THIS_YEAR;
-    static               Calendar                calendar         = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    static              PersianDateFormat dayOfWeek           = new PersianDateFormat("dddd"); // Day of week
-    static              PersianDateFormat fullDateWithDay     = new PersianDateFormat("dddd dd MMMM yyyy");
-    static              PersianDateFormat fullDate            = new PersianDateFormat("dd MMMM yyyy");
-    static              PersianDateFormat dashDate1           = new PersianDateFormat("dd-MMM-yyyy");
-    static              PersianDateFormat dateTime            = new PersianDateFormat("dd MMMM yyyy HH:mm");
-    static              PersianDateFormat timestampDash       = new PersianDateFormat("yyyy-MM-dd-HH:mm");
-    static              PersianDateFormat timestampUnderscore = new PersianDateFormat("yyyy-MM-dd_HH-mm");
-    static              PersianDateFormat slashDate           = new PersianDateFormat("yyyy/MM/dd");
-    static              PersianDateFormat dashDate            = new PersianDateFormat("yyyy-MM-dd");
-    static              PersianDateFormat time                = new PersianDateFormat("HH:mm");
-    static              PersianDateFormat timeWithSeconds     = new PersianDateFormat("HH:mm:ss");
-    public static final String            TIMESTAMP_FORMAT    = "yyyyMMdd_HHmmss";
+    public static int      THIS_YEAR;
+    static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+    static PersianDateFormat dayOfWeek           = new PersianDateFormat("dddd"); // Day of week
+    static PersianDateFormat fullDateWithDay     = new PersianDateFormat("dddd dd MMMM yyyy");
+    static PersianDateFormat fullDate            = new PersianDateFormat("dd MMMM yyyy");
+    static PersianDateFormat dashDate1           = new PersianDateFormat("dd-MMM-yyyy");
+    static PersianDateFormat dateTime            = new PersianDateFormat("dd MMMM yyyy HH:mm");
+    static PersianDateFormat timestampDash       = new PersianDateFormat("yyyy-MM-dd-HH:mm");
+    static PersianDateFormat timestampUnderscore = new PersianDateFormat("yyyy-MM-dd_HH-mm");
+    static PersianDateFormat slashDate           = new PersianDateFormat("yyyy/MM/dd");
+    static PersianDateFormat dashDate            = new PersianDateFormat("yyyy-MM-dd");
+    static PersianDateFormat time                = new PersianDateFormat("HH:mm");
+    static PersianDateFormat timeWithSeconds     = new PersianDateFormat("HH:mm:ss");
+
+    public static final String TIMESTAMP_FORMAT = "yyyyMMdd_HHmmss";
 
     static {
         THIS_YEAR = new PersianCalendar().getYear();
@@ -37,22 +39,25 @@ public class DateUtils {
         return System.currentTimeMillis();
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     public static Date from(LocalDate localDate) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         }
 
-        return new Date();
+        return null;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     public static Date from(LocalDateTime localDateTime) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         }
 
-        return new Date();
+        return null;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     public static LocalDate fromDate(Date date) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
@@ -61,6 +66,7 @@ public class DateUtils {
         return null;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     public static LocalDateTime asLocalDateTime(Date date) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -267,11 +273,11 @@ public class DateUtils {
     }
 
     public static long getStartDate(int persianYear, int persianMonth, int persianDay) {
-        PersianCalendar persianCalendar = new PersianCalendar();
-        persianCalendar.setPersianDate(persianYear, persianMonth, persianDay);
+        PersianCalendar PersianCalendar = new PersianCalendar();
+        PersianCalendar.setPersianDate(persianYear, persianMonth, persianDay);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(persianCalendar.getTime());
+        calendar.setTime(PersianCalendar.getTime());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -281,11 +287,11 @@ public class DateUtils {
     }
 
     public static long getEndDate(int persianYear, int persianMonth, int persianDay) {
-        PersianCalendar persianCalendar = new PersianCalendar();
-        persianCalendar.setPersianDate(persianYear, persianMonth, persianDay);
+        PersianCalendar PersianCalendar = new PersianCalendar();
+        PersianCalendar.setPersianDate(persianYear, persianMonth, persianDay);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(persianCalendar.getTime());
+        calendar.setTime(PersianCalendar.getTime());
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
@@ -360,7 +366,7 @@ public class DateUtils {
         islamicCalendar.setTime(gc.getTime());
 
         int year  = islamicCalendar.get(Calendar.YEAR);
-        int month = islamicCalendar.get(Calendar.MONTH) + 1;
+        int month = islamicCalendar.get(Calendar.MONTH);
         int day   = islamicCalendar.get(Calendar.DAY_OF_MONTH);
 
         // Simple correction: Iran often lags tabular by 1 day
@@ -405,6 +411,8 @@ public class DateUtils {
         return islamicCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
+    private static final HashMap<Integer, int[]> HIJRI_MONTH_DATA = getIranianHijriMonthData();
+
     /**
      * Check if a given Hijri year/month falls within the official data range
      * @param year - Hijri year
@@ -418,7 +426,7 @@ public class DateUtils {
         }
 
         // Check if month is valid (1-12)
-        if (month < 1 || month > 12) {
+        if (month < 0 || month > 11) {
             return false;
         }
 
@@ -448,7 +456,7 @@ public class DateUtils {
         }
 
         // Month is 1-indexed, array is 0-indexed
-        return HIJRI_MONTH_DATA.get(year)[month - 1];
+        return HIJRI_MONTH_DATA.get(year)[month];
     }
 
     /**
@@ -469,7 +477,7 @@ public class DateUtils {
 
         // Get year, month, day from standard Islamic calendar
         int year  = islamicCalendar.get(Calendar.YEAR);
-        int month = islamicCalendar.get(Calendar.MONTH) + 1; // Convert 0-index to 1-index
+        int month = islamicCalendar.get(Calendar.MONTH); // Convert 0-index to 1-index
         int day   = islamicCalendar.get(Calendar.DAY_OF_MONTH);
 
         // Adjust for Iranian Hijri using official table for years 1340-1448
@@ -485,10 +493,10 @@ public class DateUtils {
         int[] monthLengths = HIJRI_MONTH_DATA.get(year);
 
         // If day exceeds month length, adjust to next month
-        while (day > monthLengths[month - 1]) {
-            day -= monthLengths[month - 1];
+        while (day > monthLengths[month]) {
+            day -= monthLengths[month];
             month++;
-            if (month > 12) {
+            if (month > 11) {
                 month = 1;
                 year++;
                 // Get new year's month lengths if available
@@ -510,7 +518,7 @@ public class DateUtils {
 
         IslamicCalendar islamicCalendar = new IslamicCalendar(Locale.US);
         islamicCalendar.set(Calendar.YEAR, hijriDate.year);
-        islamicCalendar.set(Calendar.MONTH, hijriDate.month - 1); // Convert 1-index to 0-index
+        islamicCalendar.set(Calendar.MONTH, hijriDate.month); // Convert 1-index to 0-index
         islamicCalendar.set(Calendar.DAY_OF_MONTH, hijriDate.day);
 
         GregorianCalendar gc = new GregorianCalendar();
@@ -527,7 +535,7 @@ public class DateUtils {
         int[] monthLengths = HIJRI_MONTH_DATA.get(hijriDate.year);
         int   dayOfYear    = hijriDate.day;
 
-        for (int i = 0; i < hijriDate.month - 1; i++) {
+        for (int i = 0; i < hijriDate.month; i++) {
             dayOfYear += monthLengths[i];
         }
 
@@ -540,12 +548,12 @@ public class DateUtils {
             return false;
         }
 
-        if (hijriDate.month < 1 || hijriDate.month > 12) {
+        if (hijriDate.month < 0 || hijriDate.month > 11) {
             return false;
         }
 
         int[] monthLengths = HIJRI_MONTH_DATA.get(hijriDate.year);
-        return hijriDate.day >= 1 && hijriDate.day <= monthLengths[hijriDate.month - 1];
+        return hijriDate.day >= 1 && hijriDate.day <= monthLengths[hijriDate.month];
     }
 
     // Copy the table from previous response (truncated for brevity)
