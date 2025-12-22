@@ -18,6 +18,15 @@ public class YMD {
         this.day= ymd[2];
     }
 
+    public int[] toIntArray() {
+        int[] ymd = new int[3];
+        ymd[0] = this.year;
+        ymd[1] = this.month;
+        ymd[2] = this.day;
+
+        return ymd;
+    }
+
     @Override
     public String toString() {
         return format("%04d/%02d/%02d", year, month, day);
