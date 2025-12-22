@@ -2,14 +2,15 @@ package com.farashian.pcalendar.fast;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.farashian.pcalendar.FPCConstants;
-import com.farashian.pcalendar.FYMD;
+import com.farashian.pcalendar.fast.util.PCConstants;
+import com.farashian.pcalendar.fast.util.YMD;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.FDateUtils.islamicFromGregorian;
-import static com.farashian.pcalendar.FPCConstants.PERSIAN_LOCALE;
-import static com.farashian.pcalendar.FPCalendarUtils.validatePersianDate;
+import static com.farashian.pcalendar.fast.util.DateUtils.islamicFromGregorian;
+import static com.farashian.pcalendar.fast.util.PCConstants.PERSIAN_LOCALE;
+import static com.farashian.pcalendar.fast.util.PCalendarUtils.validatePersianDate;
+
 
 /**
  * High-performance Persian Calendar with complete field computation
@@ -447,7 +448,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * Get Islamic (Hijri) year
      * @return Islamic date
      */
-    public FYMD getIslamicDate() {
+    public YMD getIslamicDate() {
         complete(); // Ensure fields are computed
         return islamicFromGregorian(gCal);
     }
@@ -1170,9 +1171,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     /**
      * For backward compatibility - returns current state as array
      */
-    public FYMD getYmd() {
+    public YMD getYmd() {
         ensureComputed();
-        return new FYMD(persianYear, persianMonth, persianDay);
+        return new YMD(persianYear, persianMonth, persianDay);
     }
 
     /**
@@ -1258,8 +1259,8 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         if (index < 0) index += 7;
 
         return locale.getLanguage().equals("fa")
-                ? FPCConstants.WEEKDAY_NAMES[index]
-                : FPCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
+                ? PCConstants.WEEKDAY_NAMES[index]
+                : PCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
     }
 
     public static String getMonthName(int month, Locale locale) {
@@ -1268,8 +1269,8 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
 
         return locale.getLanguage().equals("fa")
-                ? FPCConstants.PERSIAN_MONTH_NAMES[month]
-                : FPCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
+                ? PCConstants.PERSIAN_MONTH_NAMES[month]
+                : PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
     }
 
     public String getMonthNameShort() {
@@ -1283,8 +1284,8 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
 
         return locale.getLanguage().equals("fa")
-                ? FPCConstants.PERSIAN_MONTH_NAMES_SHORT[month]
-                : FPCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month];
+                ? PCConstants.PERSIAN_MONTH_NAMES_SHORT[month]
+                : PCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month];
     }
 
 // === GREGORIAN DATE METHODS (0-BASED MONTHS) ===

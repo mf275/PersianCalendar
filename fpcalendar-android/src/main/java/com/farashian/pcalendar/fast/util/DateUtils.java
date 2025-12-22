@@ -1,4 +1,4 @@
-package com.farashian.pcalendar;
+package com.farashian.pcalendar.fast.util;
 
 
 import android.icu.util.IslamicCalendar;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-public class FDateUtils {
+public class DateUtils {
 
     public static int      THIS_YEAR;
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -362,13 +362,13 @@ public class FDateUtils {
         return calendar.getTime();
     }
 
-    public static FYMD islamicFromGregorian2(GregorianCalendar gc) {
+    public static YMD islamicFromGregorian2(GregorianCalendar gc) {
         // Tabular conversion
         IslamicCalendar islamicCalendar = new IslamicCalendar(new Locale("fa"));
         islamicCalendar.setTime(gc.getTime());
 
         int year  = islamicCalendar.get(Calendar.YEAR);
-        int month = islamicCalendar.get(Calendar.MONTH) + 1;
+        int month = islamicCalendar.get(Calendar.MONTH);
         int day   = islamicCalendar.get(Calendar.DAY_OF_MONTH);
 
         // Simple correction: Iran often lags tabular by 1 day
@@ -382,11 +382,11 @@ public class FDateUtils {
             day = 30; // fallback, you’d need month length table
         }
 
-        return new FYMD(year, month, day);
+        return new YMD(year, month, day);
     }
 
     // If you don't want ICU4J dependency, you can use this approximate method
-    public static FYMD gregorianToIranianHijri(GregorianCalendar gc) {
+    public static YMD gregorianToIranianHijri(GregorianCalendar gc) {
         // Known reference: 1 Muharram 1340 AH ≈ July 16, 1921 CE
         GregorianCalendar epoch = new GregorianCalendar(1921, 6, 16); // Month is 0-indexed
 
@@ -394,7 +394,7 @@ public class FDateUtils {
         long diffMillis = gc.getTimeInMillis() - epoch.getTimeInMillis();
         int  daysDiff   = (int) (diffMillis / (1000 * 60 * 60 * 24));
 
-        // Now use the month length table to convert daysDiff to FYMD
+        // Now use the month length table to convert daysDiff to YMD
         return null;// convertDaysToIranianHijri(daysDiff);
     }
 
@@ -428,7 +428,7 @@ public class FDateUtils {
         }
 
         // Check if month is valid (1-12)
-        if (month < 1 || month > 12) {
+        if (month < 0 || month > 11) {
             return false;
         }
 
@@ -458,7 +458,7 @@ public class FDateUtils {
         }
 
         // Month is 1-indexed, array is 0-indexed
-        return HIJRI_MONTH_DATA.get(year)[month - 1];
+        return HIJRI_MONTH_DATA.get(year)[month];
     }
 
     /**
@@ -473,13 +473,13 @@ public class FDateUtils {
         return day >= 1 && day <= monthLength;
     }
 
-    public static FYMD islamicFromGregorian(GregorianCalendar gc) {
+    public static YMD islamicFromGregorian(GregorianCalendar gc) {
         IslamicCalendar islamicCalendar = new IslamicCalendar(Locale.US);
         islamicCalendar.setTime(gc.getTime());
 
         // Get year, month, day from standard Islamic calendar
         int year  = islamicCalendar.get(Calendar.YEAR);
-        int month = islamicCalendar.get(Calendar.MONTH) + 1; // Convert 0-index to 1-index
+        int month = islamicCalendar.get(Calendar.MONTH); // Convert 0-index to 1-index
         int day   = islamicCalendar.get(Calendar.DAY_OF_MONTH);
 
         // Adjust for Iranian Hijri using official table for years 1340-1448
@@ -488,17 +488,17 @@ public class FDateUtils {
         }
 
         // For years outside 1340-1448, return standard Islamic date
-        return new FYMD(year, month, day);
+        return new YMD(year, month, day);
     }
 
-    private static FYMD adjustForIranianHijri(int year, int month, int day) {
+    private static YMD adjustForIranianHijri(int year, int month, int day) {
         int[] monthLengths = HIJRI_MONTH_DATA.get(year);
 
         // If day exceeds month length, adjust to next month
-        while (day > monthLengths[month - 1]) {
-            day -= monthLengths[month - 1];
+        while (day > monthLengths[month]) {
+            day -= monthLengths[month];
             month++;
-            if (month > 12) {
+            if (month > 11) {
                 month = 1;
                 year++;
                 // Get new year's month lengths if available
@@ -510,17 +510,17 @@ public class FDateUtils {
             }
         }
 
-        return new FYMD(year, month, day);
+        return new YMD(year, month, day);
     }
 
-    public static GregorianCalendar gregorianFromIslamic(FYMD hijriDate) {
+    public static GregorianCalendar gregorianFromIslamic(YMD hijriDate) {
         // To convert from Iranian Hijri to Gregorian, we need to calculate Julian Day Number
         // This is more complex and requires knowing the start date of each month
         // For now, return approximate conversion using standard Islamic calendar
 
         IslamicCalendar islamicCalendar = new IslamicCalendar(Locale.US);
         islamicCalendar.set(Calendar.YEAR, hijriDate.year);
-        islamicCalendar.set(Calendar.MONTH, hijriDate.month - 1); // Convert 1-index to 0-index
+        islamicCalendar.set(Calendar.MONTH, hijriDate.month); // Convert 1-index to 0-index
         islamicCalendar.set(Calendar.DAY_OF_MONTH, hijriDate.day);
 
         GregorianCalendar gc = new GregorianCalendar();
@@ -529,7 +529,7 @@ public class FDateUtils {
     }
 
     // Get day of year for Iranian Hijri date
-    public static int getDayOfIranianHijriYear(FYMD hijriDate) {
+    public static int getDayOfIranianHijriYear(YMD hijriDate) {
         if (!HIJRI_MONTH_DATA.containsKey(hijriDate.year)) {
             return -1; // Year not in table
         }
@@ -537,7 +537,7 @@ public class FDateUtils {
         int[] monthLengths = HIJRI_MONTH_DATA.get(hijriDate.year);
         int   dayOfYear    = hijriDate.day;
 
-        for (int i = 0; i < hijriDate.month - 1; i++) {
+        for (int i = 0; i < hijriDate.month; i++) {
             dayOfYear += monthLengths[i];
         }
 
@@ -545,17 +545,17 @@ public class FDateUtils {
     }
 
     // Check if a date is valid in Iranian Hijri calendar
-    public static boolean isValidIranianHijriDate(FYMD hijriDate) {
+    public static boolean isValidIranianHijriDate(YMD hijriDate) {
         if (!HIJRI_MONTH_DATA.containsKey(hijriDate.year)) {
             return false;
         }
 
-        if (hijriDate.month < 1 || hijriDate.month > 12) {
+        if (hijriDate.month < 0 || hijriDate.month > 11) {
             return false;
         }
 
         int[] monthLengths = HIJRI_MONTH_DATA.get(hijriDate.year);
-        return hijriDate.day >= 1 && hijriDate.day <= monthLengths[hijriDate.month - 1];
+        return hijriDate.day >= 1 && hijriDate.day <= monthLengths[hijriDate.month];
     }
 
     // Copy the table from previous response (truncated for brevity)
@@ -683,7 +683,7 @@ public class FDateUtils {
         GregorianCalendar now = new GregorianCalendar();
 
         // Convert to Iranian Hijri
-        FYMD hijriDate = islamicFromGregorian(now);
+        YMD hijriDate = islamicFromGregorian(now);
         System.out.println("Iranian Hijri date: " + hijriDate);
 
         // Check if valid

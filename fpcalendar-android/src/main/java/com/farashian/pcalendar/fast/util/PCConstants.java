@@ -1,9 +1,9 @@
-package com.farashian.pcalendar;
+package com.farashian.pcalendar.fast.util;
 
 
 import java.util.*;
 
-public class FPCConstants {
+public class PCConstants {
     /*public static final Set<Integer> leapYears = Set.of(
             1201, 1205, 1210, 1214, 1218, 1222, 1226, 1230, 1234, 1238, 1243,
             1247, 1251, 1255, 1259, 1263, 1267, 1271, 1276, 1280, 1284, 1288,
@@ -66,6 +66,10 @@ public class FPCConstants {
             "جولای", "آگوست", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
     };
 
+    public static final String[] GREGORIAN_MONTH_NAMES_ENG = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+    };
 
     public static final String[] WEEKDAY_NAMES_IN_ENGLISH = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"

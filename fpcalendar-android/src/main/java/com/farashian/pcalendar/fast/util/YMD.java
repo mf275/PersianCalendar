@@ -1,19 +1,19 @@
-package com.farashian.pcalendar;
+package com.farashian.pcalendar.fast.util;
 
 import org.jetbrains.annotations.NotNull;
 
 import static java.lang.String.format;
 
-public class FYMD {
+public class YMD {
 
     public int year, month, day;
-    public FYMD(int year, int month, int day) {
+    public YMD(int year, int month, int day) {
         this.year = year;
         this.month = month;
         this.day = day;
     }
 
-    public FYMD(int[] ymd) {
+    public YMD(int[] ymd) {
         this.year = ymd[0];
         this.month= ymd[1];
         this.day= ymd[2];

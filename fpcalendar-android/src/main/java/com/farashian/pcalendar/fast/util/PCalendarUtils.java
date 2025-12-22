@@ -1,13 +1,16 @@
-package com.farashian.pcalendar;
+package com.farashian.pcalendar.fast.util;
 
 import java.util.Locale;
+
+import static com.farashian.pcalendar.fast.util.PCConstants.GREGORIAN_MONTH_NAMES_ENG;
+import static com.farashian.pcalendar.fast.util.PCConstants.HIJRI_MONTH_NAMES;
 
 /**
  * Utility class with static methods for Persian calendar operations.
  */
-public final class FPCalendarUtils {
+public final class PCalendarUtils {
     
-    private FPCalendarUtils() {
+    private PCalendarUtils() {
     }
     
     /**
@@ -261,5 +264,13 @@ public final class FPCalendarUtils {
         out[0] = gy;
         out[1] = gm;
         out[2] = dayOfYear;
+    }
+
+    public static String getGeorgianMonthName(int month) {
+        return GREGORIAN_MONTH_NAMES_ENG[month];
+    }
+
+    public static String getIslamicMonthName(int month) {
+        return HIJRI_MONTH_NAMES[month];
     }
 }
