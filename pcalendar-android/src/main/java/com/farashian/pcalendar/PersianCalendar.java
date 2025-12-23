@@ -149,6 +149,16 @@ public class PersianCalendar extends Calendar implements Parcelable {
     }
 
 
+    public PersianCalendar fromGeorgian(int gYear, int gMonth, int gDay) {
+        return georgianToPersian(gYear, gMonth, gDay);
+    }
+
+    public static PersianCalendar georgianToPersian(int gYear, int gMonth, int gDay) {
+        // Validate Gregorian date
+        validateGregorianDate(gYear, gMonth, gDay);
+        int[] jalali = gregorianToPersian(gYear, gMonth, gDay);
+        return new PersianCalendar(jalali[0], jalali[1] - 1, jalali[2]);
+    }
     /**
      * Create PersianCalendar from Gregorian date string
      */
@@ -580,9 +590,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
     /**
      * Get current Gregorian date
      */
-    public static PersianCalendar currentGregorian() {
+    public static GregorianCalendar currentGregorian() {
         PersianCalendar result = new PersianCalendar();
-        return result;
+        return result.gCal;
     }
 
     /**

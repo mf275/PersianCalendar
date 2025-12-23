@@ -9,7 +9,7 @@ import java.util.*;
 
 import static com.farashian.pcalendar.fast.util.DateUtils.islamicFromGregorian;
 import static com.farashian.pcalendar.fast.util.PCConstants.PERSIAN_LOCALE;
-import static com.farashian.pcalendar.fast.util.PCalendarUtils.validatePersianDate;
+import static com.farashian.pcalendar.fast.util.PCalendarUtils.*;
 
 
 /**
@@ -324,20 +324,41 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         setTimeInMillis(date.getTime());
     }
 
-    private void validateGregorianDate(int year, int month, int day) {
-        if (year < 1 || year > 9999) {
-            throw new IllegalArgumentException("Year must be between 1 and 9999, got: " + year);
+    public FastPersianCalendar fromGeorgian(int gYear, int gMonth, int gDay) {
+        return georgianToPersian(gYear, gMonth, gDay);
+    }
+
+    public static FastPersianCalendar georgianToPersian(int gYear, int gMonth, int gDay) {
+        FastPersianCalendar result = new FastPersianCalendar();
+        result.setGregorianDate(gYear, gMonth, gDay);
+        return result;
+    }
+
+    /**
+     * Create FastPersianCalendar from Gregorian date string
+     */
+    public static FastPersianCalendar fromGeorgianStringYmd(String dateString) {
+        return fromGeorgianStringYmd(dateString, "-");
+    }
+
+    public static FastPersianCalendar fromGeorgianStringYmd(String dateString, String delimiter) {
+        if (dateString == null || dateString.isEmpty()) {
+            throw new IllegalArgumentException("Date string cannot be null or empty");
         }
 
-        if (month < 0 || month > 11) {
-            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        String[] parts = dateString.split(delimiter);
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid date format. Expected YYYY" + delimiter + "MM" + delimiter + "DD, got: " + dateString);
         }
 
-        // Validate day based on month and year
-        int maxDays = getGrgMonthLength(year, month); // Convert 1-based to 0-based for the method
-        if (day < 1 || day > maxDays) {
-            throw new IllegalArgumentException("Day must be between 1 and " + maxDays +
-                                               " for month " + month + "/" + year + ", got: " + day);
+        try {
+            int year  = Integer.parseInt(parts[0].trim());
+            int month = Integer.parseInt(parts[1].trim());
+            int day   = Integer.parseInt(parts[2].trim());
+
+            return new FastPersianCalendar(year, month, day);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number in date string: " + dateString, e);
         }
     }
 
@@ -1537,10 +1558,10 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * Get current Gregorian date
      * @return current Gregorian date as FastPersianCalendar
      */
-    public static FastPersianCalendar currentGregorian() {
+    public static GregorianCalendar currentGregorian() {
         FastPersianCalendar result = new FastPersianCalendar();
         // Set to current time (which is already Gregorian)
-        return result;
+        return result.gCal;
     }
 
 

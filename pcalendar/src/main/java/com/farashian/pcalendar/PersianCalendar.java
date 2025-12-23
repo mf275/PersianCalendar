@@ -442,6 +442,18 @@ public class PersianCalendar extends Calendar {
         return String.format(locale, "%s (%02d)", monthName, monthNumber);
     }
 
+    public PersianCalendar fromGeorgian(int gYear, int gMonth, int gDay) {
+        return georgianToPersian(gYear, gMonth, gDay);
+    }
+
+    public static PersianCalendar georgianToPersian(int gYear, int gMonth, int gDay) {
+        // Validate Gregorian date
+        validateGregorianDate(gYear, gMonth, gDay);
+        int[] jalali = gregorianToPersian(gYear, gMonth, gDay);
+        return new PersianCalendar(jalali[0], jalali[1] - 1, jalali[2]);
+    }
+
+
     /**
      * Convert Gregorian date to Persian date
      */
@@ -464,9 +476,9 @@ public class PersianCalendar extends Calendar {
     /**
      * Get current Gregorian date
      */
-    public static PersianCalendar currentGregorian() {
+    public static GregorianCalendar currentGregorian() {
         PersianCalendar result = new PersianCalendar();
-        return result;
+        return result.gCal;
     }
 
     /**
