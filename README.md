@@ -42,18 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.3.3</version>
+<version>2.3.4</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.3.3</version>
+<version>2.3.4</version>
 </dependency>
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>fast-persian-calendar-android</artifactId>
-<version>2.3.3</version>
+<version>2.3.4</version>
 </dependency>
 ```
 ---
@@ -82,12 +82,12 @@ repositories {
 
 dependencies {
     // For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.3.3")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.3.4")
 
     // For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.3.3")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.3.4")
     //or
-    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.3.3")
+    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.3.4")
 }
 
 ```
@@ -101,6 +101,10 @@ If you’d like to support development of **PersianCalendar**, you can donate us
 Thank you for helping keep this project alive!
 
 # what's new
+
+### version 2.3.4
+* - Added fromGregorian(int gYear, int gMonth, int gDay) static method
+    Fixed currentGregorian() method to properly return the underlying gCal instance
 
 ### version 2.3.2
 * - Separated the fast version of PersianCalendar.
