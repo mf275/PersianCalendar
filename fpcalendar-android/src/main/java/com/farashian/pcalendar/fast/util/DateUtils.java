@@ -457,8 +457,14 @@ public class DateUtils {
             return -1; // Using -1 instead of null for primitive return type
         }
 
-        // Month is 1-indexed, array is 0-indexed
-        return HIJRI_MONTH_DATA.get(year)[month];
+        int[] monthLengths = HIJRI_MONTH_DATA.get(year);
+        if (monthLengths == null) {
+            // No official data for this year → return unadjusted date
+            return -1;
+        }
+
+        return monthLengths[month];
+
     }
 
     /**
@@ -477,42 +483,58 @@ public class DateUtils {
         IslamicCalendar islamicCalendar = new IslamicCalendar(Locale.US);
         islamicCalendar.setTime(gc.getTime());
 
-        // Get year, month, day from standard Islamic calendar
         int year  = islamicCalendar.get(Calendar.YEAR);
-        int month = islamicCalendar.get(Calendar.MONTH); // Convert 0-index to 1-index
+        int month = islamicCalendar.get(Calendar.MONTH); // 0-indexed
         int day   = islamicCalendar.get(Calendar.DAY_OF_MONTH);
 
-        // Adjust for Iranian Hijri using official table for years 1340-1448
+        // Iran is usually 1 day behind Umm al-Qura
+        day -= 1;
+
+        if (day == 0) {
+            month -= 1;
+            if (month < 0) {
+                month = 11;
+                year -= 1;
+            }
+            int[] monthLengths = HIJRI_MONTH_DATA.get(year);
+            if (monthLengths == null) {
+                // No official data for this year → return unadjusted date
+                return new YMD(year, month, day);
+            }
+
+            day = monthLengths[month];
+        }
+
         if (HIJRI_MONTH_DATA.containsKey(year)) {
             return adjustForIranianHijri(year, month, day);
         }
 
-        // For years outside 1340-1448, return standard Islamic date
         return new YMD(year, month, day);
     }
 
     private static YMD adjustForIranianHijri(int year, int month, int day) {
         int[] monthLengths = HIJRI_MONTH_DATA.get(year);
+        if (monthLengths == null) {
+            return new YMD(year, month, day); // no adjustment possible
+        }
 
-        // If day exceeds month length, adjust to next month
         while (day > monthLengths[month]) {
             day -= monthLengths[month];
             month++;
+
             if (month > 11) {
-                month = 1;
+                month = 0;
                 year++;
-                // Get new year's month lengths if available
-                if (HIJRI_MONTH_DATA.containsKey(year)) {
-                    monthLengths = HIJRI_MONTH_DATA.get(year);
-                } else {
-                    break; // Exit if next year not in table
+
+                monthLengths = HIJRI_MONTH_DATA.get(year);
+                if (monthLengths == null) {
+                    break;
                 }
             }
         }
 
         return new YMD(year, month, day);
     }
-
     public static GregorianCalendar gregorianFromIslamic(YMD hijriDate) {
         // To convert from Iranian Hijri to Gregorian, we need to calculate Julian Day Number
         // This is more complex and requires knowing the start date of each month
@@ -520,7 +542,7 @@ public class DateUtils {
 
         IslamicCalendar islamicCalendar = new IslamicCalendar(Locale.US);
         islamicCalendar.set(Calendar.YEAR, hijriDate.year);
-        islamicCalendar.set(Calendar.MONTH, hijriDate.month); // Convert 1-index to 0-index
+        islamicCalendar.set(Calendar.MONTH, hijriDate.month);
         islamicCalendar.set(Calendar.DAY_OF_MONTH, hijriDate.day);
 
         GregorianCalendar gc = new GregorianCalendar();

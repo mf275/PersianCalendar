@@ -54,14 +54,6 @@ public class FastPersianCalendar extends Calendar {
     // We map: Saturday=0, Sunday=1, Monday=2, Tuesday=3, Wednesday=4, Thursday=5, Friday=6
     private static final int[] PERSIAN_OFFSETS = {0, 1, 2, 3, 4, 5, 6, 0};
 
-    // Gregorian offsets (US convention: Sunday-first)
-    // SUNDAY=0, MONDAY=1, TUESDAY=2, WEDNESDAY=3, THURSDAY=4, FRIDAY=5, SATURDAY=6
-    private static final int[] GREGORIAN_OFFSETS = {0, 0, 1, 2, 3, 4, 5, 6};
-
-    // Gregorian offsets (ISO convention: Monday-first)
-    // MONDAY=0, TUESDAY=1, WEDNESDAY=2, THURSDAY=3, FRIDAY=4, SATURDAY=5, SUNDAY=6
-    private static final int[] ISO_OFFSETS = {0, 6, 0, 1, 2, 3, 4, 5};
-
     // === CONSTRUCTORS ===
 
     public FastPersianCalendar() {
@@ -390,22 +382,9 @@ public class FastPersianCalendar extends Calendar {
         return PERSIAN_OFFSETS[javaDayOfWeek];
     }
 
-    /**
-     * Calculate offset for Gregorian calendar (US convention: Sunday-first week)
-     * Returns 0-6 where 0=Sunday, 1=Monday, ..., 6=Saturday
-     */
-    public int calculateGeorgianOffset(int javaDayOfWeek) {
-        if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
-        return GREGORIAN_OFFSETS[javaDayOfWeek];
-    }
-
-    /**
-     * Calculate offset for Gregorian calendar (ISO convention: Monday-first week)
-     * Returns 0-6 where 0=Monday, 1=Tuesday, ..., 6=Sunday
-     */
     public int calculateGeorgianOffsetISO(int javaDayOfWeek) {
         if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
-        return ISO_OFFSETS[javaDayOfWeek];
+        return (javaDayOfWeek + 5) % 7;
     }
 
     public void parse(String dateString) {
@@ -463,7 +442,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Compute all calendar fields that parent class expects
-     * FIXED: Proper field computation with Persian week calculations
+     * Proper field computation with Persian week calculations
      */
     private void computeAllFields() {
         // Use Gregorian calendar to compute all fields reliably
@@ -480,7 +459,7 @@ public class FastPersianCalendar extends Calendar {
         fields[SECOND]      = gCal.get(SECOND);
         fields[MILLISECOND] = gCal.get(MILLISECOND);
 
-        // CRITICAL FIX: Use Gregorian's properly computed day-of-week
+        // Use Gregorian's properly computed day-of-week
         // Get Gregorian day of week
         int gregorianDayOfWeek = gCal.get(DAY_OF_WEEK);
 

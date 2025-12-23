@@ -41,13 +41,6 @@ public class PersianCalendar extends Calendar implements Parcelable {
     private              int[] lastComputedYmd  = {0, 0, 0};
     private static final int[] PERSIAN_OFFSETS  = {0, 1, 2, 3, 4, 5, 6, 0};
 
-    // Gregorian offsets (US convention: Sunday-first)
-    // SUNDAY=0, MONDAY=1, TUESDAY=2, WEDNESDAY=3, THURSDAY=4, FRIDAY=5, SATURDAY=6
-    private static final int[] GREGORIAN_OFFSETS = {0, 0, 1, 2, 3, 4, 5, 6};
-
-    // Gregorian offsets (ISO convention: Monday-first)
-    // MONDAY=0, TUESDAY=1, WEDNESDAY=2, THURSDAY=3, FRIDAY=4, SATURDAY=5, SUNDAY=6
-    private static final int[] ISO_OFFSETS = {0, 6, 0, 1, 2, 3, 4, 5};
 
     // === CONSTRUCTORS ===
 
@@ -2095,20 +2088,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
         return PERSIAN_OFFSETS[javaDayOfWeek];
     }
 
-    /**
-     * Calculate offset for Gregorian calendar (US convention: Sunday-first week)
-     */
-    public int calculateGeorgianOffset(int javaDayOfWeek) {
-        if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
-        return GREGORIAN_OFFSETS[javaDayOfWeek];
-    }
-
-    /**
-     * Calculate offset for Gregorian calendar (ISO convention: Monday-first week)
-     */
     public int calculateGeorgianOffsetISO(int javaDayOfWeek) {
         if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
-        return ISO_OFFSETS[javaDayOfWeek];
+        return (javaDayOfWeek + 5) % 7;
     }
 
     public PersianCalendar newInstance() {

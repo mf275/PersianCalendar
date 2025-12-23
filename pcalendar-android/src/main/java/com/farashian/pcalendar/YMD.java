@@ -31,6 +31,6 @@ public class YMD {
     @NotNull
     @Override
     public String toString() {
-        return format("%04d/%02d/%02d", year, month, day);
+        return format("%04d/%02d/%02d", year, month+1, day);
     }
 }
