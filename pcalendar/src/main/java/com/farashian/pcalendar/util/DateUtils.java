@@ -3,32 +3,35 @@ package com.farashian.pcalendar.util;
 
 import com.farashian.pcalendar.PersianCalendar;
 import com.farashian.pcalendar.PersianDateFormat;
-import com.farashian.pcalendar.YMD;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateUtils {
 
     public static int      THIS_YEAR;
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    static PersianDateFormat dayOfWeek       = new PersianDateFormat("EEEE"); // Day of week
-    static PersianDateFormat fullDateWithDay = new PersianDateFormat("EEEE dd MMMM yyyy");
-    static              PersianDateFormat fullDate            = new PersianDateFormat("dd MMMM yyyy");
-    static              PersianDateFormat dashDate_           = new PersianDateFormat("dd-MMM-yyyy");
-    static              PersianDateFormat dateTime            = new PersianDateFormat("dd MMMM yyyy HH:mm");
-    static              PersianDateFormat timestampDash       = new PersianDateFormat("yyyy-MM-dd-HH:mm");
-    static              PersianDateFormat timestampUnderscore = new PersianDateFormat("yyyy-MM-dd_HH-mm");
-    static              PersianDateFormat slashDate           = new PersianDateFormat("yyyy/MM/dd");
-    static              PersianDateFormat dashDate            = new PersianDateFormat("yyyy-MM-dd");
-    static              PersianDateFormat time                = new PersianDateFormat("HH:mm");
-    static              PersianDateFormat timeWithSeconds     = new PersianDateFormat("HH:mm:ss");
-    public static final String            TIMESTAMP_FORMAT    = "yyyyMMdd_HHmmss";
+    static PersianDateFormat dayOfWeek           = new PersianDateFormat("dddd"); // Day of week
+    static PersianDateFormat fullDateWithDay     = new PersianDateFormat("dddd dd MMMM yyyy");
+    static PersianDateFormat fullDate            = new PersianDateFormat("dd MMMM yyyy");
+    static PersianDateFormat dashDate1           = new PersianDateFormat("dd-MMM-yyyy");
+    static PersianDateFormat dateTime            = new PersianDateFormat("dd MMMM yyyy HH:mm");
+    static PersianDateFormat timestampDash       = new PersianDateFormat("yyyy-MM-dd-HH:mm");
+    static PersianDateFormat timestampUnderscore = new PersianDateFormat("yyyy-MM-dd_HH-mm");
+    static PersianDateFormat slashDate           = new PersianDateFormat("yyyy/MM/dd");
+    static PersianDateFormat dashDate            = new PersianDateFormat("yyyy-MM-dd");
+    static PersianDateFormat time                = new PersianDateFormat("HH:mm");
+    static PersianDateFormat timeWithSeconds     = new PersianDateFormat("HH:mm:ss");
+
+    public static final String TIMESTAMP_FORMAT = "yyyyMMdd_HHmmss";
 
     static {
         THIS_YEAR = new PersianCalendar().getYear();
@@ -339,16 +342,4 @@ public class DateUtils {
         return calendar.getTime();
     }
 
-    // If you don't want ICU4J dependency, you can use this approximate method
-    public static YMD gregorianToIranianHijri(GregorianCalendar gc) {
-        // Known reference: 1 Muharram 1340 AH ≈ July 16, 1921 CE
-        GregorianCalendar epoch = new GregorianCalendar(1921, 6, 16); // Month is 0-indexed
-
-        // Calculate days difference
-        long diffMillis = gc.getTimeInMillis() - epoch.getTimeInMillis();
-        int  daysDiff   = (int) (diffMillis / (1000 * 60 * 60 * 24));
-
-        // Now use the month length table to convert daysDiff to YMD
-        return null;// convertDaysToIranianHijri(daysDiff);
-    }
 }

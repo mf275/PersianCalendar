@@ -1,7 +1,5 @@
-package com.farashian.pcalendar.util;
+package com.farashian.pcalendar;
 
-
-import com.farashian.pcalendar.YMD;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

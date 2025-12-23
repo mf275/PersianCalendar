@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.farashian.pcalendar.IranianHijriConverter.gregorianToIranianHijri;
+
 public class TestDateUtils {
     
     public static void main(String[] args) {
@@ -67,20 +69,12 @@ public class TestDateUtils {
         // Test 6: Islamic calendar conversion
         System.out.println("🌙 Islamic Calendar Conversion:");
         GregorianCalendar gregorian = new GregorianCalendar(2024, Calendar.MARCH, 11);
-        YMD               hijriDate = DateUtils.islamicFromGregorian(gregorian);
+        YMD               hijriDate = gregorianToIranianHijri(gregorian);
         System.out.println("Gregorian: " + gregorian.getTime());
         System.out.println("Iranian Hijri: " + hijriDate);
         
-        // Check if valid
-        if (DateUtils.isValidIranianHijriDate(hijriDate)) {
-            System.out.println("Valid Iranian Hijri date");
-            int dayOfYear = DateUtils.getDayOfIranianHijriYear(hijriDate);
-            System.out.println("Day of year: " + dayOfYear);
-        }
+
         
-        // Test official data lookup
-        System.out.println("Has official data for 1444 AH: " + DateUtils.hasOfficialData(1444));
-        System.out.println("Month length for 1444-1: " + DateUtils.getOfficialMonthLength(1444, 1));
         System.out.println();
 
         System.out.println("=== Test Complete ===");

@@ -22,6 +22,7 @@ import com.farashian.pcalendar.PersianDateFormat;
 import com.farashian.pcalendar.YMD;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianDateFormat;
+import com.farashian.pcalendar.fast.util.IranianHijriConverter;
 import com.farashian.test.R;
 
 import java.text.ParseException;
@@ -528,6 +529,7 @@ public class PersianCalendarActivity extends Activity {
                 fastCalendar.setTime(date);
                 result   = FastPersianDateFormat.format(fastCalendar, pattern, numberFormat);
                 iresult  = fastCalendar.getIslamicDate().toIntArray();
+                iresult = IranianHijriConverter.gregorianToIranianHijri(fastCalendar.currentGregorian()).toIntArray();
                 perMonth = fastCalendar.getPersianMonth();
             }
 
@@ -535,10 +537,10 @@ public class PersianCalendarActivity extends Activity {
             tvGResult.setText(format("Gregorian Date: %s", gregorianDate));
             tvPResult.setText(format("Persian Date: %s %s", result, PERSIAN_MONTH_NAMES[perMonth]));
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                tvIResult.setText(format("Islamic Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month]));
+                tvIResult.setText(format("Islamic Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month-1]));
             } else {
-                String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1] + 1, iresult[2]);
-                tvIResult.setText(format("Islamic Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]]));
+                String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
+                tvIResult.setText(format("Islamic Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]-1]));
             }
             hideKeyboard(tvPResult);
         } catch (ParseException e) {
@@ -627,10 +629,10 @@ public class PersianCalendarActivity extends Activity {
             tvGResult.setText(format("Gregorian Date: %s %s", result, GREGORIAN_MONTH_NAMES[gMonth]));
             tvPResult.setText(format("Persian Date: %s %s", persianDate, PERSIAN_MONTH_NAMES[perMonth]));
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                tvIResult.setText(format("Islamic Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month]));
+                tvIResult.setText(format("Islamic Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month-1]));
             } else {
-                String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1]+1, iresult[2]);
-                tvIResult.setText(format("Islamic Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]]));
+                String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
+                tvIResult.setText(format("Islamic Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]-1]));
             }
             //showToast("Gregorian Date: " + result);
             hideKeyboard(tvPResult);
