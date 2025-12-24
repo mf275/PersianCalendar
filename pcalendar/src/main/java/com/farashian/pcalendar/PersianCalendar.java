@@ -5,7 +5,7 @@ import java.util.*;
 
 import static com.farashian.pcalendar.PCConstants.PERSIAN_LOCALE;
 import static com.farashian.pcalendar.PCConstants.leapYears;
-import static com.farashian.pcalendar.util.IranianHijriConverter.georgianToHijri;
+import static com.farashian.pcalendar.util.IranianHijriConverter.gregorianToHijri;
 import static com.farashian.pcalendar.util.PCalendarUtils.*;
 
 public class PersianCalendar extends Calendar {
@@ -53,9 +53,9 @@ public class PersianCalendar extends Calendar {
 
     public PersianCalendar(TimeZone zone, Locale locale) {
         super(zone, locale);
-        this.locale   = locale;
-        this.gCal     = new GregorianCalendar(zone, locale);
-        this.ymd      = new int[]{1400, 0, 1}; // Default date
+        this.locale = locale;
+        this.gCal   = new GregorianCalendar(zone, locale);
+        this.ymd    = new int[]{1400, 0, 1}; // Default date
     }
 
     public PersianCalendar(long timeStamp) {
@@ -88,26 +88,26 @@ public class PersianCalendar extends Calendar {
     /**
      * Constructor that accepts Java GregorianCalendar object
      */
-    public PersianCalendar(GregorianCalendar georgianCalendar) {
+    public PersianCalendar(GregorianCalendar gregorianCalendar) {
         this();
 
-        if (georgianCalendar == null) {
+        if (gregorianCalendar == null) {
             throw new IllegalArgumentException("GregorianCalendar cannot be null");
         }
 
-        int year   = georgianCalendar.get(Calendar.YEAR);
-        int month  = georgianCalendar.get(Calendar.MONTH);
-        int day    = georgianCalendar.get(Calendar.DAY_OF_MONTH);
-        int hour   = georgianCalendar.get(Calendar.HOUR_OF_DAY);
-        int minute = georgianCalendar.get(Calendar.MINUTE);
-        int second = georgianCalendar.get(Calendar.SECOND);
+        int year   = gregorianCalendar.get(Calendar.YEAR);
+        int month  = gregorianCalendar.get(Calendar.MONTH);
+        int day    = gregorianCalendar.get(Calendar.DAY_OF_MONTH);
+        int hour   = gregorianCalendar.get(Calendar.HOUR_OF_DAY);
+        int minute = gregorianCalendar.get(Calendar.MINUTE);
+        int second = gregorianCalendar.get(Calendar.SECOND);
 
         validateGregorianDate(year, month, day);
         setGregorianDate1Based(year, month, day);
         set(HOUR_OF_DAY, hour);
         set(MINUTE, minute);
         set(SECOND, second);
-        setTimeZone(georgianCalendar.getTimeZone());
+        setTimeZone(gregorianCalendar.getTimeZone());
     }
 
     /**
@@ -142,11 +142,11 @@ public class PersianCalendar extends Calendar {
     /**
      * Create PersianCalendar from Gregorian date string
      */
-    public static PersianCalendar fromGeorgianStringYmd(String dateString) {
-        return fromGeorgianStringYmd(dateString, "-");
+    public static PersianCalendar fromGregorianStringYmd(String dateString) {
+        return fromGregorianStringYmd(dateString, "-");
     }
 
-    public static PersianCalendar fromGeorgianStringYmd(String dateString, String delimiter) {
+    public static PersianCalendar fromGregorianStringYmd(String dateString, String delimiter) {
         if (dateString == null || dateString.isEmpty()) {
             throw new IllegalArgumentException("Date string cannot be null or empty");
         }
@@ -167,7 +167,7 @@ public class PersianCalendar extends Calendar {
         }
     }
 
-    public static PersianCalendar fromGeorgianTimestamp(long timestamp) {
+    public static PersianCalendar fromGregorianTimestamp(long timestamp) {
         Date date = new Date(timestamp);
         return new PersianCalendar(date);
     }
@@ -434,17 +434,11 @@ public class PersianCalendar extends Calendar {
         return String.format(locale, "%s (%02d)", monthName, monthNumber);
     }
 
-    public PersianCalendar fromGeorgian(int gYear, int gMonth, int gDay) {
-        return georgianToPersian(gYear, gMonth, gDay);
+    public static PersianCalendar gregorianToPersian(int gYear, int gMonth, int gDay) {
+        PersianCalendar result = new PersianCalendar();
+        result.setGregorianDate(gYear, gMonth, gDay);
+        return result;
     }
-
-    public static PersianCalendar georgianToPersian(int gYear, int gMonth, int gDay) {
-        // Validate Gregorian date
-        validateGregorianDate(gYear, gMonth, gDay);
-        int[] jalali = gregorianToPersian(gYear, gMonth, gDay);
-        return new PersianCalendar(jalali[0], jalali[1] - 1, jalali[2]);
-    }
-
 
     /**
      * Convert Gregorian date to Persian date
@@ -682,7 +676,7 @@ public class PersianCalendar extends Calendar {
         fields[MILLISECOND] = gCal.get(MILLISECOND);
 
         int gregorianDayOfWeek = gCal.get(Calendar.DAY_OF_WEEK);
-        int persianOffset = calculatePersianOffset(gregorianDayOfWeek);
+        int persianOffset      = calculatePersianOffset(gregorianDayOfWeek);
 
         int persianDayOfWeek;
         if (persianOffset == 0) {
@@ -700,7 +694,7 @@ public class PersianCalendar extends Calendar {
         fields[HOUR]        = gCal.get(HOUR_OF_DAY) % 12;
         fields[DST_OFFSET]  = gCal.get(DST_OFFSET);
         fields[ZONE_OFFSET] = gCal.get(ZONE_OFFSET);
-        fields[ERA] = AD;
+        fields[ERA]         = AD;
 
         for (int i = 0; i < FIELD_COUNT; i++) {
             isSet[i] = true;
@@ -736,7 +730,7 @@ public class PersianCalendar extends Calendar {
         computeGregorianFromPersian();
 
         int gregorianDayOfWeek = gCal.get(DAY_OF_WEEK);
-        int persianOffset = calculatePersianOffset(gregorianDayOfWeek);
+        int persianOffset      = calculatePersianOffset(gregorianDayOfWeek);
         int persianDayOfWeek;
         if (persianOffset == 0) {
             persianDayOfWeek = Calendar.SATURDAY;
@@ -1931,7 +1925,7 @@ public class PersianCalendar extends Calendar {
     //not tested
     public YMD getIslamicDate() {
         complete();
-        return georgianToHijri(gCal);
+        return gregorianToHijri(gCal);
     }
 
     public void setPersianDate(int year, int month, int day) {
@@ -1974,7 +1968,7 @@ public class PersianCalendar extends Calendar {
         return PERSIAN_OFFSETS[javaDayOfWeek];
     }
 
-    public int calculateGeorgianOffsetISO(int javaDayOfWeek) {
+    public int calculateGregorianOffsetISO(int javaDayOfWeek) {
         if (javaDayOfWeek < 1 || javaDayOfWeek > 7) return 0;
         return (javaDayOfWeek + 5) % 7;
     }

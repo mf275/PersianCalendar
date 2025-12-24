@@ -111,7 +111,7 @@ public class IranianHijriConverter {
     /**
      * Gregorian -> Iranian Hijri (Iran official, within data range)
      */
-    public static YMD georgianToHijri(GregorianCalendar gc) {
+    public static YMD gregorianToHijri(GregorianCalendar gc) {
         GregorianCalendar g = (GregorianCalendar) gc.clone();
         normalizeToMidnight(g);
 
@@ -119,7 +119,6 @@ public class IranianHijriConverter {
         int diffDays = (int) (diffMillis / MILLIS_PER_DAY);
 
         int y = EPOCH_HIJRI.year;
-        //int m = EPOCH_HIJRI.month - 1; // 0-based
         int m = EPOCH_HIJRI.month - 1; // 0-based
         int d = EPOCH_HIJRI.day;
 
@@ -128,7 +127,8 @@ public class IranianHijriConverter {
                 d++;
                 int[] monthLengths = HIJRI_MONTH_DATA.get(y);
                 if (monthLengths == null) {
-                    throw new IllegalStateException("No Hijri data for year " + y);
+                    // fallback: tabular month length
+                    monthLengths = getTabularMonthLengths(y);
                 }
                 if (d > monthLengths[m]) {
                     d = 1;
@@ -136,9 +136,6 @@ public class IranianHijriConverter {
                     if (m >= 12) {
                         m = 0;
                         y++;
-                        if (!HIJRI_MONTH_DATA.containsKey(y)) {
-                            throw new IllegalStateException("No Hijri data for year " + y);
-                        }
                     }
                 }
             }
@@ -148,19 +145,19 @@ public class IranianHijriConverter {
                 if (d == 0) {
                     m--;
                     if (m < 0) {
-                        y--;
-                        if (!HIJRI_MONTH_DATA.containsKey(y)) {
-                            throw new IllegalStateException("No Hijri data for year " + y);
-                        }
                         m = 11;
+                        y--;
                     }
                     int[] monthLengths = HIJRI_MONTH_DATA.get(y);
+                    if (monthLengths == null) {
+                        monthLengths = getTabularMonthLengths(y);
+                    }
                     d = monthLengths[m];
                 }
             }
         }
 
-        return new YMD(y, m+1, d); // month back to 1-based
+        return new YMD(y, m + 1, d); // month back to 1-based
     }
 
     /**
@@ -172,7 +169,7 @@ public class IranianHijriConverter {
      * @param day   Gregorian day of month
      * @return Hijri date (YMD) corresponding to the Gregorian date
      */
-    public static YMD georgianToHijri(int year, int month, int day) {
+    public static YMD gregorianToHijri(int year, int month, int day) {
         // Validate target Gregorian date
         GregorianCalendar targetGreg = new GregorianCalendar(year, month, day);
 
@@ -192,7 +189,7 @@ public class IranianHijriConverter {
                 d++;
                 int[] ml = HIJRI_MONTH_DATA.get(y);
                 if (ml == null) {
-                    throw new IllegalStateException("No Hijri data for year " + y);
+                    ml = getTabularMonthLengths(y); // fallback
                 }
                 if (d > ml[m]) {
                     d = 1;
@@ -200,9 +197,6 @@ public class IranianHijriConverter {
                     if (m >= 12) {
                         m = 0;
                         y++;
-                        if (!HIJRI_MONTH_DATA.containsKey(y)) {
-                            throw new IllegalStateException("No Hijri data for year " + y);
-                        }
                     }
                 }
             }
@@ -214,13 +208,10 @@ public class IranianHijriConverter {
                     if (m < 0) {
                         m = 11;
                         y--;
-                        if (!HIJRI_MONTH_DATA.containsKey(y)) {
-                            throw new IllegalStateException("No Hijri data for year " + y);
-                        }
                     }
                     int[] ml = HIJRI_MONTH_DATA.get(y);
                     if (ml == null) {
-                        throw new IllegalStateException("No Hijri data for year " + y);
+                        ml = getTabularMonthLengths(y); // fallback
                     }
                     d = ml[m];
                 }
@@ -236,9 +227,7 @@ public class IranianHijriConverter {
     public static GregorianCalendar hijriToGregorian(int year, int month, int day) {
        return hijriToGregorian(new  YMD(year, month, day));
     }
-    /**
-     * Iranian Hijri -> Gregorian (reverse, exact within data range)
-     */
+
     /**
      * Convert a Hijri date (YMD) to GregorianCalendar using official month data.
      * Walks day by day from the epoch Hijri date to the target Hijri date.
@@ -251,18 +240,16 @@ public class IranianHijriConverter {
         int targetM = hijri.month - 1; // convert to 0-based
         int targetD = hijri.day;
 
-        // Validate year exists
-        int[] monthLengths = HIJRI_MONTH_DATA.get(targetY);
-        if (monthLengths == null) {
-            throw new IllegalArgumentException("No Hijri month data for year: " + targetY);
-        }
-
         // Validate month range (0–11 internally)
         if (targetM < 0 || targetM >= 12) {
             throw new IllegalArgumentException("Hijri month out of range: " + hijri.month);
         }
 
-        // Validate day range
+        // Validate day range using official or fallback lengths
+        int[] monthLengths = HIJRI_MONTH_DATA.get(targetY);
+        if (monthLengths == null) {
+            monthLengths = getTabularMonthLengths(targetY); // fallback
+        }
         if (targetD < 1 || targetD > monthLengths[targetM]) {
             throw new IllegalArgumentException("Hijri day out of range: " + hijri);
         }
@@ -285,19 +272,13 @@ public class IranianHijriConverter {
                     m--;
                     if (m < 0) {
                         y--;
-                        int[] ml = HIJRI_MONTH_DATA.get(y);
-                        if (ml == null) {
-                            throw new IllegalStateException("No Hijri data for year " + y);
-                        }
                         m = 11;
-                        d = ml[m];
-                    } else {
-                        int[] ml = HIJRI_MONTH_DATA.get(y);
-                        if (ml == null) {
-                            throw new IllegalStateException("No Hijri data for year " + y);
-                        }
-                        d = ml[m];
                     }
+                    int[] ml = HIJRI_MONTH_DATA.get(y);
+                    if (ml == null) {
+                        ml = getTabularMonthLengths(y); // fallback
+                    }
+                    d = ml[m];
                 }
             }
         } else {
@@ -308,7 +289,7 @@ public class IranianHijriConverter {
 
                 int[] ml = HIJRI_MONTH_DATA.get(y);
                 if (ml == null) {
-                    throw new IllegalStateException("No Hijri data for year " + y);
+                    ml = getTabularMonthLengths(y); // fallback
                 }
 
                 if (d > ml[m]) {
@@ -317,10 +298,6 @@ public class IranianHijriConverter {
                     if (m >= 12) {
                         m = 0;
                         y++;
-                        int[] mlNext = HIJRI_MONTH_DATA.get(y);
-                        if (mlNext == null) {
-                            throw new IllegalStateException("No Hijri data for year " + y);
-                        }
                     }
                 }
             }
@@ -329,6 +306,21 @@ public class IranianHijriConverter {
         GregorianCalendar result = (GregorianCalendar) EPOCH_GREGORIAN.clone();
         result.add(Calendar.DAY_OF_MONTH, offsetDays);
         return result;
+    }
+
+    /**
+     * Fallback: tabular Hijri month lengths (29/30 alternating, Dhu al-Hijjah leap year rule).
+     */
+    private static int[] getTabularMonthLengths(int year) {
+        int[] lengths = new int[12];
+        for (int i = 0; i < 12; i++) {
+            lengths[i] = (i % 2 == 0) ? 30 : 29; // odd months 30, even months 29
+        }
+        // Dhu al-Hijjah (index 11) can be 30 in leap years
+        if (isIslamicLeapYear(year)) {
+            lengths[11] = 30;
+        }
+        return lengths;
     }
 
     // ----------------- helpers -----------------
@@ -482,7 +474,7 @@ public class IranianHijriConverter {
         g.set(2025, Calendar.DECEMBER, 22);
         normalizeToMidnight(g);
 
-        YMD h = georgianToHijri(g);
+        YMD h = gregorianToHijri(g);
         System.out.println("G -> H: " + g.getTime() + " => " + h);
 
         GregorianCalendar back = hijriToGregorian(h);

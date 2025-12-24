@@ -266,7 +266,7 @@ public final class PCalendarUtils {
         out[2] = dayOfYear;
     }
 
-    public static String getGeorgianMonthName(int month) {
+    public static String getGregorianMonthName(int month) {
         return GREGORIAN_MONTH_NAMES_ENG[month];
     }
 

@@ -529,7 +529,7 @@ public class PersianCalendarActivity extends Activity {
                 fastCalendar.setTime(date);
                 result   = FastPersianDateFormat.format(fastCalendar, pattern, numberFormat);
                 iresult  = fastCalendar.getIslamicDate().toIntArray();
-                iresult = IranianHijriConverter.georgianToHijri(fastCalendar.currentGregorian()).toIntArray();
+                iresult = IranianHijriConverter.gregorianToHijri(fastCalendar.currentGregorian()).toIntArray();
                 perMonth = fastCalendar.getPersianMonth();
             }
 
