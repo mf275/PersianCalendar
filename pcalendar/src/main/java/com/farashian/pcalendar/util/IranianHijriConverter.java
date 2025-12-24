@@ -359,7 +359,7 @@ public class IranianHijriConverter {
         c.set(Calendar.MILLISECOND, 0);
     }
 
-    private static HashMap<Integer, int[]> getIranianHijriMonthData() {
+    public static HashMap<Integer, int[]> getIranianHijriMonthData() {
         HashMap<Integer, int[]> hijriData = new HashMap<>();
         // Add all the data from your table here (1340-1448)
         hijriData.put(1340, new int[]{29, 30, 29, 30, 30, 30, 29, 30, 30, 29, 29, 30});
