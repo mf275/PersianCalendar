@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.IranianHijriConverter.gregorianToIranianHijri;
+import static com.farashian.pcalendar.IranianHijriConverter.georgianToHijri;
 import static com.farashian.pcalendar.PCConstants.PERSIAN_LOCALE;
 import static com.farashian.pcalendar.PCConstants.leapYears;
 import static com.farashian.pcalendar.PCalendarUtils.*;
@@ -2045,7 +2045,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     public YMD getIslamicDate() {
         complete();
-        return gregorianToIranianHijri(gCal);
+        return georgianToHijri(gCal);
     }
 
     public void setPersianDate(int year, int month, int day) {

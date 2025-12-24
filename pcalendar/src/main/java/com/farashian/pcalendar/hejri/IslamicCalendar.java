@@ -125,7 +125,7 @@ public class IslamicCalendar extends Calendar {
         return new int[]{jalaliYear, jalaliMonth, jalaliDay};
     }
 
-    public int[] gregorianToHijri(int year, int month, int day) {
+    public int[] georgianToHijri(int year, int month, int day) {
         int[] jalali = gregorianToJalali(year, month, day);
         return jalaliToHijri(jalali[0], jalali[1], jalali[2]);
     }
@@ -269,7 +269,7 @@ public class IslamicCalendar extends Calendar {
 
     private void updateToday() {
         Calendar now = Calendar.getInstance();
-        int[] hijri = gregorianToHijri(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH));
+        int[] hijri = georgianToHijri(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH));
         this.today = hijri;
         this.todayGregorian = new int[]{now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH)};
     }

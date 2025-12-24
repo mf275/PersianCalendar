@@ -8,7 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static com.farashian.pcalendar.IranianHijriConverter.gregorianToIranianHijri;
+import static com.farashian.pcalendar.IranianHijriConverter.georgianToHijri;
+
 
 public class TestDateUtils {
     
@@ -69,7 +70,7 @@ public class TestDateUtils {
         // Test 6: Islamic calendar conversion
         System.out.println("🌙 Islamic Calendar Conversion:");
         GregorianCalendar gregorian = new GregorianCalendar(2024, Calendar.MARCH, 11);
-        YMD               hijriDate = gregorianToIranianHijri(gregorian);
+        YMD               hijriDate = georgianToHijri(gregorian);
         System.out.println("Gregorian: " + gregorian.getTime());
         System.out.println("Iranian Hijri: " + hijriDate);
         

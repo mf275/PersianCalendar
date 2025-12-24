@@ -7,7 +7,7 @@ import com.farashian.pcalendar.fast.util.YMD;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.fast.util.IranianHijriConverter.gregorianToIranianHijri;
+import static com.farashian.pcalendar.fast.util.IranianHijriConverter.georgianToHijri;
 import static com.farashian.pcalendar.fast.util.PCConstants.PERSIAN_LOCALE;
 import static com.farashian.pcalendar.fast.util.PCalendarUtils.*;
 
@@ -463,7 +463,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      */
     public YMD getIslamicDate() {
         complete(); // Ensure fields are computed
-        return gregorianToIranianHijri(gCal);
+        return georgianToHijri(gCal);
     }
 
 

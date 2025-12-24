@@ -3,10 +3,9 @@ package com.farashian.pcalendar;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.util.IranianHijriConverter.gregorianToIranianHijri;
-import static com.farashian.pcalendar.util.IranianHijriConverter.islamicFromGregorian;
 import static com.farashian.pcalendar.PCConstants.PERSIAN_LOCALE;
 import static com.farashian.pcalendar.PCConstants.leapYears;
+import static com.farashian.pcalendar.util.IranianHijriConverter.georgianToHijri;
 import static com.farashian.pcalendar.util.PCalendarUtils.*;
 
 public class PersianCalendar extends Calendar {
@@ -1932,7 +1931,7 @@ public class PersianCalendar extends Calendar {
     //not tested
     public YMD getIslamicDate() {
         complete();
-        return gregorianToIranianHijri(gCal);
+        return georgianToHijri(gCal);
     }
 
     public void setPersianDate(int year, int month, int day) {

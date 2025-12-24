@@ -7,7 +7,7 @@ import com.farashian.pcalendar.YMD;
 import java.util.*;
 
 import static com.farashian.pcalendar.PCConstants.PERSIAN_LOCALE;
-import static com.farashian.pcalendar.util.IranianHijriConverter.gregorianToIranianHijri;
+import static com.farashian.pcalendar.util.IranianHijriConverter.georgianToHijri;
 import static com.farashian.pcalendar.util.PCalendarUtils.validateGregorianDate;
 import static com.farashian.pcalendar.util.PCalendarUtils.validatePersianDate;
 
@@ -359,7 +359,7 @@ public class FastPersianCalendar extends Calendar {
      */
     public YMD getIslamicDate() {
         complete(); // Ensure fields are computed
-        return gregorianToIranianHijri(gCal);
+        return georgianToHijri(gCal);
     }
 
 
