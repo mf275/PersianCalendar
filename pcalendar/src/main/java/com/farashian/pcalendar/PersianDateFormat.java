@@ -17,7 +17,7 @@ import static com.farashian.pcalendar.PCConstants.PERSIAN_MONTH_NAMES_SHORT;
 public final class PersianDateFormat {
     
     private static final String TAG = "PersianDateFormat";
-    
+
     // Number Format
     public enum PersianDateNumberCharacter {
         ENGLISH,
@@ -50,7 +50,6 @@ public final class PersianDateFormat {
     
     private static Context appContext;
 
-    // === CONSTRUCTORS ===
     
     public PersianDateFormat() {
         // Use device locale if Persian, otherwise use default Persian locale
@@ -80,7 +79,6 @@ public final class PersianDateFormat {
         setLocale(locale);
     }
 
-    // === SETTERS ===
     
     public void setPattern(String pattern) {
         if (TextUtils.isEmpty(pattern)) {
@@ -98,8 +96,6 @@ public final class PersianDateFormat {
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
-
-    
     
     public static String format(PersianCalendar date,
                                 String pattern) {
@@ -160,20 +156,26 @@ public final class PersianDateFormat {
         return formattedString;
     }
 
-    // === INSTANCE FORMAT METHOD ===
-    
-    
     public String format(PersianCalendar date) {
         return format(date, this.pattern, this.numberCharacter, this.locale);
     }
 
-    // === PARSING METHODS ===
-    
+    public String format(YMD ymd, String pattern) {
+        // Create a PersianCalendar object and set the date from YMD, and set time to zero.
+        PersianCalendar pc = new PersianCalendar();
+        pc.setPersianDate(ymd.year, ymd.month - 1, ymd.day);
+        pc.set(Calendar.HOUR_OF_DAY, 0);
+        pc.set(Calendar.MINUTE, 0);
+        pc.set(Calendar.SECOND, 0);
+        pc.set(Calendar.MILLISECOND, 0);
+
+        // Use the static format method with the instance's numberCharacter and locale
+        return format(pc, pattern, this.numberCharacter, this.locale);
+    }
     
     public PersianCalendar parse(String date) throws ParseException {
         return parse(date, this.pattern);
     }
-    
     
     public PersianCalendar parse(String date,
                                    String pattern) throws ParseException {
@@ -269,8 +271,7 @@ public final class PersianDateFormat {
             values.get("second")
         );
     }
-    
-    
+
     public PersianCalendar parseGrg(String date) throws ParseException {
         return parseGrg(date, "yyyy/MM/dd");
     }

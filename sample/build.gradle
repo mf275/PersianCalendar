@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 35
+    compileSdkVersion 36
     namespace "com.farashian.test"
     defaultConfig {
         applicationId "com.farashian.test"
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
     }
     buildTypes {
         release {
@@ -31,7 +31,7 @@ dependencies {
     implementation project(':pcalendar-android')
     implementation project(':fpcalendar-android')
     implementation 'androidx.annotation:annotation:1.9.1'
-    implementation 'androidx.core:core:1.13.0'
+    implementation 'androidx.core:core:1.17.0'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 

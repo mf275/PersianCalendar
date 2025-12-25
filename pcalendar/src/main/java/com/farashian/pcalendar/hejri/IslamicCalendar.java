@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.farashian.pcalendar.util.IranianHijriConverter.getIranianHijriMonthData;
+import static com.farashian.pcalendar.util.HijriConverter.getIranianHijriMonthData;
 
 public class IslamicCalendar extends Calendar {
     private int[] today = {1446, 1, 1};

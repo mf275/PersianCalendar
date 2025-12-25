@@ -7,13 +7,13 @@ plugins {
 
 android {
     namespace 'com.farashian.pcalendar'
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 35
-        versionCode 234  // Added version code
-        versionName "2.3.4"
+        targetSdkVersion 36
+        versionCode 240  // Added version code
+        versionName "2.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

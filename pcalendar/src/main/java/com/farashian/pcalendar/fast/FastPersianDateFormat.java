@@ -1,7 +1,12 @@
 package com.farashian.pcalendar.fast;
 
+import com.farashian.pcalendar.PersianCalendar;
+import com.farashian.pcalendar.PersianDateFormat;
+import com.farashian.pcalendar.YMD;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -40,8 +45,6 @@ public class FastPersianDateFormat {
         this.timeZone = timeZone;
     }
 
-    // === SETTERS & GETTERS ===
-
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
@@ -74,8 +77,6 @@ public class FastPersianDateFormat {
         return timeZone;
     }
 
-    // === FORMATTING METHODS ===
-
     public String format(FastPersianCalendar calendar) {
         if (pattern == null) {
             return calendar.getLongDate();
@@ -94,6 +95,19 @@ public class FastPersianDateFormat {
         FastPersianCalendar calendar = new FastPersianCalendar();
         calendar.setTimeInMillis(milliseconds);
         return format(calendar);
+    }
+
+    public String format(YMD ymd, String pattern) {
+        // Create a PersianCalendar object and set the date from YMD, and set time to zero.
+        FastPersianCalendar pc = new FastPersianCalendar();
+        pc.setPersianDate(ymd.year, ymd.month - 1, ymd.day);
+        pc.set(Calendar.HOUR_OF_DAY, 0);
+        pc.set(Calendar.MINUTE, 0);
+        pc.set(Calendar.SECOND, 0);
+        pc.set(Calendar.MILLISECOND, 0);
+
+        // Use the static format method with the instance's numberCharacter and locale
+        return formatWithPattern(pc, pattern);
     }
 
     private String formatWithPattern(FastPersianCalendar calendar, String formatPattern) {

@@ -22,7 +22,7 @@ import com.farashian.pcalendar.PersianDateFormat;
 import com.farashian.pcalendar.YMD;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianDateFormat;
-import com.farashian.pcalendar.fast.util.IranianHijriConverter;
+import com.farashian.pcalendar.fast.util.HijriConverter;
 import com.farashian.test.R;
 
 import java.text.ParseException;
@@ -528,8 +528,7 @@ public class PersianCalendarActivity extends Activity {
                 FastPersianCalendar fastCalendar = new FastPersianCalendar();
                 fastCalendar.setTime(date);
                 result   = FastPersianDateFormat.format(fastCalendar, pattern, numberFormat);
-                iresult  = fastCalendar.getIslamicDate().toIntArray();
-                iresult = IranianHijriConverter.gregorianToHijri(fastCalendar.currentGregorian()).toIntArray();
+                iresult  = new HijriConverter(fastCalendar.getTimeZone()).gregorianToHijri(fastCalendar.gCal).toIntArray();
                 perMonth = fastCalendar.getPersianMonth();
             }
 

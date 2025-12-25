@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static com.farashian.pcalendar.IranianHijriConverter.gregorianToHijri;
+import static com.farashian.pcalendar.HijriConverter.gregorianToHijri;
 
 
 public class TestDateUtils {

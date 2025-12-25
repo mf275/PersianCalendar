@@ -7,9 +7,11 @@ import android.util.Log;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.farashian.pcalendar.fast.util.YMD;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -61,7 +63,6 @@ public final class FastPersianDateFormat {
     private static final int AM = FastPersianCalendar.AM;
     private static final int PM = FastPersianCalendar.PM;
 
-    // === CONSTRUCTORS ===
 
     public FastPersianDateFormat() {
         this.locale = Locale.getDefault().getLanguage().equals("fa") 
@@ -86,8 +87,6 @@ public final class FastPersianDateFormat {
         setTimeZone(timeZone);
     }
     
-    // === SETTERS & GETTERS ===
-
     public void setPattern(@NonNull String pattern) {
         if (TextUtils.isEmpty(pattern)) {
             Log.w(TAG, "Pattern is empty, using default");
@@ -133,8 +132,6 @@ public final class FastPersianDateFormat {
     public static void setAppContext(@Nullable Context context) {
         appContext = context != null ? context.getApplicationContext() : null;
     }
-
-    // === FORMATTING METHODS ===
 
     @NonNull
     public String format(@NonNull FastPersianCalendar calendar) {
@@ -199,6 +196,19 @@ public final class FastPersianDateFormat {
 
         String formatted = result.toString();
         return convertNumbersToLocale(formatted);
+    }
+
+    public String format(YMD ymd, String pattern) {
+        // Create a PersianCalendar object and set the date from YMD, and set time to zero.
+        FastPersianCalendar pc = new FastPersianCalendar();
+        pc.setPersianDate(ymd.year, ymd.month - 1, ymd.day);
+        pc.set(Calendar.HOUR_OF_DAY, 0);
+        pc.set(Calendar.MINUTE, 0);
+        pc.set(Calendar.SECOND, 0);
+        pc.set(Calendar.MILLISECOND, 0);
+
+        // Use the static format method with the instance's numberCharacter and locale
+        return formatWithPattern(pc, pattern);
     }
     
     private void replaceToken(@NonNull StringBuilder builder, @NonNull String token, 

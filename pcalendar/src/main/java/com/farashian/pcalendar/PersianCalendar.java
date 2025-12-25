@@ -5,7 +5,8 @@ import java.util.*;
 
 import static com.farashian.pcalendar.PCConstants.PERSIAN_LOCALE;
 import static com.farashian.pcalendar.PCConstants.leapYears;
-import static com.farashian.pcalendar.util.IranianHijriConverter.gregorianToHijri;
+import static com.farashian.pcalendar.util.HijriConverter.gregorianToHijri;
+import static com.farashian.pcalendar.util.HijriConverter.hijriToGregorian;
 import static com.farashian.pcalendar.util.PCalendarUtils.*;
 
 public class PersianCalendar extends Calendar {
@@ -39,7 +40,6 @@ public class PersianCalendar extends Calendar {
     private              int[] lastComputedYmd  = {0, 0, 0};
     private static final int[] PERSIAN_OFFSETS  = {0, 1, 2, 3, 4, 5, 6, 0};
 
-    // === CONSTRUCTORS ===
 
     public PersianCalendar() {
         this(TimeZone.getDefault(), PERSIAN_LOCALE);
@@ -1921,13 +1921,57 @@ public class PersianCalendar extends Calendar {
         ensureComputed();
         return getShortDate(getYear(), getMonth(), getDayOfMonth(), delimiter, locale);
     }
-
-    //not tested
     public YMD getIslamicDate() {
         complete();
         return gregorianToHijri(gCal);
     }
 
+    /**
+     * Set the date using Islamic (Hijri) calendar values
+     * @param hYear Islamic year
+     * @param hMonth Islamic month (1-12)
+     * @param hDay Islamic day of month
+     * @param timeZone Target timezone for the date
+     */
+    public void setIslamicDate(int hYear, int hMonth, int hDay, TimeZone timeZone) {
+        // Convert Islamic date to Gregorian using HijriConverter
+        GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay, timeZone);
+
+        // Adjust to target timezone
+        long timeInMillis = gCalendar.getTimeInMillis();
+        GregorianCalendar adjustedCalendar = new GregorianCalendar(timeZone);
+        adjustedCalendar.setTimeInMillis(timeInMillis);
+
+        // Set the Gregorian date
+        setGregorianDate(adjustedCalendar.get(Calendar.YEAR),
+                         adjustedCalendar.get(Calendar.MONTH),
+                         adjustedCalendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public void setIslamicDate(int hYear, int hMonth, int hDay) {
+        GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay);
+        // gCalendar is in Tehran timezone - EXTRACT Tehran date
+        setGregorianDate(gCalendar.get(Calendar.YEAR),
+                         gCalendar.get(Calendar.MONTH),
+                         gCalendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+
+    /**
+     * Find the Gregorian date corresponding to the first day (Hijri day 1)
+     * of a given Islamic month and year.
+     *
+     * @param islamicYear   Hijri year (e.g., 1446)
+     * @param islamicMonth0 Hijri month (0-based: 0 = Muharram, 1 = Safar, ..., 11 = Dhu al-Hijjah)
+     * @return Calendar object representing the Gregorian date of the first day of the Islamic month
+     */
+    public static Calendar findFirstDayOfIslamicMonth(int islamicYear, int islamicMonth0) {
+        // Convert 0-based month to 1-based for YMD class
+        int islamicMonth1Based = islamicMonth0 + 1;
+
+        // Use existing hijriToGregorian method to convert to Gregorian
+        return hijriToGregorian(islamicYear, islamicMonth1Based, 1);
+    }
     public void setPersianDate(int year, int month, int day) {
         validateDate(year, month, day);
 

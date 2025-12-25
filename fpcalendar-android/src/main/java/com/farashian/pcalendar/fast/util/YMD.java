@@ -1,5 +1,6 @@
 package com.farashian.pcalendar.fast.util;
 
+import com.farashian.pcalendar.fast.FastPersianDateFormat;
 import org.jetbrains.annotations.NotNull;
 
 import static java.lang.String.format;
@@ -26,6 +27,23 @@ public class YMD {
         ymd[2] = this.day;
 
         return ymd;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public String toString(String pattern) {
+        FastPersianDateFormat pdf = new FastPersianDateFormat(pattern);
+        return pdf.format(this, pattern);
     }
 
     @NotNull

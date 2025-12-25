@@ -28,6 +28,23 @@ public class YMD {
         return ymd;
     }
 
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public String toString(String pattern) {
+        PersianDateFormat pdf = new PersianDateFormat(pattern);
+        return pdf.format(this, pattern);
+    }
+
     @NotNull
     @Override
     public String toString() {

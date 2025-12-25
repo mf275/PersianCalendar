@@ -42,18 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.3.4</version>
+<version>2.4.0</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.3.4</version>
+<version>2.4.0</version>
 </dependency>
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>fast-persian-calendar-android</artifactId>
-<version>2.3.4</version>
+<version>2.4.0</version>
 </dependency>
 ```
 ---
@@ -82,12 +82,12 @@ repositories {
 
 dependencies {
     // For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.3.4")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.4.0")
 
     // For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.3.4")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.4.0")
     //or
-    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.3.4")
+    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.4.0")
 }
 
 ```
@@ -101,6 +101,12 @@ If you’d like to support development of **PersianCalendar**, you can donate us
 Thank you for helping keep this project alive!
 
 # what's new
+
+### version 2.4.0
+* - Add setIslamicDate method with timezone support
+* - Implement setIslamicDate method in FastPersianCalendar
+* - Enhance IranianHijriConverter with timezone-aware conversion methods
+* - Properly handle Islamic-to-Gregorian date conversion with timezone normalization
 
 ### version 2.3.4
 * - Added fromGregorian(int gYear, int gMonth, int gDay) static method
