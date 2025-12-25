@@ -323,7 +323,7 @@ public class HijriConverter {
         c.set(Calendar.MILLISECOND, 0);
     }
 
-    private static Map<Integer, int[]> getIranianHijriMonthData() {
+    public static Map<Integer, int[]> getIranianHijriMonthData() {
         Map<Integer, int[]> hijriData = new HashMap<>();
 
         hijriData.put(1340, new int[]{29, 30, 29, 30, 30, 30, 29, 30, 30, 29, 29, 30});
