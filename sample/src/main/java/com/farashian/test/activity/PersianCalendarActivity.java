@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.farashian.pcalendar.fast.FastPersianCalendar.gregorianToJalaliFast;
+import static com.farashian.pcalendar.fast.util.HijriConverter.gregorianToHijri;
 import static com.farashian.pcalendar.fast.util.PCConstants.*;
 import static java.lang.String.format;
 
@@ -528,7 +529,7 @@ public class PersianCalendarActivity extends Activity {
                 FastPersianCalendar fastCalendar = new FastPersianCalendar();
                 fastCalendar.setTime(date);
                 result   = FastPersianDateFormat.format(fastCalendar, pattern, numberFormat);
-                iresult  = new HijriConverter(fastCalendar.getTimeZone()).gregorianToHijri(fastCalendar.gCal).toIntArray();
+                iresult  = gregorianToHijri(fastCalendar.gCal).toIntArray();
                 perMonth = fastCalendar.getPersianMonth();
             }
 

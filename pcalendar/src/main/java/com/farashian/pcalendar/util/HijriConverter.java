@@ -1,4 +1,6 @@
-package com.farashian.pcalendar;
+package com.farashian.pcalendar.util;
+
+import com.farashian.pcalendar.YMD;
 
 import java.util.Arrays;
 import java.util.Calendar;
