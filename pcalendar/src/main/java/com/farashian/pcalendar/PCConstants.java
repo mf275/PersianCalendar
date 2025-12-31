@@ -18,6 +18,7 @@ public class PCConstants {
 
 
     public static final Set<Integer> leapYears;
+
     static {
         Set<Integer> temp = new HashSet<>();
         temp.addAll(Arrays.asList(
@@ -33,6 +34,7 @@ public class PCConstants {
         ));
         leapYears = Collections.unmodifiableSet(temp);
     }
+
     public static final Locale PERSIAN_LOCALE = new Locale("fa", "IR");
 
 
@@ -47,6 +49,15 @@ public class PCConstants {
     public static final String[] PERSIAN_MONTH_NAMES = {
             "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
             "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+    };
+    public static final String[] AFGHAN_MONTH_NAMES = {
+            "حمل", "ثور", "جوزا", "سرطان", "اسد", "سنبله",
+            "میزان", "عقرب", "قوس", "جدی", "دلو", "حوت"
+    };
+
+    public static final String[] PASHTO_AFGHAN_MONTH_NAMES = {
+            "وری", "غويی", "غبرګولی", "چنګاښ", "زمری", "وږی",
+            "تله", "لړم", "لیندۍ", "مرغومی", "سلواغه", "کب"
     };
 
     public static final String[] PERSIAN_MONTH_NAMES_SHORT = {
@@ -64,6 +75,10 @@ public class PCConstants {
             "جولای", "آگوست", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
     };
 
+    public static final String[] GREGORIAN_MONTH_NAMES_ENG = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+    };
 
     public static final String[] WEEKDAY_NAMES_IN_ENGLISH = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
@@ -79,17 +94,17 @@ public class PCConstants {
     };
 
     public static final String[] PERSIAN_MONTH_NAMES_ENGLISH_SHORT = {
-            "Far", // Farvardin
-            "Ord", // Ordibehesht
-            "Kho", // Khordad
-            "Tir", // Tir
-            "Mor", // Mordad
-            "Sha", // Shahrivar
-            "Meh", // Mehr
-            "Aba", // Aban
-            "Aza", // Azar
-            "Dey", // Dey
-            "Bah", // Bahman
-            "Esf"  // Esfand
+            "Far", //Farvardin
+            "Ord", //Ordibehesht
+            "Kho", //Khordad
+            "Tir", //Tir
+            "Mor", //Mordad
+            "Sha", //Shahrivar
+            "Meh", //Mehr
+            "Aba", //Aban
+            "Aza", //Azar
+            "Dey", //Dey
+            "Bah", //Bahman
+            "Esf"  //Esfand
     };
 }

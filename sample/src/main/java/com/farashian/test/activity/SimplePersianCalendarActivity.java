@@ -21,26 +21,26 @@ import java.util.Locale;
 
 public class SimplePersianCalendarActivity extends Activity {
 
-    // UI Components
+    //UI Components
     private TextView tvCurrentDate, tvCurrentGregorian, tvConversionResult;
     private TextView tvDayName, tvMonthInfo, tvLeapYear;
     private EditText edtPersianDate, edtGregorianDate;
     private Button btnToday, btnConvertToGregorian, btnConvertToPersian;
     private Button btnAddDay, btnSubtractDay;
     
-    // Calendar
+    //Calendar
     private PersianCalendar persianCalendar;
-    private boolean         useFastLibrary = false; // Switch between libraries
+    private boolean         useFastLibrary = false; //Switch between libraries
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_persian_calendar);
         
-        // Initialize calendar
+        //Initialize calendar
         persianCalendar = new PersianCalendar();
         
-        // Initialize UI
+        //Initialize UI
         initViews();
         setupListeners();
         updateCurrentDate();
@@ -63,26 +63,26 @@ public class SimplePersianCalendarActivity extends Activity {
         btnAddDay = findViewById(R.id.btnAddDay);
         btnSubtractDay = findViewById(R.id.btnSubtractDay);
         
-        // Set default values
+        //Set default values
         edtPersianDate.setText("1402/10/25");
         edtGregorianDate.setText("2024/01/15");
     }
     
     private void setupListeners() {
-        // Today button
+        //Today button
         btnToday.setOnClickListener(v -> {
             persianCalendar = new PersianCalendar();
             updateCurrentDate();
             showMessage("Reset to today");
         });
         
-        // Convert Persian to Gregorian
+        //Convert Persian to Gregorian
         btnConvertToGregorian.setOnClickListener(v -> convertPersianToGregorian());
         
-        // Convert Gregorian to Persian
+        //Convert Gregorian to Persian
         btnConvertToPersian.setOnClickListener(v -> convertGregorianToPersian());
         
-        // Add/Subtract days
+        //Add/Subtract days
         btnAddDay.setOnClickListener(v -> {
             persianCalendar.add(PersianCalendar.DAY_OF_MONTH, 1);
             updateCurrentDate();
@@ -95,14 +95,14 @@ public class SimplePersianCalendarActivity extends Activity {
             showMessage("Subtracted 1 day");
         });
         
-        // Real-time conversion as user types
+        //Real-time conversion as user types
         edtPersianDate.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 10) { // When full date is entered (1402/10/25)
+                if (s.length() == 10) { //When full date is entered (1402/10/25)
                     convertPersianToGregorian();
                 }
             }
@@ -114,7 +114,7 @@ public class SimplePersianCalendarActivity extends Activity {
             
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 10) { // When full date is entered (2024/01/15)
+                if (s.length() == 10) { //When full date is entered (2024/01/15)
                     convertGregorianToPersian();
                 }
             }
@@ -123,19 +123,19 @@ public class SimplePersianCalendarActivity extends Activity {
     
     private void updateCurrentDate() {
         try {
-            // Update Persian date
+            //Update Persian date
             String persianDate = formatPersianDate(persianCalendar);
             tvCurrentDate.setText(persianDate);
             
-            // Update Gregorian equivalent
+            //Update Gregorian equivalent
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
             String gregorianDate = sdf.format(new Date(persianCalendar.getTimeInMillis()));
             tvCurrentGregorian.setText("Gregorian: " + gregorianDate);
             
-            // Update date information
+            //Update date information
             updateDateInfo();
             
-            // Hide any previous conversion result
+            //Hide any previous conversion result
             tvConversionResult.setVisibility(View.GONE);
             
         } catch (Exception e) {
@@ -145,23 +145,23 @@ public class SimplePersianCalendarActivity extends Activity {
 
     private void updateDateInfo() {
         try {
-            // Day name
+            //Day name
             String dayName = PersianDateFormat.getDayName(persianCalendar);
             tvDayName.setText("📅 Day: " + dayName);
 
-            // Month info - USE getDaysInMonth() instead of getActualMaximum()
+            //Month info - USE getDaysInMonth() instead of getActualMaximum()
             String monthName = PersianDateFormat.getMonthName(persianCalendar);
 
-            // CORRECT WAY: Use the Persian calendar's method
-            int daysInMonth = persianCalendar.getDaysInMonth(); // Your custom method
-            // OR: int daysInMonth = PersianCalendar.getDaysInMonth(
-            //     persianCalendar.getYear(),
-            //     persianCalendar.getMonth()
-            // );
+            //CORRECT WAY: Use the Persian calendar's method
+            int daysInMonth = persianCalendar.getDaysInMonth(); //Your custom method
+            //OR: int daysInMonth = PersianCalendar.getDaysInMonth(
+            //   persianCalendar.getYear(),
+            //   persianCalendar.getMonth()
+            //);
 
             tvMonthInfo.setText("📆 Month: " + monthName + " (" + daysInMonth + " days)");
 
-            // Leap year
+            //Leap year
             boolean isLeap = PersianDateFormat.isLeapYear(persianCalendar);
             tvLeapYear.setText(isLeap ? "🌟 Leap Year" : "📅 Common Year");
 
@@ -172,16 +172,16 @@ public class SimplePersianCalendarActivity extends Activity {
     
     private void updateDateInfo1() {
         try {
-            // Day name
+            //Day name
             String dayName = PersianDateFormat.getDayName(persianCalendar);
             tvDayName.setText("📅 Day: " + dayName);
             
-            // Month info
+            //Month info
             String monthName = PersianDateFormat.getMonthName(persianCalendar);
             int daysInMonth = persianCalendar.getActualMaximum(PersianCalendar.DAY_OF_MONTH);
             tvMonthInfo.setText("📆 Month: " + monthName + " (" + daysInMonth + " days)");
             
-            // Leap year
+            //Leap year
             boolean isLeap = PersianDateFormat.isLeapYear(persianCalendar);
             tvLeapYear.setText(isLeap ? "🌟 Leap Year" : "📅 Common Year");
             
@@ -199,7 +199,7 @@ public class SimplePersianCalendarActivity extends Activity {
         }
         
         try {
-            // Parse Persian date
+            //Parse Persian date
             String[] parts = persianDateStr.split("/");
             if (parts.length != 3) {
                 showError("Invalid format. Use: yyyy/mm/dd");
@@ -207,16 +207,16 @@ public class SimplePersianCalendarActivity extends Activity {
             }
             
             int year = Integer.parseInt(parts[0]);
-            int month = Integer.parseInt(parts[1]) - 1; // Convert to 0-based
+            int month = Integer.parseInt(parts[1]) - 1; //Convert to 0-based
             int day = Integer.parseInt(parts[2]);
             
-            // Set the date
+            //Set the date
             persianCalendar.setPersianDate(year, month, day);
             
-            // Update display
+            //Update display
             updateCurrentDate();
             
-            // Show conversion result
+            //Show conversion result
             SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.US);
             String result = sdf.format(new Date(persianCalendar.getTimeInMillis()));
             showConversionResult("Gregorian: " + result);
@@ -241,7 +241,7 @@ public class SimplePersianCalendarActivity extends Activity {
         }
         
         try {
-            // Parse Gregorian date
+            //Parse Gregorian date
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
             Date date = sdf.parse(gregorianDateStr);
             
@@ -250,13 +250,13 @@ public class SimplePersianCalendarActivity extends Activity {
                 return;
             }
             
-            // Set the date
+            //Set the date
             persianCalendar.setTime(date);
             
-            // Update display
+            //Update display
             updateCurrentDate();
             
-            // Show conversion result
+            //Show conversion result
             String result = formatPersianDate(persianCalendar);
             showConversionResult("Persian: " + result);
             

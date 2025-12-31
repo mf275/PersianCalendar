@@ -98,7 +98,7 @@ public class FastPersianDateFormat {
     }
 
     public String format(YMD ymd, String pattern) {
-        // Create a PersianCalendar object and set the date from YMD, and set time to zero.
+        //Create a PersianCalendar object and set the date from YMD, and set time to zero.
         FastPersianCalendar pc = new FastPersianCalendar();
         pc.setPersianDate(ymd.year, ymd.month - 1, ymd.day);
         pc.set(Calendar.HOUR_OF_DAY, 0);
@@ -106,7 +106,7 @@ public class FastPersianDateFormat {
         pc.set(Calendar.SECOND, 0);
         pc.set(Calendar.MILLISECOND, 0);
 
-        // Use the static format method with the instance's numberCharacter and locale
+        //Use the static format method with the instance's numberCharacter and locale
         return formatWithPattern(pc, pattern);
     }
 
@@ -117,11 +117,11 @@ public class FastPersianDateFormat {
 
         String result = formatPattern;
 
-        // Replace pattern tokens
-        result = result.replace("DDDD", calendar.getWeekdayName());
-        result = result.replace("ddd", calendar.getWeekdayName()); // Using full name for short
+        //Replace pattern tokens
+        result = result.replace("dddd", calendar.getWeekdayName());
+        result = result.replace("ddd", calendar.getWeekdayName()); //Using full name for short
         result = result.replace("MMMM", calendar.getMonthName());
-        result = result.replace("MMM", calendar.getMonthName()); // Using full name for short
+        result = result.replace("MMM", calendar.getMonthName()); //Using full name for short
         result = result.replace("MM", formatToTwoDigits(calendar.getMonth() + 1));
         result = result.replace("dd", formatToTwoDigits(calendar.getDayOfMonth()));
         result = result.replace("yyyy", formatToTwoDigits(calendar.getYear()));
@@ -132,7 +132,7 @@ public class FastPersianDateFormat {
         result = result.replace("ss", formatToTwoDigits(calendar.get(SECOND)));
         result = result.replace("a", getAmPm(calendar));
 
-        // Handle single 'd' and 'M'
+        //Handle single 'd' and 'M'
         result = result.replace("d", String.valueOf(calendar.getDayOfMonth()));
         result = result.replace("M", String.valueOf(calendar.getMonth() + 1));
 
@@ -160,7 +160,7 @@ public class FastPersianDateFormat {
             return text;
         }
 
-        // Convert English digits to Farsi
+        //Convert English digits to Farsi
         return convertToFarsiNumbers(text);
     }
 
@@ -188,7 +188,7 @@ public class FastPersianDateFormat {
         }
     }
 
-    // === PARSING METHODS ===
+    //=== PARSING METHODS ===
 
     public FastPersianCalendar parse(String dateString) throws ParseException {
         if (pattern == null) {
@@ -199,17 +199,17 @@ public class FastPersianDateFormat {
 
     public FastPersianCalendar parse(String dateString, String parsePattern) throws ParseException {
         try {
-            // For "yyyy/MM/dd HH:mm" pattern
+            //For "yyyy/MM/dd HH:mm" pattern
             if ("yyyy/MM/dd HH:mm".equals(parsePattern)) {
                 return parseDateTimePattern(dateString, parsePattern);
             }
 
-            // For other patterns with time
+            //For other patterns with time
             if (parsePattern.contains("HH") || parsePattern.contains("mm") || parsePattern.contains("ss")) {
                 return parseDateTimePattern(dateString, parsePattern);
             }
 
-            // Date-only parsing
+            //Date-only parsing
             return parseStandardDate(dateString);
 
         } catch (Exception e) {
@@ -219,10 +219,10 @@ public class FastPersianDateFormat {
 
     private FastPersianCalendar parseDateTimePattern(String dateString, String parsePattern) throws ParseException {
         try {
-            // Remove any extra spaces
+            //Remove any extra spaces
             dateString = dateString.trim();
 
-            // For "yyyy/MM/dd HH:mm" pattern, split by space
+            //For "yyyy/MM/dd HH:mm" pattern, split by space
             String[] parts = dateString.split("\\s+");
             if (parts.length != 2) {
                 throw new ParseException("Invalid date time format. Expected format: " + parsePattern, 0);
@@ -231,7 +231,7 @@ public class FastPersianDateFormat {
             String dateStr = parts[0];
             String timeStr = parts[1];
 
-            // Parse date part (yyyy/MM/dd)
+            //Parse date part (yyyy/MM/dd)
             String[] dateParts = dateStr.split("/");
             if (dateParts.length != 3) {
                 throw new ParseException("Invalid date format. Expected yyyy/MM/dd", 0);
@@ -241,7 +241,7 @@ public class FastPersianDateFormat {
             int month = Integer.parseInt(convertFarsiToEnglish(dateParts[1])) - 1;
             int day = Integer.parseInt(convertFarsiToEnglish(dateParts[2]));
 
-            // Parse time part (HH:mm)
+            //Parse time part (HH:mm)
             String[] timeParts = timeStr.split(":");
             if (timeParts.length < 2) {
                 throw new ParseException("Invalid time format. Expected HH:mm", 0);
@@ -254,7 +254,7 @@ public class FastPersianDateFormat {
                 second = Integer.parseInt(convertFarsiToEnglish(timeParts[2]));
             }
 
-            // Create and set calendar
+            //Create and set calendar
             FastPersianCalendar calendar = new FastPersianCalendar(timeZone, locale);
             calendar.setPersianDate(year, month, day);
             calendar.set(HOUR_OF_DAY, hour);
@@ -287,7 +287,7 @@ public class FastPersianDateFormat {
     }
 
     private FastPersianCalendar parseDefault(String dateString) throws ParseException {
-        // Try common formats
+        //Try common formats
         try {
             return parseStandardDate(dateString);
         } catch (Exception e) {
@@ -320,12 +320,12 @@ public class FastPersianDateFormat {
     }
 
     private FastPersianCalendar parseDateTime(String dateString, String parsePattern) throws ParseException {
-        // Simple implementation - parse date part and set time
+        //Simple implementation - parse date part and set time
         FastPersianCalendar calendar = parseStandardDate(dateString);
 
-        // Extract time components if present in pattern
+        //Extract time components if present in pattern
         if (parsePattern.contains("HH")) {
-            // Simple time extraction - you might need more sophisticated parsing
+            //Simple time extraction - you might need more sophisticated parsing
             String[] timeParts = dateString.split("\\s+");
             if (timeParts.length > 1) {
                 String timeStr = timeParts[1];
@@ -370,7 +370,7 @@ public class FastPersianDateFormat {
     }
 
     private String convertPatternToGregorian(String persianPattern) {
-        // Simple conversion
+        //Simple conversion
         return persianPattern
                 .replace("yyyy", "yyyy")
                 .replace("MM", "MM")
@@ -380,7 +380,7 @@ public class FastPersianDateFormat {
                 .replace("ss", "ss");
     }
 
-    // === STATIC UTILITY METHODS ===
+    //=== STATIC UTILITY METHODS ===
 
     public static String format(FastPersianCalendar calendar, String pattern) {
         return format(calendar, pattern, PersianDateNumberCharacter.ENGLISH);
@@ -417,7 +417,7 @@ public class FastPersianDateFormat {
         return format(calendar, pattern, numberCharacter);
     }
 
-    // === CALENDAR CONSTANTS ===
+    //=== CALENDAR CONSTANTS ===
 
     private static final int HOUR_OF_DAY = FastPersianCalendar.HOUR_OF_DAY;
     private static final int MINUTE = FastPersianCalendar.MINUTE;

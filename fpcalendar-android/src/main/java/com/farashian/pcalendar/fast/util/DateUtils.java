@@ -21,7 +21,7 @@ public class DateUtils {
     public static int      THIS_YEAR;
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    static FastPersianDateFormat dayOfWeek       = new FastPersianDateFormat("dddd"); // Day of week
+    static FastPersianDateFormat dayOfWeek       = new FastPersianDateFormat("dddd"); //Day of week
     static FastPersianDateFormat fullDateWithDay = new FastPersianDateFormat("dddd dd MMMM yyyy");
     static FastPersianDateFormat fullDate  = new FastPersianDateFormat("dd MMMM yyyy");
     static FastPersianDateFormat dashDate1 = new FastPersianDateFormat("dd-MMM-yyyy");
@@ -131,7 +131,7 @@ public class DateUtils {
 
         try {
             FastPersianCalendar pc = new FastPersianCalendar();
-            // Parse date in format "yyyy/MM/dd"
+            //Parse date in format "yyyy/MM/dd"
             String[] parts = date.split("/");
             if (parts.length == 3) {
                 pc.setPersianDate(
@@ -184,6 +184,16 @@ public class DateUtils {
     public static String getFarsiFullDate(Date date) {
         FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
         return fullDate.format(pdate);
+    }
+
+    public static String getFarsiFullDate(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
+        return fullDate.format(pdate);
+    }
+
+    public static String getFarsiFullDateWithDay(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
+        return fullDateWithDay.format(pdate);
     }
 
     public static String getFarsiFullDateWithDay(Date date) {
@@ -312,6 +322,13 @@ public class DateUtils {
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
         return calendar.getTimeInMillis();
+    }
+
+    public static int calculateDaysBetween(FastPersianCalendar startDate, FastPersianCalendar endDate) {
+        long startMillis = startDate.getTimeInMillis();
+        long endMillis = endDate.getTimeInMillis();
+        long diffMillis = endMillis - startMillis;
+        return (int) (diffMillis / (24 * 60 * 60 * 1000));
     }
 
     public static long convertUTCToLocal(long utcDate) {

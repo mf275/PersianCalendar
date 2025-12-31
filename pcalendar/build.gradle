@@ -10,44 +10,44 @@ java {
     withSourcesJar()
     //withJavadocJar()
 
-    // Fix for Javadoc generation issues
+    //Fix for Javadoc generation issues
     javadoc.options {
         encoding = 'UTF-8'
         addBooleanOption('Xdoclint:none', true)
         addBooleanOption('html5', true)
     }
-//    packagingOptions {
-//        pickFirst 'resource-files//fonts/DejaVuLGCSans.wof'
-//        exclude 'assets/fonts/*'
-//        exclude 'resource-files/fonts/*'
-//        exclude '**/*.ttf'
-//        exclude '**/*.otf'
-//        exclude '**/fonts/'
-//    }
+//  packagingOptions {
+//      pickFirst 'resource-files//fonts/DejaVuLGCSans.wof'
+//      exclude 'assets/fonts/*'
+//      exclude 'resource-files/fonts/*'
+//      exclude '**/*.ttf'
+//      exclude '**/*.otf'
+//      exclude '**/fonts/'
+//  }
 }
 
-// Test task configuration
+//Test task configuration
 tasks.withType(Test) {
     useJUnitPlatform()
 }
 
-version = "2.4.0"
+version = "2.5.0"
 group = "com.github.mf275.persian-calendar"
 
 
 dependencies {
-    // Add test dependencies if not present
+    //Add test dependencies if not present
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testImplementation 'org.assertj:assertj-core:3.24.2'
 }
 
-// Configure jar task
+//Configure jar task
 jar {
     manifest {
         attributes(
                 'Implementation-Title': 'Persian Calendar Core',
                 'Implementation-Version': project.version,
-                'Automatic-Module-Name': 'persian.calendar.core'  // For Java Module System
+                'Automatic-Module-Name': 'persian.calendar.core'  //For Java Module System
         )
     }
 }
@@ -65,7 +65,7 @@ publishing {
                 name = 'Persian Calendar'
                 description = 'Java library for Persian (Jalali) calendar calculations'
                 url = 'https://github.com/mf275/PersianCalendar'
-                packaging = 'jar'  // Added this
+                packaging = 'jar'  //Added this
 
                 licenses {
                     license {
@@ -88,7 +88,7 @@ publishing {
                     url = 'https://github.com/mf275/PersianCalendar/tree/main'
                 }
 
-                // Optional: Add issue management
+                //Optional: Add issue management
                 issueManagement {
                     system = 'GitHub'
                     url = 'https://github.com/mf275/PersianCalendar/issues'
@@ -106,7 +106,7 @@ publishing {
                 password = project.findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
             }
         }
-        // Add local maven for testing
+        //Add local maven for testing
         maven {
             name = "Local"
             url = layout.buildDirectory.dir("repo")
@@ -115,17 +115,17 @@ publishing {
 }
 
 signing {
-    // Only sign if we have the required properties
+    //Only sign if we have the required properties
     required { gradle.taskGraph.hasTask("publish") }
     sign publishing.publications.mavenJava
 }
 
-// Helper task to publish locally for testing
+//Helper task to publish locally for testing
 tasks.register('publishToLocal') {
     dependsOn 'publishMavenJavaPublicationToLocalRepository'
 }
 
-// Task to print publication info
+//Task to print publication info
 tasks.register('printPublicationInfo') {
     doLast {
         println "Publication Details:"

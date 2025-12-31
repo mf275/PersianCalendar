@@ -2,15 +2,18 @@ package com.farashian.pcalendar.util;
 
 import java.util.Locale;
 
+import static com.farashian.pcalendar.PCConstants.GREGORIAN_MONTH_NAMES_ENG;
+import static com.farashian.pcalendar.PCConstants.HIJRI_MONTH_NAMES;
+
 /**
  * Utility class with static methods for Persian calendar operations.
  */
 public final class PCalendarUtils {
-    
+
     private PCalendarUtils() {
     }
-    
-    
+
+
     /**
      * Validates a Persian date
      * @param year Persian year
@@ -22,11 +25,11 @@ public final class PCalendarUtils {
         if (year < 1) {
             throw new IllegalArgumentException("Year must be positive, got: " + year);
         }
-        
+
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
-        
+
         int maxDays = getDaysInMonthStatic(year, month);
         if (day < 1 || day > maxDays) {
             throw new IllegalArgumentException("Day must be between 1 and " + maxDays +
@@ -46,11 +49,11 @@ public final class PCalendarUtils {
         if (year < 1 || year > 9999) {
             throw new IllegalArgumentException("Year must be between 1 and 9999, got: " + year);
         }
-        
+
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
-        
+
         int maxDays = getGrgMonthLength(year, month);
         if (day < 1 || day > maxDays) {
             throw new IllegalArgumentException("Day must be between 1 and " + maxDays +
@@ -81,8 +84,8 @@ public final class PCalendarUtils {
 
         return result.toString();
     }
-    
-    
+
+
     /**
      * Static method to check if a Persian year is a leap year
      * @param year Persian year
@@ -94,7 +97,7 @@ public final class PCalendarUtils {
                remainder == 13 || remainder == 17 || remainder == 22 ||
                remainder == 26 || remainder == 30;
     }
-    
+
     /**
      * Static method to get number of days in a Persian month
      * @param year Persian year
@@ -105,7 +108,7 @@ public final class PCalendarUtils {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
-        
+
         if (month < 6) {
             return 31;
         } else if (month < 11) {
@@ -114,7 +117,7 @@ public final class PCalendarUtils {
             return isLeapYearStatic(year) ? 30 : 29;
         }
     }
-    
+
     /**
      * Static method to get Gregorian month length
      * @param year Gregorian year
@@ -125,28 +128,28 @@ public final class PCalendarUtils {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
-        
+
         switch (month) {
-            case 0:  // January
-            case 2:  // March
-            case 4:  // May
-            case 6:  // July
-            case 7:  // August
-            case 9:  // October
-            case 11: // December
+            case 0:  //January
+            case 2:  //March
+            case 4:  //May
+            case 6:  //July
+            case 7:  //August
+            case 9:  //October
+            case 11: //December
                 return 31;
-            case 3:  // April
-            case 5:  // June
-            case 8:  // September
-            case 10: // November
+            case 3:  //April
+            case 5:  //June
+            case 8:  //September
+            case 10: //November
                 return 30;
-            case 1:  // February
+            case 1:  //February
                 return isGrgLeapYear(year) ? 29 : 28;
             default:
                 return 31;
         }
     }
-    
+
     /**
      * Static method to check if Gregorian year is leap year
      * @param year Gregorian year
@@ -155,9 +158,9 @@ public final class PCalendarUtils {
     public static boolean isGrgLeapYear(int year) {
         return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
     }
-    
-    // ===== STATIC CONVERSION METHODS =====
-    
+
+    //===== STATIC CONVERSION METHODS =====
+
     /**
      * Converts Persian date to Gregorian date
      * @param year Persian year
@@ -167,15 +170,15 @@ public final class PCalendarUtils {
      */
     public static int[] persianToGregorian(int year, int month, int day) {
         validatePersianDate(year, month, day);
-        
+
         int[] out = new int[3];
-        // Convert 0-based month to 1-based for algorithm
+        //Convert 0-based month to 1-based for algorithm
         jalaliToGregorianFast(year, month + 1, day, out);
-        // Convert 1-based month back to 0-based
+        //Convert 1-based month back to 0-based
         out[1] = out[1] - 1;
         return out;
     }
-    
+
     /**
      * Converts Gregorian date to Persian date
      * @param year Gregorian year
@@ -185,16 +188,16 @@ public final class PCalendarUtils {
      */
     public static int[] gregorianToPersian(int year, int month, int day) {
         validateGregorianDate(year, month, day);
-        
+
         int[] out = new int[3];
-        // Convert 0-based month to 1-based for algorithm
+        //Convert 0-based month to 1-based for algorithm
         gregorianToJalaliFast(year, month + 1, day, out);
-        // Convert 1-based month back to 0-based
+        //Convert 1-based month back to 0-based
         out[1] = out[1] - 1;
         return out;
     }
-    
-    
+
+
     /**
      * Static method to format a Persian date
      * @param year Persian year
@@ -204,10 +207,10 @@ public final class PCalendarUtils {
      * @return formatted date string
      */
     public static String formatShortDate(int year, int month, int day, String delimiter) {
-        return String.format(Locale.US, "%04d%s%02d%s%02d", 
+        return String.format(Locale.US, "%04d%s%02d%s%02d",
                              year, delimiter, month + 1, delimiter, day);
     }
-    
+
     /**
      * Formats a number to two digits
      * @param num the number to format
@@ -216,11 +219,11 @@ public final class PCalendarUtils {
     public static String formatToTwoDigits(int num) {
         return String.format(Locale.US, "%02d", num);
     }
-    
-    
-    
+
+
+
     private static void gregorianToJalaliFast(int gy, int gm, int gd, int[] out) {
-        // Implementation from FastPersianCalendar
+        //Implementation from FastPersianCalendar
         int jy = (gm > 2) ? (gy + 1) : gy;
 
         final int[] g_d_m = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
@@ -250,9 +253,9 @@ public final class PCalendarUtils {
         out[1] = jm;
         out[2] = jd;
     }
-    
+
     private static void jalaliToGregorianFast(int jy, int jm, int jd, int[] out) {
-        // Implementation from FastPersianCalendar
+        //Implementation from FastPersianCalendar
         jy += 1595;
         int dayOfYear = -355668 + (365 * jy) + ((jy / 33) * 8) +
                         (((jy % 33) + 3) / 4) + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
@@ -288,4 +291,33 @@ public final class PCalendarUtils {
         out[1] = gm;
         out[2] = dayOfYear;
     }
+
+    public static String getGregorianMonthName(int month) {
+        return GREGORIAN_MONTH_NAMES_ENG[month];
+    }
+
+    public static String getHijriMonthName(int month) {
+        return HIJRI_MONTH_NAMES[month];
+    }
+
+    public static String convertToFarsiNumbers(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return text;
+        }
+
+        StringBuilder result = new StringBuilder(text.length());
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c >= '0' && c <= '9') {
+                result.append((char) ('۰' + (c - '0')));
+            } else if (c >= '٠' && c <= '٩') {
+                // Arabic-Indic digits - keep as is
+                result.append(c);
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
+    }
+
 }

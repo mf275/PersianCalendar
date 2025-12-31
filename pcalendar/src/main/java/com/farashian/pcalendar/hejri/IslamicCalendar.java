@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.farashian.pcalendar.util.HijriConverter.getIranianHijriMonthData;
 
-public class IslamicCalendar extends Calendar {
+public class HijriCalendar extends Calendar {
     private int[] today = {1446, 1, 1};
     private int[] selectedDay = {1403, 1, 1};
     private int[] todayGregorian = {2024, 1, 1};
@@ -39,18 +39,18 @@ public class IslamicCalendar extends Calendar {
     private final String[] dayNames = {"شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه"};
     
 
-    public IslamicCalendar() {
+    public HijriCalendar() {
         this(new HashMap<>());
     }
     
-    public IslamicCalendar(Map<String, Boolean> options) {
+    public HijriCalendar(Map<String, Boolean> options) {
         if (options != null) {
             this.options = options;
         }
         hijriMonthsDays = getIranianHijriMonthData();
     }
 
-    public IslamicCalendar(Locale us) {
+    public HijriCalendar(Locale us) {
         this(new HashMap<>());
     }
 

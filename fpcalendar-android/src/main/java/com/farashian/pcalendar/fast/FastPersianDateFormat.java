@@ -37,7 +37,7 @@ public final class FastPersianDateFormat {
     private Locale locale;
     private TimeZone timeZone;
     
-    // Thread-local cache for SimpleDateFormat instances
+    //Thread-local cache for SimpleDateFormat instances
     private static final ThreadLocal<SimpleDateFormat> sGregorianFormatCache = 
         new ThreadLocal<SimpleDateFormat>() {
             @Override
@@ -46,14 +46,14 @@ public final class FastPersianDateFormat {
             }
         };
     
-    // Context for resource-based localization
+    //Context for resource-based localization
     @Nullable
     private static Context appContext;
     
-    // Pattern cache for performance
+    //Pattern cache for performance
     private static final ConcurrentHashMap<String, Pattern> patternCache = new ConcurrentHashMap<>();
     
-    // Calendar field constants
+    //Calendar field constants
     private static final int HOUR_OF_DAY = FastPersianCalendar.HOUR_OF_DAY;
     private static final int MINUTE = FastPersianCalendar.MINUTE;
     private static final int SECOND = FastPersianCalendar.SECOND;
@@ -90,7 +90,7 @@ public final class FastPersianDateFormat {
     public void setPattern(@NonNull String pattern) {
         if (TextUtils.isEmpty(pattern)) {
             Log.w(TAG, "Pattern is empty, using default");
-            this.pattern = "DDDD, d MMMM yyyy HH:mm:ss";
+            this.pattern = "dddd, d MMMM yyyy HH:mm:ss";
         } else {
             this.pattern = pattern;
         }
@@ -128,7 +128,7 @@ public final class FastPersianDateFormat {
         return timeZone;
     }
     
-    // Static method to set application context
+    //Static method to set application context
     public static void setAppContext(@Nullable Context context) {
         appContext = context != null ? context.getApplicationContext() : null;
     }
@@ -165,8 +165,8 @@ public final class FastPersianDateFormat {
 
         StringBuilder result = new StringBuilder(formatPattern);
         
-        // Replace tokens in order of specificity
-        replaceToken(result, "DDDD", calendar.getWeekdayName());
+        //Replace tokens in order of specificity
+        replaceToken(result, "dddd", calendar.getWeekdayName());
         replaceToken(result, "ddd", getShortWeekdayName(calendar));
         replaceToken(result, "MMMM", calendar.getMonthName());
         replaceToken(result, "MMM", getShortMonthName(calendar));
@@ -190,7 +190,7 @@ public final class FastPersianDateFormat {
         replaceToken(result, "a", getAmPm(calendar, false));
         replaceToken(result, "A", getAmPm(calendar, true));
         
-        // Handle single 'd' and 'M' - only if not already replaced by dd/MM
+        //Handle single 'd' and 'M' - only if not already replaced by dd/MM
         replaceToken(result, "d", String.valueOf(calendar.getDayOfMonth()));
         replaceToken(result, "M", String.valueOf(calendar.getMonth() + 1));
 
@@ -199,7 +199,7 @@ public final class FastPersianDateFormat {
     }
 
     public String format(YMD ymd, String pattern) {
-        // Create a PersianCalendar object and set the date from YMD, and set time to zero.
+        //Create a PersianCalendar object and set the date from YMD, and set time to zero.
         FastPersianCalendar pc = new FastPersianCalendar();
         pc.setPersianDate(ymd.year, ymd.month - 1, ymd.day);
         pc.set(Calendar.HOUR_OF_DAY, 0);
@@ -207,7 +207,7 @@ public final class FastPersianDateFormat {
         pc.set(Calendar.SECOND, 0);
         pc.set(Calendar.MILLISECOND, 0);
 
-        // Use the static format method with the instance's numberCharacter and locale
+        //Use the static format method with the instance's numberCharacter and locale
         return formatWithPattern(pc, pattern);
     }
     
@@ -228,9 +228,9 @@ public final class FastPersianDateFormat {
     private String getShortMonthName(@NonNull FastPersianCalendar calendar) {
         String fullName = calendar.getMonthNameShort();
         if (locale.getLanguage().equals("fa")) {
-            return fullName; // Persian doesn't typically use short month names
+            return fullName; //Persian doesn't typically use short month names
         }
-        // For English, return first 3 letters
+        //For English, return first 3 letters
         return fullName.length() > 3 ? fullName.substring(0, 3) : fullName;
     }
 
@@ -238,9 +238,9 @@ public final class FastPersianDateFormat {
     private String getShortWeekdayName(@NonNull FastPersianCalendar calendar) {
         String fullName = calendar.getWeekdayName();
         if (locale.getLanguage().equals("fa")) {
-            return fullName; // Persian doesn't typically use short weekday names
+            return fullName; //Persian doesn't typically use short weekday names
         }
-        // For English, return first 3 letters
+        //For English, return first 3 letters
         return fullName.length() > 3 ? fullName.substring(0, 3) : fullName;
     }
 
@@ -275,7 +275,7 @@ public final class FastPersianDateFormat {
             if (c >= '0' && c <= '9') {
                 result.append((char) ('۰' + (c - '0')));
             } else if (c >= '٠' && c <= '٩') {
-                // Arabic-Indic digits - keep as is
+                //Arabic-Indic digits - keep as is
                 result.append(c);
             } else {
                 result.append(c);
@@ -284,7 +284,7 @@ public final class FastPersianDateFormat {
         return result.toString();
     }
 
-    // === PARSING METHODS ===
+    //=== PARSING METHODS ===
 
     @NonNull
     public FastPersianCalendar parse(@NonNull String dateString) throws ParseException {
@@ -308,10 +308,10 @@ public final class FastPersianDateFormat {
         }
 
         try {
-            // Remove Farsi numbers and convert to English for parsing
+            //Remove Farsi numbers and convert to English for parsing
             String normalizedDate = convertFarsiToEnglish(dateString.trim());
             
-            // Handle different patterns
+            //Handle different patterns
             if (parsePattern.contains("HH") || parsePattern.contains("mm") || parsePattern.contains("ss")) {
                 return parseDateTimePattern(normalizedDate, parsePattern);
             } else {
@@ -331,7 +331,7 @@ public final class FastPersianDateFormat {
     private FastPersianCalendar parseDateTimePattern(@NonNull String dateString,
                                                     @NonNull String parsePattern) throws ParseException {
         try {
-            // Extract date and time parts based on pattern
+            //Extract date and time parts based on pattern
             String datePart = "";
             String timePart = "";
             
@@ -349,11 +349,11 @@ public final class FastPersianDateFormat {
                 datePart = dateString;
             }
             
-            // Parse date part
+            //Parse date part
             String datePattern = extractDatePattern(parsePattern);
             FastPersianCalendar calendar = parseDateOnlyPattern(datePart, datePattern);
             
-            // Parse time part if available
+            //Parse time part if available
             if (!timePart.isEmpty()) {
                 parseAndSetTime(calendar, timePart, parsePattern);
             }
@@ -371,12 +371,12 @@ public final class FastPersianDateFormat {
     @NonNull
     private FastPersianCalendar parseDateOnlyPattern(@NonNull String dateString,
                                                     @NonNull String parsePattern) throws ParseException {
-        // Determine delimiter
+        //Determine delimiter
         char delimiter = '/';
         if (parsePattern.contains("-")) delimiter = '-';
         else if (parsePattern.contains(".")) delimiter = '.';
         
-        // Get regex pattern for this format
+        //Get regex pattern for this format
         Pattern pattern = getCachedPattern(parsePattern);
         Matcher matcher = pattern.matcher(dateString);
         
@@ -385,7 +385,7 @@ public final class FastPersianDateFormat {
         }
         
         try {
-            // Extract components based on pattern
+            //Extract components based on pattern
             int year, month, day;
             
             if (parsePattern.startsWith("yyyy")) {
@@ -397,7 +397,7 @@ public final class FastPersianDateFormat {
                 month = Integer.parseInt(matcher.group(2)) - 1;
                 day = Integer.parseInt(matcher.group(3));
             } else {
-                // Default to yyyy/MM/dd
+                //Default to yyyy/MM/dd
                 String[] parts = dateString.split(Pattern.quote(String.valueOf(delimiter)));
                 if (parts.length != 3) {
                     throw new ParseException("Invalid date format: " + dateString, 0);
@@ -407,7 +407,7 @@ public final class FastPersianDateFormat {
                 day = Integer.parseInt(parts[2]);
             }
             
-            // Validate date
+            //Validate date
             validateDate(year, month, day);
             
             FastPersianCalendar calendar = new FastPersianCalendar(timeZone, locale);
@@ -421,12 +421,12 @@ public final class FastPersianDateFormat {
     
     @NonNull
     private String extractDatePattern(@NonNull String fullPattern) {
-        // Extract date part from pattern (before any time-related tokens)
+        //Extract date part from pattern (before any time-related tokens)
         if (fullPattern.contains(" ")) {
             return fullPattern.split(" ")[0];
         }
         
-        // Remove time tokens
+        //Remove time tokens
         String datePattern = fullPattern
             .replace("HH", "")
             .replace("hh", "")
@@ -443,7 +443,7 @@ public final class FastPersianDateFormat {
                                 @NonNull String timeString,
                                 @NonNull String pattern) throws ParseException {
         try {
-            // Check for AM/PM
+            //Check for AM/PM
             boolean hasAmPm = pattern.contains("a") || pattern.contains("A");
             boolean is24Hour = pattern.contains("HH");
             
@@ -456,9 +456,9 @@ public final class FastPersianDateFormat {
             int minute = Integer.parseInt(timeParts[1]);
             int second = timeParts.length > 2 ? Integer.parseInt(timeParts[2]) : 0;
             
-            // Handle 12-hour format with AM/PM
+            //Handle 12-hour format with AM/PM
             if (hasAmPm && !is24Hour) {
-                // Check for AM/PM suffix
+                //Check for AM/PM suffix
                 String suffix = timeParts[timeParts.length - 1].toLowerCase();
                 boolean isPm = suffix.contains("pm") || suffix.contains("ب.ظ");
                 
@@ -469,7 +469,7 @@ public final class FastPersianDateFormat {
                 }
             }
             
-            // Validate time
+            //Validate time
             if (hour < 0 || hour > 23) {
                 throw new ParseException("Invalid hour: " + hour, 0);
             }
@@ -519,7 +519,7 @@ public final class FastPersianDateFormat {
 
     @NonNull
     private FastPersianCalendar parseDefault(@NonNull String dateString) throws ParseException {
-        // Try common formats
+        //Try common formats
         String[] patterns = {"yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", 
                             "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss", 
                             "yyyy-MM-dd HH:mm", "yyyy-MM-dd"};
@@ -528,7 +528,7 @@ public final class FastPersianDateFormat {
             try {
                 return parse(dateString, pattern);
             } catch (ParseException e) {
-                // Try next pattern
+                //Try next pattern
                 continue;
             }
         }
@@ -545,7 +545,7 @@ public final class FastPersianDateFormat {
             throw new ParseException("Invalid month: " + (month + 1) + ". Must be between 1-12", 0);
         }
         
-        // Check day validity based on month
+        //Check day validity based on month
         int maxDays = getDaysInMonth(year, month);
         if (day < 1 || day > maxDays) {
             throw new ParseException("Invalid day: " + day + " for month " + (month + 1) + 
@@ -561,7 +561,7 @@ public final class FastPersianDateFormat {
         } else if (month < 11) {
             return 30;
         } else {
-            // Esfand
+            //Esfand
             return FastPersianCalendar.isLeapYear(year) ? 30 : 29;
         }
     }
@@ -588,7 +588,7 @@ public final class FastPersianDateFormat {
 
     @NonNull
     private String convertPatternToGregorian(@NonNull String persianPattern) {
-        // Convert Persian pattern to Gregorian SimpleDateFormat pattern
+        //Convert Persian pattern to Gregorian SimpleDateFormat pattern
         return persianPattern
                 .replace("yyyy", "yyyy")
                 .replace("yy", "yy")
@@ -611,49 +611,49 @@ public final class FastPersianDateFormat {
     @NonNull
     private Pattern getCachedPattern(@NonNull String parsePattern) {
         return patternCache.computeIfAbsent(parsePattern, pattern -> {
-            // Build regex sequentially
+            //Build regex sequentially
             StringBuilder regexBuilder = new StringBuilder();
 
             for (int i = 0; i < pattern.length(); i++) {
-                // Check for 4-char tokens
+                //Check for 4-char tokens
                 if (i + 3 < pattern.length()) {
                     String fourChars = pattern.substring(i, i + 4);
                     switch (fourChars) {
                         case "yyyy":
                             regexBuilder.append("(\\d{4})");
-                            i += 3; // Skip ahead
+                            i += 3; //Skip ahead
                             continue;
-                        case "DDDD":
-                            // Weekday name - for parsing we'll accept any word characters
+                        case "dddd":
+                            //Weekday name - for parsing we'll accept any word characters
                             regexBuilder.append("(\\p{L}+)");
                             i += 3;
                             continue;
                         case "MMMM":
-                            // Month name - for parsing we'll accept any word characters
+                            //Month name - for parsing we'll accept any word characters
                             regexBuilder.append("(\\p{L}+)");
                             i += 3;
                             continue;
                     }
                 }
 
-                // Check for 3-char tokens
+                //Check for 3-char tokens
                 if (i + 2 < pattern.length()) {
                     String threeChars = pattern.substring(i, i + 3);
                     switch (threeChars) {
                         case "MMM":
-                            // Short month name
+                            //Short month name
                             regexBuilder.append("(\\p{L}+)");
                             i += 2;
                             continue;
                         case "ddd":
-                            // Short weekday name
+                            //Short weekday name
                             regexBuilder.append("(\\p{L}+)");
                             i += 2;
                             continue;
                     }
                 }
 
-                // Check for 2-char tokens
+                //Check for 2-char tokens
                 if (i + 1 < pattern.length()) {
                     String twoChars = pattern.substring(i, i + 2);
                     switch (twoChars) {
@@ -688,7 +688,7 @@ public final class FastPersianDateFormat {
                     }
                 }
 
-                // Single character tokens
+                //Single character tokens
                 char c = pattern.charAt(i);
                 switch (c) {
                     case 'M':
@@ -728,8 +728,8 @@ public final class FastPersianDateFormat {
                         regexBuilder.append("\\s*,\\s*");
                         break;
                     default:
-                        // For literal text like "DDDD, " - skip it in parsing mode
-                        // or escape it
+                        //For literal text like "dddd, " - skip it in parsing mode
+                        //or escape it
                         regexBuilder.append(Pattern.quote(String.valueOf(c)));
                         break;
                 }
@@ -781,7 +781,7 @@ public final class FastPersianDateFormat {
         return format(calendar, pattern, numberCharacter);
     }
 
-    // === BUILDER PATTERN ===
+    //=== BUILDER PATTERN ===
     
     public static class Builder {
         private String pattern;
@@ -828,7 +828,7 @@ public final class FastPersianDateFormat {
         }
     }
 
-    // === EQUALS AND HASHCODE ===
+    //=== EQUALS AND HASHCODE ===
     
     @Override
     public boolean equals(Object o) {

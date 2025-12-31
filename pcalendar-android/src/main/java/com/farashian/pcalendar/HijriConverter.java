@@ -28,16 +28,16 @@ public class HijriConverter {
 
     private static final GregorianCalendar EPOCH_GREGORIAN_TEHRAN;
 
-    // 1-based Hijri epoch date: 1447-07-01
+    //1-based Hijri epoch date: 1447-07-01
     private static final YMD EPOCH_HIJRI = new YMD(1447, 7, 1);
 
-    // Official Iranian Hijri month lengths (1-based months, index 0 = Muharram)
+    //Official Iranian Hijri month lengths (1-based months, index 0 = Muharram)
     private static final Map<Integer, int[]> HIJRI_MONTH_DATA = getIranianHijriMonthData();
 
     static {
         EPOCH_GREGORIAN_TEHRAN = new GregorianCalendar(TEHRAN_TIMEZONE);
         EPOCH_GREGORIAN_TEHRAN.set(Calendar.YEAR, 2025);
-        EPOCH_GREGORIAN_TEHRAN.set(Calendar.MONTH, Calendar.DECEMBER); // 11
+        EPOCH_GREGORIAN_TEHRAN.set(Calendar.MONTH, Calendar.DECEMBER); //11
         EPOCH_GREGORIAN_TEHRAN.set(Calendar.DAY_OF_MONTH, 22);
         EPOCH_GREGORIAN_TEHRAN.set(Calendar.HOUR_OF_DAY, 0);
         EPOCH_GREGORIAN_TEHRAN.set(Calendar.MINUTE, 0);
@@ -88,11 +88,11 @@ public class HijriConverter {
     /**
      * Month index is 0-based in this helper: islamicMonth0 = 0 => Muharram.
      */
-    public static Calendar findFirstDayOfIslamicMonth(int islamicYear, int islamicMonth0) {
+    public static Calendar findFirstDayOfHijriMonth(int islamicYear, int islamicMonth0) {
         return hijriToGregorian(islamicYear, islamicMonth0 + 1, 1);
     }
 
-    public static Calendar findFirstDayOfIslamicMonth(int islamicYear, int islamicMonth0, TimeZone outputTimezone) {
+    public static Calendar findFirstDayOfHijriMonth(int islamicYear, int islamicMonth0, TimeZone outputTimezone) {
         return hijriToGregorian(islamicYear, islamicMonth0 + 1, 1, outputTimezone);
     }
 
@@ -105,14 +105,14 @@ public class HijriConverter {
         if (official != -1) {
             return official;
         }
-        // Fallback (non-official): tabular model.
+        //Fallback (non-official): tabular model.
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Hijri month out of range: " + month);
         }
         if (month == 12) {
-            return isIslamicLeapYear(year) ? 30 : 29;
+            return isHijriLeapYear(year) ? 30 : 29;
         }
-        return (month % 2 == 1) ? 30 : 29; // odd months 30, even months 29
+        return (month % 2 == 1) ? 30 : 29; //odd months 30, even months 29
     }
 
     /**
@@ -124,7 +124,7 @@ public class HijriConverter {
             return -1;
         }
         int[] months = HIJRI_MONTH_DATA.get(year);
-        return months[month - 1]; // convert to 0-based index
+        return months[month - 1]; //convert to 0-based index
     }
 
     /**
@@ -154,10 +154,10 @@ public class HijriConverter {
      */
     private static YMD calculateHijriFromGregorian(GregorianCalendar tehranDate) {
         long diffMillis = tehranDate.getTimeInMillis() - EPOCH_GREGORIAN_TEHRAN.getTimeInMillis();
-        int diffDays = (int) (diffMillis / MILLIS_PER_DAY); // safe at midnight
+        int diffDays = (int) (diffMillis / MILLIS_PER_DAY); //safe at midnight
 
         int y = EPOCH_HIJRI.year;
-        int m = EPOCH_HIJRI.month - 1; // 0-based
+        int m = EPOCH_HIJRI.month - 1; //0-based
         int d = EPOCH_HIJRI.day;
 
         if (diffDays > 0) {
@@ -187,7 +187,7 @@ public class HijriConverter {
                 }
             }
         }
-        return new YMD(y, m + 1, d); // back to 1-based month
+        return new YMD(y, m + 1, d); //back to 1-based month
     }
 
     /**
@@ -196,7 +196,7 @@ public class HijriConverter {
      */
     private static int calculateHijriOffsetDays(YMD hijri) {
         int targetY = hijri.year;
-        int targetM = hijri.month - 1; // 0-based
+        int targetM = hijri.month - 1; //0-based
         int targetD = hijri.day;
 
         if (targetM < 0 || targetM >= 12) {
@@ -218,7 +218,7 @@ public class HijriConverter {
         int offsetDays = 0;
 
         if (isBeforeHijri(targetY, targetM, targetD, y, m, d)) {
-            // Target before epoch: walk backwards from epoch to target.
+            //Target before epoch: walk backwards from epoch to target.
             while (!(y == targetY && m == targetM && d == targetD)) {
                 d--;
                 offsetDays--;
@@ -234,7 +234,7 @@ public class HijriConverter {
                 }
             }
         } else {
-            // Target on/after epoch: walk forwards from epoch to target.
+            //Target on/after epoch: walk forwards from epoch to target.
             while (!(y == targetY && m == targetM && d == targetD)) {
                 d++;
                 offsetDays++;
@@ -262,7 +262,7 @@ public class HijriConverter {
     private static int[] getMonthLengthsForYear(int year) {
         int[] lengths = HIJRI_MONTH_DATA.get(year);
         if (lengths != null) {
-            // Defensive copy: never expose internal arrays.
+            //Defensive copy: never expose internal arrays.
             return Arrays.copyOf(lengths, lengths.length);
         }
         return getTabularMonthLengths(year);
@@ -275,20 +275,20 @@ public class HijriConverter {
     private static int[] getTabularMonthLengths(int year) {
         int[] lengths = new int[12];
         for (int i = 0; i < 12; i++) {
-            lengths[i] = (i % 2 == 0) ? 30 : 29; // Muharram (0) = 30, Safar (1) = 29, ...
+            lengths[i] = (i % 2 == 0) ? 30 : 29; //Muharram (0) = 30, Safar (1) = 29, ...
         }
-        // Dhu al-Hijjah (index 11) can be 30 in leap years
-        if (isIslamicLeapYear(year)) {
+        //Dhu al-Hijjah (index 11) can be 30 in leap years
+        if (isHijriLeapYear(year)) {
             lengths[11] = 30;
         }
         return lengths;
     }
 
     /**
-     * Tabular Islamic leap year rule (30-year cycle).
+     * Tabular Hijri leap year rule (30-year cycle).
      * Only used for fallback years (no official data).
      */
-    private static boolean isIslamicLeapYear(int year) {
+    public static boolean isHijriLeapYear(int year) {
         int cycleYear = year % 30;
         return cycleYear == 2 || cycleYear == 5 || cycleYear == 7 ||
                cycleYear == 10 || cycleYear == 13 || cycleYear == 16 ||

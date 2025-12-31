@@ -41,10 +41,10 @@ public class YMD {
         return day;
     }
 
-    public String toString(String pattern) {
+    /*public String toString(String pattern) {
         FastPersianDateFormat pdf = new FastPersianDateFormat(pattern);
         return pdf.format(this, pattern);
-    }
+    }*/
 
     @NotNull
     @Override

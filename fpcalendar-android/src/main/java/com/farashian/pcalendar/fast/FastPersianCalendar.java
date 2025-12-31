@@ -2,16 +2,15 @@ package com.farashian.pcalendar.fast;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.farashian.pcalendar.fast.util.HijriConverter;
 import com.farashian.pcalendar.fast.util.PCConstants;
 import com.farashian.pcalendar.fast.util.YMD;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.fast.util.HijriConverter.gregorianToHijri;
-import static com.farashian.pcalendar.fast.util.HijriConverter.hijriToGregorian;
+import static com.farashian.pcalendar.fast.util.HijriConverter.*;
 import static com.farashian.pcalendar.fast.util.PCConstants.PERSIAN_LOCALE;
-import static com.farashian.pcalendar.fast.util.PCalendarUtils.validateGregorianDate;
-import static com.farashian.pcalendar.fast.util.PCalendarUtils.validatePersianDate;
+import static com.farashian.pcalendar.fast.util.PCalendarUtils.*;
 
 
 /**
@@ -23,10 +22,10 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public static final int FIRST_DAY_OF_WEEK      = Calendar.SATURDAY;
     public static final int WEEKDAY_HOLIDAY_NUMBER = Calendar.FRIDAY;
 
-    // Calendar constants we need to define
-    private static final int AD = 1; // Gregorian era constant
+    //Calendar constants we need to define
+    private static final int AD = 1; //Gregorian era constant
 
-    // Month constants
+    //Month constants
     public static final int FARVARDIN   = 0;
     public static final int ORDIBEHESHT = 1;
     public static final int KHORDAD     = 2;
@@ -40,20 +39,20 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public static final int BAHMAN      = 10;
     public static final int ESFAND      = 11;
 
-    // Fast internal storage
+    //Fast internal storage
     private int persianYear;
     private int persianMonth;
     private int persianDay;
 
-    // Performance optimizations
+    //Performance optimizations
     public final  GregorianCalendar gCal;
     private final Locale            locale;
     private       long              lastComputedTime = -1;
     private       boolean           isDirty          = true;
 
-    // Persian offsets (Persian week starts on Saturday)
-    // Java Calendar constants: SUNDAY=1, MONDAY=2, ..., SATURDAY=7
-    // We map: Saturday=0, Sunday=1, Monday=2, Tuesday=3, Wednesday=4, Thursday=5, Friday=6
+    //Persian offsets (Persian week starts on Saturday)
+    //Java Calendar constants: SUNDAY=1, MONDAY=2, ..., SATURDAY=7
+    //We map: Saturday=0, Sunday=1, Monday=2, Tuesday=3, Wednesday=4, Thursday=5, Friday=6
     private static final int[] PERSIAN_OFFSETS = {0, 1, 2, 3, 4, 5, 6, 0};
 
 
@@ -81,7 +80,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         super(zone, locale);
         this.locale = locale;
         this.gCal   = new GregorianCalendar(zone, locale);
-        // Initialize with reasonable defaults
+        //Initialize with reasonable defaults
         this.persianYear  = 1400;
         this.persianMonth = 0;
         this.persianDay   = 1;
@@ -104,7 +103,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public FastPersianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
         this();
         setPersianDateInternal(year, month, dayOfMonth);
-        // Set time fields directly
+        //Set time fields directly
         setInternalField(HOUR_OF_DAY, hourOfDay);
         setInternalField(MINUTE, minute);
         setInternalField(SECOND, second);
@@ -117,13 +116,13 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param gregorianCalendar GregorianCalendar object
      */
     public FastPersianCalendar(GregorianCalendar gregorianCalendar) {
-        this(); // Initialize with default constructor
+        this(); //Initialize with default constructor
 
         if (gregorianCalendar == null) {
             throw new IllegalArgumentException("GregorianCalendar cannot be null");
         }
 
-        // Get date components from GregorianCalendar
+        //Get date components from GregorianCalendar
         int year   = gregorianCalendar.get(Calendar.YEAR);
         int month  = gregorianCalendar.get(Calendar.MONTH);
         int day    = gregorianCalendar.get(Calendar.DAY_OF_MONTH);
@@ -131,16 +130,16 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         int minute = gregorianCalendar.get(Calendar.MINUTE);
         int second = gregorianCalendar.get(Calendar.SECOND);
 
-        // Validate Gregorian date
+        //Validate Gregorian date
         validateGregorianDate(year, month, day);
 
-        // Set Gregorian date and convert to Persian
+        //Set Gregorian date and convert to Persian
         setGregorianDate(year, month, day);
         set(HOUR_OF_DAY, hour);
         set(MINUTE, minute);
         set(SECOND, second);
 
-        // Also set the timezone from the provided GregorianCalendar
+        //Also set the timezone from the provided GregorianCalendar
         setTimeZone(gregorianCalendar.getTimeZone());
     }
 
@@ -149,51 +148,51 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param calendar Any Calendar object (Gregorian, Persian, etc.)
      */
     public FastPersianCalendar(Calendar calendar) {
-        this(); // Initialize with default constructor
+        this(); //Initialize with default constructor
 
         if (calendar == null) {
             throw new IllegalArgumentException("Calendar cannot be null");
         }
 
         if (calendar instanceof GregorianCalendar) {
-            // Direct conversion from GregorianCalendar
+            //Direct conversion from GregorianCalendar
             GregorianCalendar gCal = (GregorianCalendar) calendar;
             setTimeInMillis(gCal.getTimeInMillis());
         } else if (calendar instanceof FastPersianCalendar) {
-            // Copy from another FastPersianCalendar
+            //Copy from another FastPersianCalendar
             FastPersianCalendar other = (FastPersianCalendar) calendar;
             this.persianYear  = other.persianYear;
             this.persianMonth = other.persianMonth;
             this.persianDay   = other.persianDay;
             setTimeInMillis(other.getTimeInMillis());
         } else {
-            // Generic Calendar - use time in millis
+            //Generic Calendar - use time in millis
             setTimeInMillis(calendar.getTimeInMillis());
         }
 
-        // Set timezone
+        //Set timezone
         setTimeZone(calendar.getTimeZone());
     }
 
-    // Parcelable constructor
+    //Parcelable constructor
     protected FastPersianCalendar(Parcel in) {
-        // Call default constructor
+        //Call default constructor
         this();
 
-        // Read the time
+        //Read the time
         long timeInMillis = in.readLong();
         setTimeInMillis(timeInMillis);
 
-        // Read Persian date fields
+        //Read Persian date fields
         this.persianYear  = in.readInt();
         this.persianMonth = in.readInt();
         this.persianDay   = in.readInt();
 
-        // Read cache state
+        //Read cache state
         this.lastComputedTime = in.readLong();
         this.isDirty          = in.readByte() != 0;
 
-        // Read timezone if present
+        //Read timezone if present
         if (in.readByte() == 1) {
             String tzId = in.readString();
             if (tzId != null) {
@@ -202,7 +201,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             }
         }
 
-        // Sync gCal with the time
+        //Sync gCal with the time
         gCal.setTimeInMillis(timeInMillis);
     }
 
@@ -228,19 +227,19 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         ensureComputed();
 
-        // Write time
+        //Write time
         dest.writeLong(getTimeInMillis());
 
-        // Write Persian date fields
+        //Write Persian date fields
         dest.writeInt(persianYear);
         dest.writeInt(persianMonth);
         dest.writeInt(persianDay);
 
-        // Write cache state
+        //Write cache state
         dest.writeLong(lastComputedTime);
         dest.writeByte((byte) (isDirty ? 1 : 0));
 
-        // Write timezone
+        //Write timezone
         TimeZone tz = getTimeZone();
         if (tz != null) {
             dest.writeByte((byte) 1);
@@ -252,20 +251,20 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
 
     public void readFromParcel(Parcel in) {
-        // Read time
+        //Read time
         long timeInMillis = in.readLong();
         setTimeInMillis(timeInMillis);
 
-        // Read Persian date fields
+        //Read Persian date fields
         this.persianYear  = in.readInt();
         this.persianMonth = in.readInt();
         this.persianDay   = in.readInt();
 
-        // Read cache state
+        //Read cache state
         this.lastComputedTime = in.readLong();
         this.isDirty          = in.readByte() != 0;
 
-        // Read timezone
+        //Read timezone
         if (in.readByte() == 1) {
             String tzId = in.readString();
             if (tzId != null) {
@@ -274,7 +273,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             }
         }
 
-        // Sync and compute
+        //Sync and compute
         gCal.setTimeInMillis(timeInMillis);
         computeFields();
     }
@@ -337,7 +336,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
         String[] parts = dateString.split(delimiter);
         if (parts.length != 3) {
-            throw new IllegalArgumentException("Invalid date format. Expected YYYY" + delimiter + "MM" + delimiter + "DD, got: " + dateString);
+            throw new IllegalArgumentException("Invalid date format. Expected YYYY" + delimiter + "MM" + delimiter + "dd, got: " + dateString);
         }
 
         try {
@@ -360,6 +359,11 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public int getMonth() {
         ensureComputed();
         return persianMonth;
+    }
+
+    public int getDay() {
+        ensureComputed();
+        return persianDay;
     }
 
     public int getDayOfMonth() {
@@ -385,7 +389,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
     }
 
-    // Static utility method
+    //Static utility method
     public static int getDaysInMonthStatic(int year, int month) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
@@ -404,7 +408,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return 6;
     }
 
-    // Date formatter methods
+    //Date formatter methods
     public String getMonthName() {
         return getMonthName(getMonth(), locale);
     }
@@ -422,18 +426,18 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     }
 
     public String getWeekdayName() {
-        //complete(); // Ensure fields are computed
+        //complete();
         return getWeekdayName(get(DAY_OF_WEEK), locale);
     }
 
     public String getLongDate() {
-        //complete(); // Ensure all fields are computed
+        //complete(); //Ensure all fields are computed
         return getLongDate(
                 persianYear, persianMonth, persianDay, get(DAY_OF_WEEK), locale);
     }
 
     public String getLongDateTime() {
-        //complete(); // Ensure all fields are computed
+        //complete(); //Ensure all fields are computed
         return getLongDateTime(
                 persianYear, persianMonth, persianDay, get(DAY_OF_WEEK),
                 get(HOUR_OF_DAY), get(MINUTE), get(SECOND), locale);
@@ -454,38 +458,38 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
     /**
      * Get Islamic (Hijri) year
-     * @return Islamic date
+     * @return Hijri date
      */
-    public YMD getIslamicDate() {
-        complete(); // Ensure fields are computed
+    public YMD getHijriDate() {
+        //complete();
         return gregorianToHijri(gCal);
     }
 
     /**
-     * Set the date using Islamic (Hijri) calendar values
-     * @param hYear Islamic year
-     * @param hMonth Islamic month (1-12)
-     * @param hDay Islamic day of month
+     * Set the date using Hijri (Hijri) calendar values
+     * @param hYear Hijri year
+     * @param hMonth Hijri month (1-12)
+     * @param hDay Hijri day of month
      * @param timeZone Target timezone for the date
      */
-    public void setIslamicDate(int hYear, int hMonth, int hDay, TimeZone timeZone) {
-        // Convert Islamic date to Gregorian using HijriConverter
+    public void setHijriDate(int hYear, int hMonth, int hDay, TimeZone timeZone) {
+        //Convert Hijri date to Gregorian using HijriConverter
         GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay, timeZone);
 
-        // Adjust to target timezone
+        //Adjust to target timezone
         long timeInMillis = gCalendar.getTimeInMillis();
         GregorianCalendar adjustedCalendar = new GregorianCalendar(timeZone);
         adjustedCalendar.setTimeInMillis(timeInMillis);
 
-        // Set the Gregorian date
+        //Set the Gregorian date
         setGregorianDate(adjustedCalendar.get(Calendar.YEAR),
                          adjustedCalendar.get(Calendar.MONTH),
                          adjustedCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    public void setIslamicDate(int hYear, int hMonth, int hDay) {
+    public void setHijriDate(int hYear, int hMonth, int hDay) {
         GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay);
-        // gCalendar is in Tehran timezone - EXTRACT Tehran date
+        //gCalendar is in Tehran timezone - EXTRACT Tehran date
         setGregorianDate(gCalendar.get(Calendar.YEAR),
                          gCalendar.get(Calendar.MONTH),
                          gCalendar.get(Calendar.DAY_OF_MONTH));
@@ -494,17 +498,17 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
     /**
      * Find the Gregorian date corresponding to the first day (Hijri day 1)
-     * of a given Islamic month and year.
+     * of a given Hijri month and year.
      *
      * @param islamicYear   Hijri year (e.g., 1446)
      * @param islamicMonth0 Hijri month (0-based: 0 = Muharram, 1 = Safar, ..., 11 = Dhu al-Hijjah)
-     * @return Calendar object representing the Gregorian date of the first day of the Islamic month
+     * @return Calendar object representing the Gregorian date of the first day of the Hijri month
      */
-    public static Calendar findFirstDayOfIslamicMonth(int islamicYear, int islamicMonth0) {
-        // Convert 0-based month to 1-based for YMD class
+    public static Calendar findFirstDayOfHijriMonth(int islamicYear, int islamicMonth0) {
+        //Convert 0-based month to 1-based for YMD class
         int islamicMonth1Based = islamicMonth0 + 1;
 
-        // Use existing hijriToGregorian method to convert to Gregorian
+        //Use existing hijriToGregorian method to convert to Gregorian
         return hijriToGregorian(islamicYear, islamicMonth1Based, 1);
     }
 
@@ -548,9 +552,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public void parse(String dateString) {
         FastPersianCalendar parsed = parseOrNullToCompat(dateString);
         if (parsed != null) {
-            // Create fresh instance instead of copying internal state
+            //Create fresh instance instead of copying internal state
             setPersianDateInternal(parsed.persianYear, parsed.persianMonth, parsed.persianDay);
-            // Copy time fields if they exist
+            //Copy time fields if they exist
             if (parsed.isSet[HOUR_OF_DAY]) set(HOUR_OF_DAY, parsed.get(HOUR_OF_DAY));
             if (parsed.isSet[MINUTE]) set(MINUTE, parsed.get(MINUTE));
             if (parsed.isSet[SECOND]) set(SECOND, parsed.get(SECOND));
@@ -572,7 +576,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             lastComputedTime = time;
             isDirty          = false;
 
-            // Invalidate fields since time changed
+            //Invalidate fields since time changed
             areFieldsSet = false;
         }
     }
@@ -580,12 +584,12 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     @Override
     protected void computeFields() {
         if (time != lastComputedTime || !areFieldsSet) {
-            gCal.setTimeInMillis(time); // This is needed to sync gCal with current time
+            gCal.setTimeInMillis(time); //This is needed to sync gCal with current time
             computePersianFromGregorianFast();
             lastComputedTime = time;
             isDirty          = false;
 
-            // Compute all calendar fields
+            //Compute all calendar fields
             computeAllFields();
         }
     }
@@ -593,59 +597,59 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
     /**
      * Compute all calendar fields that parent class expects
-     * FIXED: Proper field computation with Persian week calculations
+     * Proper field computation with Persian week calculations
      */
     private void computeAllFields() {
-        // Use Gregorian calendar to compute all fields reliably
+        //Use Gregorian calendar to compute all fields reliably
         gCal.setTimeInMillis(time);
 
-        // Set basic Persian date fields
+        //Set basic Persian date fields
         fields[YEAR]         = persianYear;
         fields[MONTH]        = persianMonth;
         fields[DAY_OF_MONTH] = persianDay;
 
-        // Set time fields from Gregorian (they're the same)
+        //Set time fields from Gregorian (they're the same)
         fields[HOUR_OF_DAY] = gCal.get(HOUR_OF_DAY);
         fields[MINUTE]      = gCal.get(MINUTE);
         fields[SECOND]      = gCal.get(SECOND);
         fields[MILLISECOND] = gCal.get(MILLISECOND);
 
-        // CRITICAL FIX: Use Gregorian's properly computed day-of-week
-        // Get Gregorian day of week
+        //CRITICAL FIX: Use Gregorian's properly computed day-of-week
+        //Get Gregorian day of week
         int gregorianDayOfWeek = gCal.get(DAY_OF_WEEK);
 
-        // Convert to Persian day of week using your offset
+        //Convert to Persian day of week using your offset
         int persianOffset = calculatePersianOffset(gregorianDayOfWeek);
 
-        // Convert offset to Calendar constant
-        // Your PERSIAN_OFFSETS: Saturday=0, Sunday=1, Monday=2, ..., Friday=6
-        // Calendar expects: Sunday=1, Monday=2, ..., Saturday=7
+        //Convert offset to Calendar constant
+        //Your PERSIAN_OFFSETS: Saturday=0, Sunday=1, Monday=2, ..., Friday=6
+        //Calendar expects: Sunday=1, Monday=2, ..., Saturday=7
 
-        // Map: Saturday(0)→7, Sunday(1)→1, Monday(2)→2, Tuesday(3)→3,
-        // Wednesday(4)→4, Thursday(5)→5, Friday(6)→6
+        //Map: Saturday(0)→7, Sunday(1)→1, Monday(2)→2, Tuesday(3)→3,
+        //Wednesday(4)→4, Thursday(5)→5, Friday(6)→6
         int persianDayOfWeek;
         if (persianOffset == 0) {
-            persianDayOfWeek = Calendar.SATURDAY;  // 7
+            persianDayOfWeek = Calendar.SATURDAY;  //7
         } else {
-            persianDayOfWeek = persianOffset;      // 1-6
+            persianDayOfWeek = persianOffset;      //1-6
         }
 
         fields[DAY_OF_WEEK] = persianDayOfWeek;
 
-        // Calculate proper Persian day of year and week fields
+        //Calculate proper Persian day of year and week fields
         fields[DAY_OF_YEAR] = calculateDayOfYear();
         calculatePersianWeekFields();
 
-        // Set other fields
+        //Set other fields
         fields[AM_PM]       = gCal.get(AM_PM);
         fields[HOUR]        = gCal.get(HOUR);
         fields[DST_OFFSET]  = gCal.get(DST_OFFSET);
         fields[ZONE_OFFSET] = gCal.get(ZONE_OFFSET);
 
-        // ERA is always AD for Persian calendar (modern dates)
+        //ERA is always AD for Persian calendar (modern dates)
         fields[ERA] = AD;
 
-        // Mark all fields as set
+        //Mark all fields as set
         for (int i = 0; i < FIELD_COUNT; i++) {
             isSet[i] = true;
         }
@@ -659,47 +663,47 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         int dayOfYear = fields[DAY_OF_YEAR];
         int dayOfWeek = fields[DAY_OF_WEEK];
 
-        // Calculate week of year (Persian year starts with Farvardin 1 = Saturday)
-        // Use the actual first day of week (Saturday for Persian)
+        //Calculate week of year (Persian year starts with Farvardin 1 = Saturday)
+        //Use the actual first day of week (Saturday for Persian)
         int weekOfYear = (dayOfYear - 1 + ((dayOfWeek - FIRST_DAY_OF_WEEK + 7) % 7)) / 7 + 1;
         fields[WEEK_OF_YEAR] = weekOfYear;
 
-        // Calculate week of month
+        //Calculate week of month
         int dayOfMonth      = fields[DAY_OF_MONTH];
         int firstDayOfMonth = calculateFirstDayOfMonth();
         int weekOfMonth     = (dayOfMonth - 1 + ((dayOfWeek - firstDayOfMonth + 7) % 7)) / 7 + 1;
         fields[WEEK_OF_MONTH] = weekOfMonth;
 
-        // Calculate day of week in month
+        //Calculate day of week in month
         fields[DAY_OF_WEEK_IN_MONTH] = (dayOfMonth - 1) / 7 + 1;
     }
 
     /**
      * Calculate the day of week for the first day of the current month
-     * FIXED: Now uses local arrays and doesn't modify object state
+     * Now uses local arrays and doesn't modify object state
      */
     private int calculateFirstDayOfMonth() {
-        // Use local array for conversion
+        //Use local array for conversion
         int[] temp = new int[3];
 
-        // Convert first day of current month from Persian to Gregorian
+        //Convert first day of current month from Persian to Gregorian
         jalaliToGregorianFast(persianYear, persianMonth + 1, 1, temp);
 
-        // Create temporary GregorianCalendar for calculation
+        //Create temporary GregorianCalendar for calculation
         GregorianCalendar tempCal = new GregorianCalendar(getTimeZone(), locale);
         tempCal.set(temp[0], temp[1] - 1, temp[2]);
 
-        // Get Gregorian day of week
+        //Get Gregorian day of week
         int gregorianDayOfWeek = tempCal.get(DAY_OF_WEEK);
 
-        // Convert to Persian day of week
+        //Convert to Persian day of week
         int persianOffset = calculatePersianOffset(gregorianDayOfWeek);
 
-        // Map to Calendar constant
+        //Map to Calendar constant
         if (persianOffset == 0) {
-            return Calendar.SATURDAY;  // 7
+            return Calendar.SATURDAY;  //7
         } else {
-            return persianOffset;      // 1-6
+            return persianOffset;      //1-6
         }
     }
 
@@ -716,40 +720,40 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     }
 
     /**
-     * FIXED: Convert Persian date to Gregorian
+     * Convert Persian date to Gregorian
      * Now uses local arrays instead of ThreadLocal to avoid thread safety issues
      */
     private void computeGregorianFromPersianFast() {
-        int[] temp = new int[3];  // Local array - thread safe!
+        int[] temp = new int[3];  //Local array - thread safe!
 
-        // Convert 0-based month (0-11) to 1-based month (1-12) for the algorithm
+        //Convert 0-based month (0-11) to 1-based month (1-12) for the algorithm
         jalaliToGregorianFast(persianYear, persianMonth + 1, persianDay, temp);
 
-        // Get current time fields before setting date
+        //Get current time fields before setting date
         int hour   = internalGet(HOUR_OF_DAY, 0);
         int minute = internalGet(MINUTE, 0);
         int second = internalGet(SECOND, 0);
         int millis = internalGet(MILLISECOND, 0);
 
-        // temp[1] is 1-based Gregorian month, convert to 0-based for GregorianCalendar
+        //temp[1] is 1-based Gregorian month, convert to 0-based for GregorianCalendar
         gCal.set(temp[0], temp[1] - 1, temp[2], hour, minute, second);
         gCal.set(MILLISECOND, millis);
     }
 
     /**
-     * FIXED: Convert Gregorian date to Persian
+     * Convert Gregorian date to Persian
      * Now uses local arrays instead of ThreadLocal to avoid thread safety issues
      */
     private void computePersianFromGregorianFast() {
-        int[] temp = new int[3];  // Local array - thread safe!
+        int[] temp = new int[3];  //Local array - thread safe!
 
-        // Convert Gregorian 0-based month to 1-based for the algorithm
+        //Convert Gregorian 0-based month to 1-based for the algorithm
         gregorianToJalaliFast(gCal.get(Calendar.YEAR), gCal.get(Calendar.MONTH) + 1,
                               gCal.get(Calendar.DAY_OF_MONTH), temp);
 
-        // The algorithm returns 1-based month, convert to 0-based for internal storage
+        //The algorithm returns 1-based month, convert to 0-based for internal storage
         persianYear  = temp[0];
-        persianMonth = temp[1] - 1;  // FIXED: Convert 1-based to 0-based
+        persianMonth = temp[1] - 1;  //Convert 1-based to 0-based
         persianDay   = temp[2];
     }
 
@@ -771,20 +775,18 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
     }
 
-    // === ARITHMETIC METHODS (FIXED) ===
-
     @Override
     public void add(int field, int amount) {
         if (amount == 0) return;
         if (field < 0 || field >= ZONE_OFFSET) return;
 
-        complete(); // Ensure fields are computed
+        complete();
 
-        // For Persian date fields, use direct Persian math
+        //For Persian date fields, use direct Persian math
         if (field == YEAR || field == MONTH || field == DAY_OF_MONTH) {
             handlePersianDateArithmetic(field, amount);
         } else {
-            // For other fields, use Gregorian but optimized
+            //For other fields, use Gregorian but optimized
             computeTime();
             gCal.add(field, amount);
             time = gCal.getTimeInMillis();
@@ -798,7 +800,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     }
 
     /**
-     * FIXED: Handle Persian date arithmetic with proper day adjustment
+     * Handle Persian date arithmetic with proper day adjustment
      */
     private void handlePersianDateArithmetic(int field, int amount) {
         switch (field) {
@@ -826,7 +828,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                 break;
         }
 
-        // Recompute Gregorian date and sync
+        //Recompute Gregorian date and sync
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
         isDirty          = true;
@@ -835,10 +837,10 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     }
 
     /**
-     * FIXED: Normalize date by handling overflow/underflow of days
+     * Normalize date by handling overflow/underflow of days
      */
     private void normalizeDate() {
-        // Handle positive overflow
+        //Handle positive overflow
         while (persianDay > getDaysInMonth(persianYear, persianMonth)) {
             persianDay -= getDaysInMonth(persianYear, persianMonth);
             persianMonth++;
@@ -848,7 +850,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             }
         }
 
-        // Handle negative underflow
+        //Handle negative underflow
         while (persianDay < 1) {
             persianMonth--;
             if (persianMonth < 0) {
@@ -861,7 +863,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     }
 
     /**
-     * FIXED: Adjust day when month or year changes to ensure valid date
+     * Adjust day when month or year changes to ensure valid date
      */
     private void adjustDayForNewMonth() {
         int maxDays = getDaysInMonth(persianYear, persianMonth);
@@ -872,7 +874,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
     @Override
     public void roll(int field, boolean up) {
-        complete(); // Ensure fields are computed
+        complete();
 
         if (field == YEAR) {
             persianYear += up ? 1 : -1;
@@ -918,7 +920,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             computePersianFromGregorianFast();
         }
 
-        // Recompute Gregorian date and sync
+        //Recompute Gregorian date and sync
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
         isDirty          = true;
@@ -926,7 +928,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         areFieldsSet     = false;
     }
 
-    // === OVERRIDES (FIXED) ===
+    //=== OVERRIDES (FIXED) ===
 
     public void setNewTime(Date date) {
         setTimeInMillis(date.getTime());
@@ -936,15 +938,15 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public void setTimeInMillis(long millis) {
         super.setTimeInMillis(millis);
 
-        // Sync gCal with the new time
+        //Sync gCal with the new time
         gCal.setTimeInMillis(millis);
 
-        // Force recomputation
+        //Force recomputation
         lastComputedTime = -1;
         isDirty          = true;
         areFieldsSet     = false;
 
-        // Compute fields immediately
+        //Compute fields immediately
         computeFields();
     }
 
@@ -960,7 +962,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
     @Override
     public void set(int field, int value) {
-        // Handle setting Persian fields specially
+        //Handle setting Persian fields specially
         switch (field) {
             case YEAR:
                 if (value < 1 || value > 9999) {
@@ -984,19 +986,19 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                 persianDay = value;
                 break;
             default:
-                // For other fields, use standard mechanism
+                //For other fields, use standard mechanism
                 super.set(field, value);
                 return;
         }
 
-        // Recompute Gregorian date and sync everything
+        //Recompute Gregorian date and sync everything
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
         areFieldsSet     = false;
         lastComputedTime = -1;
     }
 
-    // === VALIDATION METHODS ===
+    //=== VALIDATION METHODS ===
 
 
     @Override
@@ -1004,12 +1006,12 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return getLongDate();
     }
 
-    // === FAST CONVERSION ALGORITHMS ===
+    //=== FAST CONVERSION ALGORITHMS ===
 
     public static void gregorianToJalaliFast(int gy, int gm, int gd, int[] out) {
         int jy = (gm > 2) ? (gy + 1) : gy;
 
-        // Fast month day offsets
+        //Fast month day offsets
         final int[] g_d_m = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
         int dayOfYear = 355666 + (365 * gy) + ((jy + 3) / 4) - ((jy + 99) / 100)
                         + ((jy + 399) / 400) + gd + g_d_m[gm - 1];
@@ -1060,7 +1062,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             dayOfYear = (dayOfYear - 1) % 365;
         }
 
-        // Fast month calculation
+        //Fast month calculation
         final int[] monthDays = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         if ((gy % 4 == 0) && ((gy % 100 != 0) || (gy % 400 == 0))) {
             monthDays[2] = 29;
@@ -1076,7 +1078,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         out[2] = dayOfYear;
     }
 
-    // === INTERNAL HELPERS ===
+    //=== INTERNAL HELPERS ===
 
     private void setPersianDateInternal(int year, int month, int day) {
         this.persianYear      = year;
@@ -1099,7 +1101,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return isSet[field] ? fields[field] : defaultValue;
     }
 
-    // === REQUIRED ABSTRACT METHODS ===
+    //=== REQUIRED ABSTRACT METHODS ===
 
     @Override
     public int getMinimum(int field) {
@@ -1155,11 +1157,11 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             case AM_PM:
                 return PM;
             case ERA:
-                return AD; // 1
+                return AD; //1
             case ZONE_OFFSET:
-                return 14 * 60 * 60 * 1000; // 14 hours in milliseconds
+                return 14 * 60 * 60 * 1000; //14 hours in milliseconds
             case DST_OFFSET:
-                return 2 * 60 * 60 * 1000; // 2 hours DST
+                return 2 * 60 * 60 * 1000; //2 hours DST
             default:
                 return 0;
         }
@@ -1173,10 +1175,10 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             case DAY_OF_YEAR:
                 return isLeapYear(getYear()) ? 366 : 365;
             case WEEK_OF_YEAR:
-                // Calculate actual weeks in year
+                //Calculate actual weeks in year
                 int dayOfYear = get(DAY_OF_YEAR);
                 int dayOfWeek = get(DAY_OF_WEEK);
-                // Weeks start on Saturday in Persian calendar
+                //Weeks start on Saturday in Persian calendar
                 int weeks = (dayOfYear - 1 + ((dayOfWeek - SATURDAY + 7) % 7)) / 7 + 1;
                 return Math.min(weeks, 53);
             case WEEK_OF_MONTH:
@@ -1189,7 +1191,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
     }
 
-    // Helper method to get first day of month
+    //Helper method to get first day of month
     private int getFirstDayOfMonth() {
         return calculateFirstDayOfMonth();
     }
@@ -1213,7 +1215,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
     }
 
-    // === COMPATIBILITY METHODS ===
+    //=== COMPATIBILITY METHODS ===
 
     /**
      * For backward compatibility - returns current state as array
@@ -1237,7 +1239,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return AD;
     }
 
-    // === OBJECT METHODS ===
+    //=== OBJECT METHODS ===
 
     @Override
     public boolean equals(Object obj) {
@@ -1257,7 +1259,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return Objects.hash(time, persianYear, persianMonth, persianDay, getTimeZone());
     }
 
-    // === STATIC UTILITY METHODS ===
+    //=== STATIC UTILITY METHODS ===
 
     public static FastPersianCalendar parseOrNullToCompat(String dateString) {
         return parseOrNullToCompat(dateString, "/");
@@ -1268,7 +1270,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             return null;
         }
 
-        // Auto-detect delimiter
+        //Auto-detect delimiter
         if (delimiter == null || delimiter.isEmpty() || !dateString.contains(delimiter)) {
             if (dateString.contains("/")) delimiter = "/";
             else if (dateString.contains("-")) delimiter = "-";
@@ -1284,12 +1286,12 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             int month = Integer.parseInt(tokens[1].trim()) - 1;
             int day   = Integer.parseInt(tokens[2].trim());
 
-            // Basic validation
+            //Basic validation
             if (year < 1 || month < 0 || month > 11 || day < 1 || day > 31) {
                 return null;
             }
 
-            // Additional validation for actual month length
+            //Additional validation for actual month length
             int maxDays = (new FastPersianCalendar()).getDaysInMonth(year, month);
             if (day > maxDays) {
                 return null;
@@ -1315,9 +1317,21 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
 
-        return locale.getLanguage().equals("fa")
-                ? PCConstants.PERSIAN_MONTH_NAMES[month]
-                : PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
+        if (locale != null) {
+            if ("fa".equals(locale.getLanguage())) {
+                if ("IR".equals(locale.getCountry())) {
+                    return PCConstants.PERSIAN_MONTH_NAMES[month];
+                } else if ("AF".equals(locale.getCountry())) {
+                    return PCConstants.AFGHAN_MONTH_NAMES[month];
+                }
+            } else if ("ps".equals(locale.getLanguage())) {
+                if ("AF".equals(locale.getCountry())) {
+                    return PCConstants.PASHTO_AFGHAN_MONTH_NAMES[month];
+                }
+            }
+        }
+
+        return PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
     }
 
     public String getMonthNameShort() {
@@ -1335,14 +1349,14 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                 : PCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month];
     }
 
-// === GREGORIAN DATE METHODS (0-BASED MONTHS) ===
+//=== GREGORIAN DATE METHODS (0-BASED MONTHS) ===
 
     /**
      * Get Gregorian year from the underlying GregorianCalendar
      * @return Gregorian year
      */
     public int getGrgYear() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.get(Calendar.YEAR);
     }
 
@@ -1351,7 +1365,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return Gregorian month (0-11)
      */
     public int getGrgMonth() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.get(Calendar.MONTH);
     }
 
@@ -1360,7 +1374,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return Gregorian day of month
      */
     public int getGrgDay() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.get(Calendar.DAY_OF_MONTH);
     }
 
@@ -1369,7 +1383,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return Gregorian week of year (1-53)
      */
     public int getGrgWeekOfYear() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.get(Calendar.WEEK_OF_YEAR);
     }
 
@@ -1378,7 +1392,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return Gregorian week of month (1-6)
      */
     public int getGrgWeekOfMonth() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.get(Calendar.WEEK_OF_MONTH);
     }
 
@@ -1387,7 +1401,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return Gregorian day of week
      */
     public int getGrgDayOfWeek() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.get(Calendar.DAY_OF_WEEK);
     }
 
@@ -1397,14 +1411,14 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return Gregorian weekday name
      */
     public String getGrgDayOfWeekName(Locale locale) {
-        complete(); // Ensure fields are computed
+        complete();
         int dayOfWeek = gCal.get(Calendar.DAY_OF_WEEK);
 
-        // Map to Persian names if needed
+        //Map to Persian names if needed
         if (locale.getLanguage().equals("fa")) {
             String[] persianWeekdays = {"یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه",
                     "پنجشنبه", "جمعه", "شنبه"};
-            // Calendar.DAY_OF_WEEK: 1=SUNDAY, 2=MONDAY, ..., 7=SATURDAY
+            //Calendar.DAY_OF_WEEK: 1=SUNDAY, 2=MONDAY, ..., 7=SATURDAY
             return persianWeekdays[dayOfWeek - 1];
         } else {
             return gCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);
@@ -1417,7 +1431,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return Gregorian month name
      */
     public String getGrgMonthName(Locale locale) {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
     }
 
@@ -1426,7 +1440,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return number of days in current Gregorian month
      */
     public int getGrgMonthLength() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
@@ -1441,23 +1455,23 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
 
-        // Fast switch statement
+        //Fast switch statement
         switch (month) {
-            case 0:  // January
-            case 2:  // March
-            case 4:  // May
-            case 6:  // July
-            case 7:  // August
-            case 9:  // October
-            case 11: // December
+            case 0:  //January
+            case 2:  //March
+            case 4:  //May
+            case 6:  //July
+            case 7:  //August
+            case 9:  //October
+            case 11: //December
                 return 31;
-            case 3:  // April
-            case 5:  // June
-            case 8:  // September
-            case 10: // November
+            case 3:  //April
+            case 5:  //June
+            case 8:  //September
+            case 10: //November
                 return 30;
-            case 1:  // February
-                // Leap year calculation
+            case 1:  //February
+                //Leap year calculation
                 return ((year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)) ? 29 : 28;
             default:
                 return 31;
@@ -1537,7 +1551,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
 
-        // Create a temporary calendar just for getting the month name
+        //Create a temporary calendar just for getting the month name
         Calendar temp = new GregorianCalendar(locale);
         temp.set(Calendar.MONTH, month);
         temp.set(Calendar.DAY_OF_MONTH, 1);
@@ -1550,9 +1564,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return formatted month name with number
      */
     public String getGrgMonthNameWithNumber(Locale locale) {
-        complete(); // Ensure fields are computed
+        complete();
         String monthName   = getGrgMonthName(locale);
-        int    monthNumber = getGrgMonth() + 1; // Convert to 1-based
+        int    monthNumber = getGrgMonth() + 1; //Convert to 1-based
         return String.format(locale, "%s (%02d)", monthName, monthNumber);
     }
 
@@ -1586,7 +1600,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      */
     public static GregorianCalendar currentGregorian() {
         FastPersianCalendar result = new FastPersianCalendar();
-        // Set to current time (which is already Gregorian)
+        //Set to current time (which is already Gregorian)
         return result.gCal;
     }
 
@@ -1597,7 +1611,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return formatted Gregorian date
      */
     public String getGrgLongDate(Locale locale) {
-        complete(); // Ensure fields are computed
+        complete();
         return String.format(locale, "%s, %d %s %d",
                              getGrgDayOfWeekName(locale),
                              getGrgDay(),
@@ -1605,15 +1619,32 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                              getGrgYear());
     }
 
+    public String getGrgLongDate() {
+        complete();
+        return String.format(locale, "%s, %d %s %d",
+                             getGrgDayOfWeekName(locale),
+                             getGrgDay(),
+                             getGrgMonthName(locale),
+                             getGrgYear());
+    }
+
+    public String getHijriLongDate() {
+        YMD hijri = getHijriDate();
+        return String.format(locale, "%4d, %s %s",
+                             hijri.getDay(),
+                             getHijriMonthName(hijri.getMonth()-1),
+                             hijri.getYear());
+    }
+
     /**
-     * Get Gregorian date in ISO format (YYYY-MM-DD)
+     * Get Gregorian date in ISO format (YYYY-MM-dd)
      * @return ISO formatted date
      */
     public String getGrgIsoDate() {
-        complete(); // Ensure fields are computed
+        complete();
         return String.format(Locale.US, "%04d-%02d-%02d",
                              getGrgYear(),
-                             getGrgMonth() + 1, // Convert to 1-based for ISO
+                             getGrgMonth() + 1, //Convert to 1-based for ISO
                              getGrgDay());
     }
 
@@ -1623,9 +1654,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return formatted date with 0-based month
      */
     public String getGrgShortDate(String delimiter) {
-        complete(); // Ensure fields are computed
+        complete();
         return getGrgYear() + delimiter +
-               String.format("%02d", getGrgMonth()) + delimiter + // 0-based month
+               String.format("%02d", getGrgMonth()) + delimiter + //0-based month
                String.format("%02d", getGrgDay());
     }
 
@@ -1635,9 +1666,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return formatted date with 1-based month
      */
     public String getGrgShortDate1Based(String delimiter) {
-        complete(); // Ensure fields are computed
+        complete();
         return getGrgYear() + delimiter +
-               String.format("%02d", getGrgMonth() + 1) + delimiter + // 1-based month
+               String.format("%02d", getGrgMonth() + 1) + delimiter + //1-based month
                String.format("%02d", getGrgDay());
     }
 
@@ -1660,7 +1691,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return Date object representing the Gregorian date
      */
     public Date getGrgDate() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.getTime();
     }
 
@@ -1669,7 +1700,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return milliseconds since epoch
      */
     public long getGrgTimeInMillis() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.getTimeInMillis();
     }
 
@@ -1709,7 +1740,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param days number of days to add (can be negative)
      */
     public void addGrgDays(int days) {
-        complete(); // Ensure fields are computed
+        complete();
         gCal.add(Calendar.DAY_OF_MONTH, days);
         setTimeInMillis(gCal.getTimeInMillis());
     }
@@ -1719,7 +1750,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param months number of months to add (can be negative)
      */
     public void addGrgMonths(int months) {
-        complete(); // Ensure fields are computed
+        complete();
         gCal.add(Calendar.MONTH, months);
         setTimeInMillis(gCal.getTimeInMillis());
     }
@@ -1729,7 +1760,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param years number of years to add (can be negative)
      */
     public void addGrgYears(int years) {
-        complete(); // Ensure fields are computed
+        complete();
         gCal.add(Calendar.YEAR, years);
         setTimeInMillis(gCal.getTimeInMillis());
     }
@@ -1767,7 +1798,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return day of year
      */
     public int getGrgDayOfYear() {
-        complete(); // Ensure fields are computed
+        complete();
         return gCal.get(Calendar.DAY_OF_YEAR);
     }
 
@@ -1821,7 +1852,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                formatToTwoDigits(day, locale);
     }
 
-    // === HELPER METHODS FOR DATE MANIPULATION ===
+    //=== HELPER METHODS FOR DATE MANIPULATION ===
 
     /**
      * Add weeks to the current date
@@ -2064,7 +2095,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
         int age = referenceDate.persianYear - this.persianYear;
 
-        // Adjust if birthday hasn't occurred yet this year
+        //Adjust if birthday hasn't occurred yet this year
         if (referenceDate.persianMonth < this.persianMonth ||
             (referenceDate.persianMonth == this.persianMonth &&
              referenceDate.persianDay < this.persianDay)) {
@@ -2100,7 +2131,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return day of year
      */
     public int getDayOfYear() {
-        //complete(); // Ensure fields are computed
+        //complete();
         return get(DAY_OF_YEAR);
     }
 
@@ -2109,7 +2140,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return week of year (1-53)
      */
     public int getWeekOfYear() {
-        //complete(); // Ensure fields are computed
+        //complete();
         return get(WEEK_OF_YEAR);
     }
 
@@ -2118,7 +2149,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return week of month (1-6)
      */
     public int getWeekOfMonth() {
-        //complete(); // Ensure fields are computed
+        //complete();
         return get(WEEK_OF_MONTH);
     }
 
@@ -2128,37 +2159,37 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      */
     @Override
     public FastPersianCalendar clone() {
-        // Call parent clone
+        //Call parent clone
         FastPersianCalendar clone = (FastPersianCalendar) super.clone();
 
-        // The parent clone() creates a shallow copy
-        // We need to ensure our fields are properly copied
+        //The parent clone() creates a shallow copy
+        //We need to ensure our fields are properly copied
 
-        // Our int fields will be copied correctly by parent clone
-        // But we need to ensure gCal is in sync
-        // Since gCal is final and shared, we need to sync it
+        //Our int fields will be copied correctly by parent clone
+        //But we need to ensure gCal is in sync
+        //Since gCal is final and shared, we need to sync it
 
-        // Set gCal to the same time (it's the same object reference, but that's OK)
+        //Set gCal to the same time (it's the same object reference, but that's OK)
         clone.gCal.setTimeInMillis(this.gCal.getTimeInMillis());
 
-        // The time field should already be copied by super.clone()
-        // We need to recompute our Persian fields from the time
+        //The time field should already be copied by super.clone()
+        //We need to recompute our Persian fields from the time
         clone.computePersianFromGregorianFast();
 
         return clone;
     }
 
     public FastPersianCalendar clone1() {
-        // Create a new instance with the same time zone and locale
+        //Create a new instance with the same time zone and locale
         FastPersianCalendar clone = new FastPersianCalendar(this.getTimeZone(), this.locale);
 
-        // Copy the internal state
+        //Copy the internal state
         clone.persianYear  = this.persianYear;
         clone.persianMonth = this.persianMonth;
         clone.persianDay   = this.persianDay;
         clone.setTimeInMillis(this.getTimeInMillis());
 
-        // Copy the time fields if they are set
+        //Copy the time fields if they are set
         for (int i = 0; i < FIELD_COUNT; i++) {
             if (this.isSet[i]) {
                 clone.fields[i] = this.fields[i];
@@ -2166,7 +2197,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             }
         }
 
-        // Copy cache and state
+        //Copy cache and state
         clone.lastComputedTime = this.lastComputedTime;
         clone.isDirty          = this.isDirty;
         clone.areFieldsSet     = this.areFieldsSet;
@@ -2239,7 +2270,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     }
 
     /**
-     * Get a string representation of the date in ISO-like format (YYYY/MM/DD)
+     * Get a string representation of the date in ISO-like format (YYYY/MM/dd)
      * @return formatted date string
      */
     public String toIsoString() {
@@ -2252,9 +2283,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @return true if the year is a leap year
      */
     public boolean isLeapYear() {
-        // Quick validation - persianYear should always be valid
+        //Quick validation - persianYear should always be valid
         if (persianYear < 1) {
-            ensureComputed(); // Just in case
+            ensureComputed(); //Just in case
         }
         return isLeapYear(persianYear);
     }
@@ -2353,6 +2384,187 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return getDaysInMonth(persianYear, persianMonth);
     }
 
+
+    //Persian calendar methods
+    public int getDaysPassedFromStartOfYear() {
+        int year = getYear();
+        int month = getMonth();
+        int day = getDayOfMonth();
+
+        int daysPassed = day - 1;
+
+        for (int i = 0; i < month; i++) {
+            daysPassed += getDaysInMonth(year, i);
+        }
+
+        return daysPassed;
+    }
+
+    public int getRemainingDaysUntilEndOfYear() {
+        int year = getYear();
+        int totalDaysInYear = isLeapYear(year) ? 366 : 365;
+        int daysPassed = getDaysPassedFromStartOfYear();
+
+        return totalDaysInYear - daysPassed;
+    }
+
+    public int getGregorianDaysPassedFromStartOfYear() {
+        return gCal.get(Calendar.DAY_OF_YEAR) - 1;
+    }
+
+    public int getGregorianRemainingDaysUntilEndOfYear() {
+        int totalDaysInYear = gCal.getActualMaximum(Calendar.DAY_OF_YEAR);
+        int dayOfYear = gCal.get(Calendar.DAY_OF_YEAR);
+        return totalDaysInYear - dayOfYear;
+    }
+
+    public int getHijriDaysPassedFromStartOfYear() {
+        YMD hijriDate = gregorianToHijri(
+                gCal.get(Calendar.YEAR),
+                gCal.get(Calendar.MONTH) + 1,
+                gCal.get(Calendar.DAY_OF_MONTH)
+        );
+
+        //Reset both calendars to midnight for accurate day calculation
+        GregorianCalendar startOfYearGreg = hijriToGregorian(hijriDate.year, 1, 1);
+        startOfYearGreg.set(Calendar.HOUR_OF_DAY, 0);
+        startOfYearGreg.set(Calendar.MINUTE, 0);
+        startOfYearGreg.set(Calendar.SECOND, 0);
+        startOfYearGreg.set(Calendar.MILLISECOND, 0);
+
+        GregorianCalendar currentGreg = (GregorianCalendar) gCal.clone();
+        currentGreg.set(Calendar.HOUR_OF_DAY, 0);
+        currentGreg.set(Calendar.MINUTE, 0);
+        currentGreg.set(Calendar.SECOND, 0);
+        currentGreg.set(Calendar.MILLISECOND, 0);
+
+        long startMillis = startOfYearGreg.getTimeInMillis();
+        long currentMillis = currentGreg.getTimeInMillis();
+        long diffMillis = currentMillis - startMillis;
+
+        //Return days between start of year and now
+        return (int) (diffMillis / (24 * 60 * 60 * 1000));
+    }
+
+    public int getHijriRemainingDaysUntilEndOfYear() {
+        YMD hijriDate = gregorianToHijri(
+                gCal.get(Calendar.YEAR),
+                gCal.get(Calendar.MONTH) + 1,
+                gCal.get(Calendar.DAY_OF_MONTH)
+        );
+
+        //Get the Gregorian date for start of NEXT Hijri year
+        GregorianCalendar nextYearStartGreg = hijriToGregorian(hijriDate.year + 1, 1, 1);
+        nextYearStartGreg.set(Calendar.HOUR_OF_DAY, 0);
+        nextYearStartGreg.set(Calendar.MINUTE, 0);
+        nextYearStartGreg.set(Calendar.SECOND, 0);
+        nextYearStartGreg.set(Calendar.MILLISECOND, 0);
+
+        GregorianCalendar currentGreg = (GregorianCalendar) gCal.clone();
+        currentGreg.set(Calendar.HOUR_OF_DAY, 0);
+        currentGreg.set(Calendar.MINUTE, 0);
+        currentGreg.set(Calendar.SECOND, 0);
+        currentGreg.set(Calendar.MILLISECOND, 0);
+
+        long nextYearMillis = nextYearStartGreg.getTimeInMillis();
+        long currentMillis = currentGreg.getTimeInMillis();
+        long diffMillis = nextYearMillis - currentMillis;
+
+        //Return days between now and start of next year
+        return (int) (diffMillis / (24 * 60 * 60 * 1000));
+    }
+
+
+    public int getHijriDayOfYear() {
+        YMD hijriDate = gregorianToHijri(
+                gCal.get(Calendar.YEAR),
+                gCal.get(Calendar.MONTH),
+                gCal.get(Calendar.DAY_OF_MONTH)
+        );
+
+        int dayOfYear = hijriDate.day;
+
+        for (int month = 1; month < hijriDate.month; month++) {
+            dayOfYear += HijriConverter.getMonthLength(hijriDate.year, month);
+        }
+
+        return dayOfYear;
+    }
+
+    public FastPersianCalendar getStartOfPersianYear() {
+        return new FastPersianCalendar(getYear(), FARVARDIN, 1);
+    }
+
+    //Helper method to find start of Hijri year
+    public FastPersianCalendar getStartOfHijriYear() {
+        YMD hijriDate = gregorianToHijri(
+                gCal.get(Calendar.YEAR),
+                gCal.get(Calendar.MONTH),
+                gCal.get(Calendar.DAY_OF_MONTH)
+        );
+
+        GregorianCalendar startGreg = hijriToGregorian(hijriDate.year, 1, 1);
+        //Calendar startCal = Calendar.getInstance();
+        //startCal.set(startGreg[0], startGreg[1] - 1, startGreg[2], 0, 0, 0);
+        return new FastPersianCalendar(startGreg);
+    }
+
+    //Helper method to find start of Gregorian year
+    public Calendar getStartOfGregorianYear() {
+        Calendar startCal = Calendar.getInstance();
+        startCal.set(gCal.get(Calendar.YEAR), Calendar.JANUARY, 1, 0, 0, 0);
+        return startCal;
+    }
+
+    //Helper methods for Hijri calculations
+    private int getHijriDaysInMonth(int hijriYear, int hijriMonth) {
+        //Hijri months 1-11: Odd months have 30 days, even months have 29 days
+        if (hijriMonth <= 11) {
+            return (hijriMonth % 2 == 1) ? 30 : 29;
+        }
+
+        //Month 12 (Dhu al-Hijjah): 30 in leap years, 29 in common years
+        return isHijriLeapYear(hijriYear) ? 30 : 29;
+    }
+
+
+
+    /////////////////////
+    //Add this method to get the next Persian New Year date
+    public static FastPersianCalendar getNextNewYear(FastPersianCalendar persianDate) {
+        if (persianDate == null) {
+            throw new IllegalArgumentException("Persian date cannot be null");
+        }
+
+        int currentYear = persianDate.getYear();
+        int currentMonth = persianDate.getMonth();
+        int currentDay = persianDate.getDayOfMonth();
+
+        //If current date is before or on New Year (1st of Farvardin)
+        //then next New Year is in current year, otherwise next year
+        if (currentMonth < FARVARDIN || (currentMonth == FARVARDIN && currentDay <= 1)) {
+            //Next New Year is in current year
+            return new FastPersianCalendar(currentYear, FARVARDIN, 1);
+        } else {
+            //Next New Year is in next year
+            return new FastPersianCalendar(currentYear + 1, FARVARDIN, 1);
+        }
+    }
+
+    public FastPersianCalendar getNextNewYear() {
+        int currentYear = getYear();
+        int currentMonth = getMonth();
+        int currentDay = getDayOfMonth();
+
+        //If current date is on or after 1st of Farvardin, next new year is next year
+        if (currentMonth > FARVARDIN || (currentMonth == FARVARDIN && currentDay >= 1)) {
+            currentYear++; //Move to next year
+        }
+
+        //Return 1st of Farvardin of the calculated year
+        return new FastPersianCalendar(currentYear, FARVARDIN, 1);
+    }
+
     /**
      * Get the previous Friday (weekend start)
      * @return date of previous Friday
@@ -2362,7 +2574,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         int                 currentDayOfWeek = get(DAY_OF_WEEK);
         int                 daysToSubtract   = (currentDayOfWeek - FRIDAY + 7) % 7;
         if (daysToSubtract == 0) {
-            daysToSubtract = 7; // If it's already Friday, go to previous Friday
+            daysToSubtract = 7; //If it's already Friday, go to previous Friday
         }
         result.addDays(-daysToSubtract);
         return result;
@@ -2377,7 +2589,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         int                 currentDayOfWeek = get(DAY_OF_WEEK);
         int                 daysToAdd        = (FRIDAY - currentDayOfWeek + 7) % 7;
         if (daysToAdd == 0) {
-            daysToAdd = 7; // If it's already Friday, go to next Friday
+            daysToAdd = 7; //If it's already Friday, go to next Friday
         }
         result.addDays(daysToAdd);
         return result;
@@ -2418,7 +2630,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public int yearsBetween(FastPersianCalendar other) {
         int yearDiff = this.persianYear - other.persianYear;
 
-        // Adjust if the month/day hasn't occurred yet this year
+        //Adjust if the month/day hasn't occurred yet this year
         if (yearDiff > 0) {
             if (this.persianMonth < other.persianMonth ||
                 (this.persianMonth == other.persianMonth && this.persianDay < other.persianDay)) {
@@ -2455,7 +2667,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                 return String.format(locale, "%02d %s %04d",
                                      getDayOfMonth(), getMonthName(), getYear());
             default:
-                // For custom patterns, use FastPersianDateFormat
+                //For custom patterns, use FastPersianDateFormat
                 FastPersianDateFormat formatter = new FastPersianDateFormat(pattern);
                 return formatter.format(this);
         }

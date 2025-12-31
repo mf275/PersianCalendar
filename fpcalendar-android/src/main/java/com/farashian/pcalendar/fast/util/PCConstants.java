@@ -50,6 +50,15 @@ public class PCConstants {
             "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
             "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
     };
+    public static final String[] AFGHAN_MONTH_NAMES = {
+            "حمل", "ثور", "جوزا", "سرطان", "اسد", "سنبله",
+            "میزان", "عقرب", "قوس", "جدی", "دلو", "حوت"
+    };
+
+    public static final String[] PASHTO_AFGHAN_MONTH_NAMES = {
+            "وری", "غويی", "غبرګولی", "چنګاښ", "زمری", "وږی",
+            "تله", "لړم", "لیندۍ", "مرغومی", "سلواغه", "کب"
+    };
 
     public static final String[] PERSIAN_MONTH_NAMES_SHORT = {
             "فرو", "ارد", "خرو", "تیر", "مرد", "شهـر",
@@ -85,17 +94,17 @@ public class PCConstants {
     };
 
     public static final String[] PERSIAN_MONTH_NAMES_ENGLISH_SHORT = {
-            "Far", // Farvardin
-            "Ord", // Ordibehesht
-            "Kho", // Khordad
-            "Tir", // Tir
-            "Mor", // Mordad
-            "Sha", // Shahrivar
-            "Meh", // Mehr
-            "Aba", // Aban
-            "Aza", // Azar
-            "Dey", // Dey
-            "Bah", // Bahman
-            "Esf"  // Esfand
+            "Far", //Farvardin
+            "Ord", //Ordibehesht
+            "Kho", //Khordad
+            "Tir", //Tir
+            "Mor", //Mordad
+            "Sha", //Shahrivar
+            "Meh", //Mehr
+            "Aba", //Aban
+            "Aza", //Azar
+            "Dey", //Dey
+            "Bah", //Bahman
+            "Esf"  //Esfand
     };
 }

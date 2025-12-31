@@ -12,8 +12,8 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 36
-        versionCode 240  // Added version code
-        versionName "2.4.0"
+        versionCode 240  //Added version code
+        versionName "2.5.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -25,7 +25,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            // Optional: Add debug build type
+            //Optional: Add debug build type
             testCoverageEnabled = true
         }
     }
@@ -43,7 +43,7 @@ android {
             withSourcesJar()
             //withJavadocJar()
         }
-        /*// Optionally add debug variant
+        /*//Optionally add debug variant
         singleVariant("debug") {
             withSourcesJar()
         }*/
@@ -53,13 +53,13 @@ android {
 dependencies {
     implementation 'androidx.annotation:annotation:1.9.1'
 
-    // For documentation generation
+    //For documentation generation
     //compileOnly 'androidx.annotation:annotation:1.7.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 }
 
-// Fix for Javadoc generation on Android
+//Fix for Javadoc generation on Android
 tasks.withType(Javadoc) {
     options {
         encoding = 'UTF-8'
@@ -68,7 +68,7 @@ tasks.withType(Javadoc) {
         links("https://developer.android.com/reference/")
     }
 
-    // Exclude generated R and BuildConfig classes
+    //Exclude generated R and BuildConfig classes
     exclude '**/R.java', '**/BuildConfig.java', '**/*.kt',
             '**/*_MembersInjector.java', '**/*Factory.java',
             '**/*_Impl.java', '**/Dagger*.java'
@@ -82,22 +82,22 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
 
-                // Choose ONE of these groupId options:
-                // Option 1: For GitHub Packages
+                //Choose ONE of these groupId options:
+                //Option 1: For GitHub Packages
                 //groupId = 'com.github.mf275.persian-calendar'
-                // Option 2: For Maven Central (recommended)
-                // groupId = 'io.github.mf275.persian-calendar'
-                // Option 3: Custom domain
+                //Option 2: For Maven Central (recommended)
+                //groupId = 'io.github.mf275.persian-calendar'
+                //Option 3: Custom domain
                 groupId = 'com.farashian'
 
-                artifactId = 'fast-persian-calendar-android'  // Consistent naming
+                artifactId = 'fast-persian-calendar-android'  //Consistent naming
                 version = android.defaultConfig.versionName
 
                 pom {
                     name = 'Fast Persian Calendar Android'
                     description = 'Android library for Persian (Jalali) calendar with UI components'
                     url = 'https://github.com/mf275/PersianCalendar'
-                    packaging = 'aar'  // Important for Android libraries
+                    packaging = 'aar'  //Important for Android libraries
 
                     licenses {
                         license {
@@ -120,7 +120,7 @@ afterEvaluate {
                         url = 'https://github.com/mf275/PersianCalendar'
                     }
 
-                    // Add issue management
+                    //Add issue management
                     issueManagement {
                         system = 'GitHub'
                         url = 'https://github.com/mf275/PersianCalendar/issues'
@@ -128,7 +128,7 @@ afterEvaluate {
                 }
             }
 
-            // Optional: Add debug publication
+            //Optional: Add debug publication
             /* debug(MavenPublication) {
                  from components.debug
                  groupId = 'com.github.mf275.persian-calendar'
@@ -138,7 +138,7 @@ afterEvaluate {
         }
 
         repositories {
-            // Maven Central
+            //Maven Central
             maven {
                 name = "MavenCentral"
                 url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
@@ -148,13 +148,13 @@ afterEvaluate {
                 }
             }
 
-            // Local maven for testing
+            //Local maven for testing
             maven {
                 name = "Local"
                 url = layout.buildDirectory.dir("repo")
             }
 
-            // Optional: GitHub Packages
+            //Optional: GitHub Packages
             /*
             maven {
                 name = "GitHubPackages"
@@ -169,15 +169,15 @@ afterEvaluate {
     }
 
     signing {
-        // Only sign if we have the required properties
+        //Only sign if we have the required properties
         required { gradle.taskGraph.hasTask("publishMavenCentralPublicationToMavenCentralRepository") }
 
-        // Sign all publications
+        //Sign all publications
         sign publishing.publications
     }
 }
 
-// Helper tasks
+//Helper tasks
 tasks.register('publishToLocal') {
     dependsOn 'publishReleasePublicationToLocalRepository'
 }

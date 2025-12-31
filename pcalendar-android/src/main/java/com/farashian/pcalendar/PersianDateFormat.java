@@ -22,26 +22,26 @@ public final class PersianDateFormat {
 
     private static final String TAG = "PersianDateFormat";
 
-    // Number Format
+    //Number Format
     public enum PersianDateNumberCharacter {
         ENGLISH,
         FARSI
     }
 
-    private String                     pattern         = "DDDD, d MMMM yyyy HH:mm:ss";
+    private String                     pattern         = "dddd, d MMMM yyyy HH:mm:ss";
     private PersianDateNumberCharacter numberCharacter = PersianDateNumberCharacter.ENGLISH;
     private Locale                     locale;
 
-    // Pattern matcher for tokens
+    //Pattern matcher for tokens
     private static final Pattern TOKEN_PATTERN = Pattern.compile(
             "yyyy|yy|MMMM|MMM|MM|M|dddd|ddd|dd|d|HH|H|hh|h|mm|m|ss|s|a|A|'[^']*'"
     );
 
-    // Thread-safe formatter functions
+    //Thread-safe formatter functions
     private static final Map<String, BiFunction<PersianCalendar, Locale, String>> FORMATTERS =
             Collections.unmodifiableMap(createFormatters());
 
-    // Thread-local cache for SimpleDateFormat instances (important for performance)
+    //Thread-local cache for SimpleDateFormat instances (important for performance)
     private static final ThreadLocal<SimpleDateFormat> sDateFormatCache =
             new ThreadLocal<SimpleDateFormat>() {
                 @Override
@@ -50,13 +50,13 @@ public final class PersianDateFormat {
                 }
             };
 
-    // Context for resource-based localization (optional)
+    //Context for resource-based localization (optional)
     @Nullable
     private static Context appContext;
 
 
     public PersianDateFormat() {
-        // Use device locale if Persian, otherwise use default Persian locale
+        //Use device locale if Persian, otherwise use default Persian locale
         Locale defaultLocale = Locale.getDefault();
         this.locale = defaultLocale.getLanguage().equals("fa")
                 ? defaultLocale
@@ -87,7 +87,7 @@ public final class PersianDateFormat {
     public void setPattern(@NonNull String pattern) {
         if (TextUtils.isEmpty(pattern)) {
             Log.w(TAG, "Pattern is empty, using default");
-            this.pattern = "DDDD, d MMMM yyyy HH:mm:ss";
+            this.pattern = "dddd, d MMMM yyyy HH:mm:ss";
         } else {
             this.pattern = pattern;
         }
@@ -101,7 +101,7 @@ public final class PersianDateFormat {
         this.locale = locale;
     }
 
-    // Static method to set application context for resource-based localization
+    //Static method to set application context for resource-based localization
     public static void setAppContext(@Nullable Context context) {
         appContext = context != null ? context.getApplicationContext() : null;
     }
@@ -127,7 +127,7 @@ public final class PersianDateFormat {
             @NonNull PersianDateNumberCharacter numberCharacter,
             @NonNull Locale locale) {
         if (TextUtils.isEmpty(pattern)) {
-            pattern = "DDDD, d MMMM yyyy HH:mm:ss";
+            pattern = "dddd, d MMMM yyyy HH:mm:ss";
         }
 
         StringBuilder           result    = new StringBuilder(pattern.length() + 50);
@@ -135,31 +135,31 @@ public final class PersianDateFormat {
         int                     lastIndex = 0;
 
         while (matcher.find()) {
-            // Append text between tokens
+            //Append text between tokens
             result.append(pattern, lastIndex, matcher.start());
 
             String token = matcher.group();
 
             if (token.startsWith("'") && token.endsWith("'")) {
-                // Literal text in quotes
+                //Literal text in quotes
                 result.append(token, 1, token.length() - 1);
             } else if (FORMATTERS.containsKey(token)) {
                 String formatted = FORMATTERS.get(token).apply(date, locale);
                 result.append(formatted);
             } else {
-                // Unknown token, keep as is
+                //Unknown token, keep as is
                 result.append(token);
             }
 
             lastIndex = matcher.end();
         }
 
-        // Append remaining text
+        //Append remaining text
         result.append(pattern.substring(lastIndex));
 
         String formattedString = result.toString();
 
-        // Convert numbers to Farsi if requested
+        //Convert numbers to Farsi if requested
         if (numberCharacter == PersianDateNumberCharacter.FARSI) {
             formattedString = convertToFarsiNumbers(formattedString);
         }
@@ -173,7 +173,7 @@ public final class PersianDateFormat {
     }
 
     public String format(YMD ymd, String pattern) {
-        // Create a PersianCalendar object and set the date from YMD, and set time to zero.
+        //Create a PersianCalendar object and set the date from YMD, and set time to zero.
         PersianCalendar pc = new PersianCalendar();
         pc.setPersianDate(ymd.year, ymd.month - 1, ymd.day);
         pc.set(Calendar.HOUR_OF_DAY, 0);
@@ -181,7 +181,7 @@ public final class PersianDateFormat {
         pc.set(Calendar.SECOND, 0);
         pc.set(Calendar.MILLISECOND, 0);
 
-        // Use the static format method with the instance's numberCharacter and locale
+        //Use the static format method with the instance's numberCharacter and locale
         return format(pc, pattern, this.numberCharacter, this.locale);
     }
 
@@ -207,16 +207,16 @@ public final class PersianDateFormat {
         values.put("minute", 0);
         values.put("second", 0);
 
-        // Remove Farsi numbers and convert to English for parsing
+        //Remove Farsi numbers and convert to English for parsing
         String normalizedDate = convertToEnglishNumbers(date);
 
-        // Simple pattern matching for common formats
+        //Simple pattern matching for common formats
         if (pattern.equals("yyyy/MM/dd") || pattern.equals("yyyy-MM-dd")) {
             String   delimiter = pattern.contains("/") ? "/" : "-";
             String[] parts     = normalizedDate.split(Pattern.quote(delimiter));
             if (parts.length == 3) {
                 values.put("year", safeParseInt(parts[0], 1400));
-                values.put("month", safeParseInt(parts[1], 1) - 1); // Convert to 0-based
+                values.put("month", safeParseInt(parts[1], 1) - 1); //Convert to 0-based
                 values.put("day", safeParseInt(parts[2], 1));
             } else {
                 throw new ParseException("Invalid date format. Expected yyyy/MM/dd or yyyy-MM-dd", 0);
@@ -273,7 +273,7 @@ public final class PersianDateFormat {
             throw new ParseException("Unsupported pattern for parsing: " + pattern, 0);
         }
 
-        // Validate the parsed values
+        //Validate the parsed values
         validateParsedDate(values);
 
         return new PersianCalendar(
@@ -314,30 +314,30 @@ public final class PersianDateFormat {
         }
     }
 
-    // === PRIVATE HELPER METHODS ===
+    //=== PRIVATE HELPER METHODS ===
 
     @NonNull
     private static Map<String, BiFunction<PersianCalendar, Locale, String>> createFormatters() {
         Map<String, BiFunction<PersianCalendar, Locale, String>> formatters = new ConcurrentHashMap<>();
 
-        // Year
+        //Year
         formatters.put("yyyy", (cal, loc) -> String.format(loc, "%04d", cal.getYear()));
         formatters.put("yy", (cal, loc) -> String.format(loc, "%02d", cal.getYear() % 100));
 
-        // Month
+        //Month
         formatters.put("MMMM", (cal, loc) -> getMonthName(cal.getMonth(), loc));
         formatters.put("MMM", (cal, loc) -> getShortMonthName(cal.getMonth(), loc));
         formatters.put("MM", (cal, loc) -> String.format(loc, "%02d", cal.getMonth() + 1));
         formatters.put("M", (cal, loc) -> String.valueOf(cal.getMonth() + 1));
 
-        // Day
+        //Day
         formatters.put("dddd", (cal, loc) -> getWeekdayName(cal.get(PersianCalendar.DAY_OF_WEEK), loc));
         formatters.put("ddd", (cal, loc) -> getShortDayName(cal.get(PersianCalendar.DAY_OF_WEEK), loc));
         formatters.put("dd", (cal, loc) -> String.format(loc, "%02d", cal.getDayOfMonth()));
         formatters.put("d", (cal, loc) -> String.format(loc, "%d", cal.getDayOfMonth()));
         //formatters.put("d", (cal, loc) -> String.valueOf(cal.getDayOfMonth()));
 
-        // Hour
+        //Hour
         formatters.put("HH", (cal, loc) -> String.format(loc, "%02d", cal.get(PersianCalendar.HOUR_OF_DAY)));
         formatters.put("H", (cal, loc) -> String.format(loc, "%d", cal.get(PersianCalendar.HOUR_OF_DAY)));
         //formatters.put("H", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.HOUR_OF_DAY)));
@@ -352,15 +352,15 @@ public final class PersianDateFormat {
             return String.valueOf(hour12);
         });
 
-        // Minute
+        //Minute
         formatters.put("mm", (cal, loc) -> String.format(loc, "%02d", cal.get(PersianCalendar.MINUTE)));
         formatters.put("m", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.MINUTE)));
 
-        // Second
+        //Second
         formatters.put("ss", (cal, loc) -> String.format(loc, "%02d", cal.get(PersianCalendar.SECOND)));
         formatters.put("s", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.SECOND)));
 
-        // AM/PM
+        //AM/PM
         formatters.put("a", (cal, loc) -> getAmPm(cal, loc, false));
         formatters.put("A", (cal, loc) -> getAmPm(cal, loc, true));
 
@@ -371,10 +371,10 @@ public final class PersianDateFormat {
     private static String getShortMonthName(int month, @NonNull Locale locale) {
         String fullName = PERSIAN_MONTH_NAMES_SHORT[month];
         if (locale.getLanguage().equals("fa")) {
-            // For Persian, return the full name as short name (common in Persian)
+            //For Persian, return the full name as short name (common in Persian)
             return fullName;
         } else {
-            // For English, return first 3 letters
+            //For English, return first 3 letters
             String[] englishMonths = {"Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar",
                     "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"};
             String fullEnglish = englishMonths[month];
@@ -386,10 +386,10 @@ public final class PersianDateFormat {
     private static String getShortDayName(int dayOfWeek, @NonNull Locale locale) {
         String fullName = getWeekdayName(dayOfWeek, locale);
         if (locale.getLanguage().equals("fa")) {
-            // For Persian, return the full name as short name
+            //For Persian, return the full name as short name
             return fullName;
         } else {
-            // For English, return first 3 letters
+            //For English, return first 3 letters
             String[] englishDays = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
             int      index       = (dayOfWeek - 1) % 7;
             if (index < 0) index += 7;
@@ -422,7 +422,7 @@ public final class PersianDateFormat {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c >= '0' && c <= '9') {
-                // Convert ASCII digit to Persian digit
+                //Convert ASCII digit to Persian digit
                 result.append((char) ('۰' + (c - '0')));
             } else {
                 result.append(c);
@@ -441,10 +441,10 @@ public final class PersianDateFormat {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c >= '۰' && c <= '۹') {
-                // Convert Persian digit to ASCII digit
+                //Convert Persian digit to ASCII digit
                 result.append((char) ('0' + (c - '۰')));
             } else if (c >= '٠' && c <= '٩') {
-                // Convert Arabic-Indic digit to ASCII digit
+                //Convert Arabic-Indic digit to ASCII digit
                 result.append((char) ('0' + (c - '٠')));
             } else {
                 result.append(c);
@@ -502,7 +502,7 @@ public final class PersianDateFormat {
 
     private int getDaysInMonth(int year, int month) {
         if (month < 0 || month > 11) {
-            return 31; // Fallback
+            return 31; //Fallback
         }
 
         if (month < 6) {
@@ -514,7 +514,7 @@ public final class PersianDateFormat {
         }
     }
 
-    // === UTILITY METHODS FOR EXTERNAL USE ===
+    //=== UTILITY METHODS FOR EXTERNAL USE ===
 
     @NonNull
     public static String getMonthName(@NonNull PersianCalendar date) {
@@ -535,7 +535,7 @@ public final class PersianDateFormat {
         int index = (dayOfWeek - 1) % 7;
         if (index < 0) index += 7;
 
-        // Try to get from Android resources first if context is available
+        //Try to get from Android resources first if context is available
         if (appContext != null) {
             try {
                 String resName = "weekday_" + (index + 1);
@@ -562,7 +562,7 @@ public final class PersianDateFormat {
             throw new IllegalArgumentException("Invalid month index for getMonthName: " + month);
         }
 
-        // Try to get from Android resources first if context is available
+        //Try to get from Android resources first if context is available
         if (appContext != null) {
             try {
                 String resName = "month_" + (month + 1);
@@ -584,7 +584,7 @@ public final class PersianDateFormat {
     }
 
 
-    // Helper method to get default locale
+    //Helper method to get default locale
     @NonNull
     private static Locale getDefaultLocale() {
         Locale defaultLocale = Locale.getDefault();
@@ -593,10 +593,10 @@ public final class PersianDateFormat {
                 : PCConstants.PERSIAN_LOCALE;
     }
 
-    // === BUILDER PATTERN (Optional but useful) ===
+    //=== BUILDER PATTERN (Optional but useful) ===
 
     public static class Builder {
-        private String                     pattern         = "DDDD, d MMMM yyyy HH:mm:ss";
+        private String                     pattern         = "dddd, d MMMM yyyy HH:mm:ss";
         private PersianDateNumberCharacter numberCharacter = PersianDateNumberCharacter.ENGLISH;
         private Locale                     locale          = getDefaultLocale();
 
@@ -624,7 +624,7 @@ public final class PersianDateFormat {
         }
     }
 
-    // === EQUALS AND HASHCODE ===
+    //=== EQUALS AND HASHCODE ===
 
     @Override
     public boolean equals(Object o) {

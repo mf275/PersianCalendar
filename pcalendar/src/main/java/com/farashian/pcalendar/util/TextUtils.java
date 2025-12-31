@@ -2,7 +2,7 @@ package com.farashian.pcalendar.util;
 
 public class TextUtils {
     private static final String TAG = "TextUtils";
-    // Unicode control characters for RTL embedding
+    //Unicode control characters for RTL embedding
     private static final String RTL_EMBEDDING_START = "\u202B";
     private static final String RTL_EMBEDDING_END = "\u202C";
 
@@ -58,7 +58,7 @@ public class TextUtils {
      */
     public static boolean isPrintableAscii(final char c) {
         final int asciiFirst = 0x20;
-        final int asciiLast = 0x7E;  // included
+        final int asciiLast = 0x7E;  //included
         return (asciiFirst <= c && c <= asciiLast) || c == '\r' || c == '\n';
     }
     public static boolean isPrintableAsciiOnly(final CharSequence str) {

@@ -6,13 +6,13 @@ import com.farashian.pcalendar.fast.FastPersianCalendar;
 import java.util.Calendar;
 
 
-// Performance test class
+//Performance test class
 public class PersianCalendarBenchmark {
     
     public static void main(String[] args) {
         int iterations = 100000;
         
-        // Test original vs fast implementation
+        //Test original vs fast implementation
         long start1 = System.currentTimeMillis();
         testOriginalCalendar(iterations);
         long duration1 = System.currentTimeMillis() - start1;
@@ -51,7 +51,7 @@ public class PersianCalendarBenchmark {
         StringBuilder sb = stringBuilderCache.get();
         sb.setLength(0);
 
-        // Fast integer to string conversion
+        //Fast integer to string conversion
         if (year < 1000) sb.append('0');
         if (year < 100) sb.append('0');
         if (year < 10) sb.append('0');

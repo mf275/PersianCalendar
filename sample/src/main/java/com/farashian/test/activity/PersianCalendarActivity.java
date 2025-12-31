@@ -36,7 +36,7 @@ import static java.lang.String.format;
 
 public class PersianCalendarActivity extends Activity {
 
-    // UI Components
+    //UI Components
     private Spinner      spnLibrary;
     private Spinner      spnPattern;
     private Spinner      spnNumberFormat;
@@ -58,31 +58,31 @@ public class PersianCalendarActivity extends Activity {
     private Button       btnTestPerformance;
     private RecyclerView recyclerTestCases;
 
-    // Adapters
+    //Adapters
     private TestCaseAdapter      testCaseAdapter;
     private ArrayAdapter<String> libraryAdapter;
     private ArrayAdapter<String> patternAdapter;
     private ArrayAdapter<String> numberFormatAdapter;
 
-    // Libraries
+    //Libraries
     private PersianDateFormat     myPersianDateFormat;
     private FastPersianDateFormat fastPersianDateFormat;
 
-    // Test patterns
+    //Test patterns
     private static final String[] PATTERNS = {
             "yyyy/MM/dd",
             "yyyy-MM-dd",
             "yyyy/MM/dd HH:mm",
             "yyyy/MM/dd HH:mm:ss",
-            "DDDD, d MMMM yyyy",
-            "DDDD, d MMMM yyyy HH:mm:ss",
+            "dddd, d MMMM yyyy",
+            "dddd, d MMMM yyyy HH:mm:ss",
             "ddd, d MMM yy",
             "yyyy/MM/dd hh:mm a",
             "yyyy-MM-dd hh:mm:ss a",
             "MMMM yyyy"
     };
 
-    // Test cases
+    //Test cases
     private List<TestCase> testCases = new ArrayList<>();
 
     @Override
@@ -90,11 +90,11 @@ public class PersianCalendarActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_persian_calendar);
 
-        // Initialize libraries
+        //Initialize libraries
         myPersianDateFormat   = new PersianDateFormat();
         fastPersianDateFormat = new FastPersianDateFormat();
 
-        // Initialize UI
+        //Initialize UI
         initViews();
         setupSpinners();
         setupButtons();
@@ -125,14 +125,14 @@ public class PersianCalendarActivity extends Activity {
         btnTestPerformance    = findViewById(R.id.btn_test_performance);
         recyclerTestCases     = findViewById(R.id.recycler_test_cases);
 
-        // Set default values
+        //Set default values
         edtGregorianDate.setText("2024/01/15");
         edtPersianDate.setText("1402/10/25");
-        edtCustomPattern.setText("DDDD, d MMMM yyyy HH:mm:ss");
+        edtCustomPattern.setText("dddd, d MMMM yyyy HH:mm:ss");
     }
 
     private void setupSpinners() {
-        // Library spinner
+        //Library spinner
         String[] libraries = {"PersianCalendar", "FastPersianCalendar"};
         libraryAdapter = new ArrayAdapter<>(this,
                                             android.R.layout.simple_spinner_item, libraries);
@@ -150,7 +150,7 @@ public class PersianCalendarActivity extends Activity {
             }
         });
 
-        // Pattern spinner
+        //Pattern spinner
         patternAdapter = new ArrayAdapter<>(this,
                                             android.R.layout.simple_spinner_item, PATTERNS);
         patternAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -166,7 +166,7 @@ public class PersianCalendarActivity extends Activity {
             }
         });
 
-        // Number format spinner
+        //Number format spinner
         String[] numberFormats = {"English Numbers", "Farsi Numbers"};
         numberFormatAdapter = new ArrayAdapter<>(this,
                                                  android.R.layout.simple_spinner_item, numberFormats);
@@ -183,7 +183,7 @@ public class PersianCalendarActivity extends Activity {
         btnFormatNow.setOnClickListener(v -> formatCurrentDate());
         btnTestPerformance.setOnClickListener(v -> runPerformanceTest());
 
-        // Add text change listeners for real-time conversion
+        //Add text change listeners for real-time conversion
         edtGregorianDate.addTextChangedListener(gregorianDateTextWatcher);
 
 
@@ -193,7 +193,7 @@ public class PersianCalendarActivity extends Activity {
                 convertGregorianToPersian();
                 hideKeyboard(edtGregorianDate);
 
-                // Reset flag after a delay to prevent double triggering
+                //Reset flag after a delay to prevent double triggering
                 edtGregorianDate.postDelayed(() -> isDatePickerOpen = false, 500);
             }
             return true;
@@ -220,7 +220,7 @@ public class PersianCalendarActivity extends Activity {
 
     private void setupRecyclerView() {
         testCaseAdapter = new TestCaseAdapter(testCases, testCase -> {
-            // Execute test case when clicked
+            //Execute test case when clicked
             executeTestCase(testCase);
         });
 
@@ -237,10 +237,10 @@ public class PersianCalendarActivity extends Activity {
             StringBuilder result = new StringBuilder();
             result.append("Testing 1979/08/18 conversion:\n\n");
 
-            // Create calendar with Date constructor
+            //Create calendar with Date constructor
             FastPersianCalendar fastCal = new FastPersianCalendar(date);
 
-            // Force complete computation
+            //Force complete computation
             //fastCal.compute();
 
             result.append("Calendar Instance: ")
@@ -248,7 +248,7 @@ public class PersianCalendarActivity extends Activity {
                     .append(fastCal.getMonth() + 1).append("/")
                     .append(fastCal.getDayOfMonth()).append("\n\n");
 
-            // Debug info
+            //Debug info
             result.append("Debug Info:\n");
             result.append("Calendar Time in millis: ").append(fastCal.getTimeInMillis()).append("\n");
             result.append("Gregorian from calendar: ")
@@ -266,7 +266,7 @@ public class PersianCalendarActivity extends Activity {
 
             tvConvertedDate.setText(result.toString());
 
-            // Log debug info
+            //Log debug info
             Log.d("PersianCalendar", fastCal.toDebugString());
 
         } catch (Exception e) {
@@ -277,17 +277,17 @@ public class PersianCalendarActivity extends Activity {
 
     private void testCalendarMethods() {
         PersianCalendar cal = new PersianCalendar();
-        cal.setPersianDate(1402, 7, 15); // Aban (month 7, 0-based)
+        cal.setPersianDate(1402, 7, 15); //Aban (month 7, 0-based)
 
         StringBuilder result = new StringBuilder();
         result.append("Testing Calendar Methods:\n\n");
 
-        // Test getActualMaximum for DAY_OF_MONTH
+        //Test getActualMaximum for DAY_OF_MONTH
         int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
         result.append("Aban (month 8) max days: ").append(maxDays).append("\n");
 
-        // Test different months
-        int[] testMonths = {0, 5, 7, 11}; // Farvardin, Shahrivar, Aban, Esfand
+        //Test different months
+        int[] testMonths = {0, 5, 7, 11}; //Farvardin, Shahrivar, Aban, Esfand
         for (int month : testMonths) {
             cal.set(Calendar.MONTH, month);
             int    days      = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -295,7 +295,7 @@ public class PersianCalendarActivity extends Activity {
             result.append(format("%-12s: %d days\n", monthName, days));
         }
 
-        // Show results
+        //Show results
         tvPResult.setText(result.toString());
         tvPResult.setVisibility(View.VISIBLE);
     }
@@ -305,16 +305,16 @@ public class PersianCalendarActivity extends Activity {
      */
     public static String verifyConversion(int gregorianYear, int gregorianMonth, int gregorianDay) {
         try {
-            // Create date
+            //Create date
             Calendar cal = Calendar.getInstance();
             cal.set(gregorianYear, gregorianMonth - 1, gregorianDay);
             Date date = cal.getTime();
 
-            // Create Persian calendar
+            //Create Persian calendar
             FastPersianCalendar persianCal = new FastPersianCalendar(date);
             //persianCal.complete();
 
-            // Test algorithm directly
+            //Test algorithm directly
             int[] directResult = new int[3];
             gregorianToJalaliFast(gregorianYear, gregorianMonth, gregorianDay, directResult);
 
@@ -337,70 +337,70 @@ public class PersianCalendarActivity extends Activity {
     private void loadTestCases() {
         testCases.clear();
 
-        // Test case 1: Basic date formatting
+        //Test case 1: Basic date formatting
         testCases.add(new TestCase(
                 "Basic Date Format",
                 "Format current date in yyyy/MM/dd",
                 "Click to format current date"
         ));
 
-        // Test case 2: Date parsing
+        //Test case 2: Date parsing
         testCases.add(new TestCase(
                 "Date Parsing",
                 "Parse Persian date string",
                 "Parse: 1402/10/25"
         ));
 
-        // Test case 3: Gregorian to Persian
+        //Test case 3: Gregorian to Persian
         testCases.add(new TestCase(
                 "Gregorian → Persian",
                 "Convert Gregorian to Persian",
                 "Convert: 2024/01/15"
         ));
 
-        // Test case 4: Persian to Gregorian
+        //Test case 4: Persian to Gregorian
         testCases.add(new TestCase(
                 "Persian → Gregorian",
                 "Convert Persian to Gregorian",
                 "Convert: 1402/10/25"
         ));
 
-        // Test case 5: Custom formatting
+        //Test case 5: Custom formatting
         testCases.add(new TestCase(
                 "Custom Format",
                 "Format with custom pattern",
-                "Pattern: DDDD, d MMMM yyyy"
+                "Pattern: dddd, d MMMM yyyy"
         ));
 
-        // Test case 6: Farsi numbers
+        //Test case 6: Farsi numbers
         testCases.add(new TestCase(
                 "Farsi Numbers",
                 "Format with Farsi numbers",
                 "۱۴۰۲/۱۰/۲۵"
         ));
 
-        // Test case 7: Time formatting
+        //Test case 7: Time formatting
         testCases.add(new TestCase(
                 "Time Format",
                 "Format with time",
                 "Pattern: yyyy/MM/dd HH:mm:ss"
         ));
 
-        // Test case 8: Month names
+        //Test case 8: Month names
         testCases.add(new TestCase(
                 "Month Names",
                 "Test Persian month names",
                 "Format: MMMM yyyy"
         ));
 
-        // Test case 9: Weekday names
+        //Test case 9: Weekday names
         testCases.add(new TestCase(
                 "Weekday Names",
                 "Test Persian weekday names",
-                "Format: DDDD"
+                "Format: dddd"
         ));
 
-        // Test case 10: Leap year test
+        //Test case 10: Leap year test
         testCases.add(new TestCase(
                 "Leap Year",
                 "Check if year is leap",
@@ -428,11 +428,11 @@ public class PersianCalendarActivity extends Activity {
                 convertPersianToGregorian();
                 break;
             case "Custom Format":
-                edtCustomPattern.setText("DDDD, d MMMM yyyy");
+                edtCustomPattern.setText("dddd, d MMMM yyyy");
                 formatCurrentDate();
                 break;
             case "Farsi Numbers":
-                spnNumberFormat.setSelection(1); // Farsi numbers
+                spnNumberFormat.setSelection(1); //Farsi numbers
                 formatCurrentDate();
                 break;
             case "Time Format":
@@ -444,7 +444,7 @@ public class PersianCalendarActivity extends Activity {
                 formatCurrentDate();
                 break;
             case "Weekday Names":
-                edtCustomPattern.setText("DDDD");
+                edtCustomPattern.setText("dddd");
                 formatCurrentDate();
                 break;
             case "Leap Year":
@@ -455,13 +455,13 @@ public class PersianCalendarActivity extends Activity {
 
 
     private void convertGregorianToPersian() {
-        // Prevent recursive calls from TextWatcher
+        //Prevent recursive calls from TextWatcher
         edtGregorianDate.removeTextChangedListener(gregorianDateTextWatcher);
 
-        // Create a DatePicker dialog
+        //Create a DatePicker dialog
         Calendar calendar = Calendar.getInstance();
 
-        // If there's already a date in the input field, use it as default
+        //If there's already a date in the input field, use it as default
         String existingDate = "";//edtGregorianDate.getText().toString().trim();
         if (!existingDate.isEmpty()) {
             try {
@@ -469,18 +469,18 @@ public class PersianCalendarActivity extends Activity {
                 Date             date = sdf.parse(existingDate);
                 calendar.setTime(date);
             } catch (ParseException e) {
-                // Use current date if parsing fails
+                //Use current date if parsing fails
             }
         }
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
-                    // Format selected date
+                    //Format selected date
                     String selectedDate = format(Locale.US, "%04d/%02d/%02d", year, month + 1, dayOfMonth);
                     edtGregorianDate.setText(selectedDate);
 
-                    // Automatically trigger conversion
+                    //Automatically trigger conversion
                     performConversion(selectedDate);
 
                 },
@@ -492,7 +492,7 @@ public class PersianCalendarActivity extends Activity {
         datePickerDialog.show();
     }
 
-    // Separate the conversion logic to avoid recursion
+    //Separate the conversion logic to avoid recursion
     private void performConversion(String gregorianDate) {
         try {
             SimpleDateFormat sdf  = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
@@ -514,7 +514,7 @@ public class PersianCalendarActivity extends Activity {
             YMD    iresult2 = null;
             int    perMonth;
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                // PersianCalendar
+                //PersianCalendar
                 PersianCalendar persianCalendar = new PersianCalendar();
                 persianCalendar.setTime(date);
                 PersianDateFormat.PersianDateNumberCharacter myNumberFormat =
@@ -522,10 +522,10 @@ public class PersianCalendarActivity extends Activity {
                                 PersianDateFormat.PersianDateNumberCharacter.ENGLISH :
                                 PersianDateFormat.PersianDateNumberCharacter.FARSI;
                 result   = PersianDateFormat.format(persianCalendar, pattern, myNumberFormat);
-                iresult2 = persianCalendar.getIslamicDate();
+                iresult2 = persianCalendar.getHijriDate();
                 perMonth = persianCalendar.getMonth();
             } else {
-                // FastPersianCalendar
+                //FastPersianCalendar
                 FastPersianCalendar fastCalendar = new FastPersianCalendar();
                 fastCalendar.setTime(date);
                 result   = FastPersianDateFormat.format(fastCalendar, pattern, numberFormat);
@@ -537,10 +537,10 @@ public class PersianCalendarActivity extends Activity {
             tvGResult.setText(format("Gregorian Date: %s", gregorianDate));
             tvPResult.setText(format("Persian Date: %s %s", result, PERSIAN_MONTH_NAMES[perMonth]));
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                tvIResult.setText(format("Islamic Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month-1]));
+                tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month-1]));
             } else {
                 String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
-                tvIResult.setText(format("Islamic Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]-1]));
+                tvIResult.setText(format("Hijri Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]-1]));
             }
             hideKeyboard(tvPResult);
         } catch (ParseException e) {
@@ -568,7 +568,7 @@ public class PersianCalendarActivity extends Activity {
 
     }
 
-    // Define the TextWatcher as a class member
+    //Define the TextWatcher as a class member
     private TextWatcher gregorianDateTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -581,7 +581,7 @@ public class PersianCalendarActivity extends Activity {
         @Override
         public void afterTextChanged(Editable s) {
             if (s.toString().trim().length() >= 10) {
-                // Only perform conversion if the date was entered manually
+                //Only perform conversion if the date was entered manually
                 performConversion(s.toString().trim());
             }
         }
@@ -604,17 +604,17 @@ public class PersianCalendarActivity extends Activity {
             int[] iresult = null;
             YMD iresult2 = null;
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                // PersianCalendar
+                //PersianCalendar
                 PersianCalendar persianCalendar = myPersianDateFormat.parse(persianDate, pattern);
                 date     = new Date(persianCalendar.getTimeInMillis());
-                iresult2  = persianCalendar.getIslamicDate();
+                iresult2  = persianCalendar.getHijriDate();
                 perMonth = persianCalendar.getMonth();
                 gMonth   = persianCalendar.getGrgMonth();
             } else {
-                // FastPersianCalendar
+                //FastPersianCalendar
                 FastPersianCalendar fastCalendar = fastPersianDateFormat.parse(persianDate, pattern);
                 date     = new Date(fastCalendar.getTimeInMillis());
-                iresult  = fastCalendar.getIslamicDate().toIntArray();
+                iresult  = fastCalendar.getHijriDate().toIntArray();
                 perMonth = fastCalendar.getPersianMonth();
                 gMonth   = fastCalendar.getGrgMonth();
             }
@@ -629,10 +629,10 @@ public class PersianCalendarActivity extends Activity {
             tvGResult.setText(format("Gregorian Date: %s %s", result, GREGORIAN_MONTH_NAMES[gMonth]));
             tvPResult.setText(format("Persian Date: %s %s", persianDate, PERSIAN_MONTH_NAMES[perMonth]));
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                tvIResult.setText(format("Islamic Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month-1]));
+                tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month-1]));
             } else {
                 String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
-                tvIResult.setText(format("Islamic Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]-1]));
+                tvIResult.setText(format("Hijri Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]-1]));
             }
             //showToast("Gregorian Date: " + result);
             hideKeyboard(tvPResult);
@@ -655,10 +655,10 @@ public class PersianCalendarActivity extends Activity {
         }
 
         try {
-            // For parsing simple dates like "1402/10/25", use appropriate patterns
+            //For parsing simple dates like "1402/10/25", use appropriate patterns
             String pattern;
 
-            // Determine which pattern to use based on the date string format
+            //Determine which pattern to use based on the date string format
             if (dateString.contains("/")) {
                 String[] parts = dateString.split("/");
                 if (parts.length == 3) {
@@ -668,12 +668,12 @@ public class PersianCalendarActivity extends Activity {
                         pattern = "yy/MM/dd";
                     }
                 } else {
-                    pattern = "yyyy/MM/dd"; // default
+                    pattern = "yyyy/MM/dd"; //default
                 }
             } else if (dateString.contains("-")) {
                 pattern = "yyyy-MM-dd";
             } else if (dateString.contains(" ")) {
-                // Contains spaces, might have time
+                //Contains spaces, might have time
                 if (dateString.contains(":")) {
                     if (dateString.split(":").length == 3) {
                         pattern = "yyyy/MM/dd HH:mm:ss";
@@ -681,25 +681,25 @@ public class PersianCalendarActivity extends Activity {
                         pattern = "yyyy/MM/dd HH:mm";
                     }
                 } else {
-                    pattern = "DDDD, d MMMM yyyy";
+                    pattern = "dddd, d MMMM yyyy";
                 }
             } else {
-                // Try to auto-detect
+                //Try to auto-detect
                 pattern = "yyyy/MM/dd";
             }
 
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                // PersianCalendar
+                //PersianCalendar
                 PersianCalendar calendar  = myPersianDateFormat.parse(dateString, pattern);
-                String          formatted = PersianDateFormat.format(calendar, "DDDD, d MMMM yyyy HH:mm:ss");
+                String          formatted = PersianDateFormat.format(calendar, "dddd, d MMMM yyyy HH:mm:ss");
                 tvParsedDate.setText("Parsed: " + formatted);
                 showToast("Parsed: " + formatted);
                 tvUpdatedDate.setText(formatted);
 
             } else {
-                // FastPersianCalendar
+                //FastPersianCalendar
                 FastPersianCalendar calendar  = fastPersianDateFormat.parse(dateString, pattern);
-                String              formatted = FastPersianDateFormat.format(calendar, "DDDD, d MMMM yyyy HH:mm:ss");
+                String              formatted = FastPersianDateFormat.format(calendar, "dddd, d MMMM yyyy HH:mm:ss");
                 tvParsedDate.setText("Parsed: " + formatted);
                 showToast("Parsed: " + formatted);
                 tvUpdatedDate.setText(formatted);
@@ -728,11 +728,11 @@ public class PersianCalendarActivity extends Activity {
 
             String result;
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                // PersianCalendar
+                //PersianCalendar
                 PersianCalendar now = new PersianCalendar();
                 result = PersianDateFormat.format(now, pattern, numberFormat);
             } else {
-                // FastPersianCalendar
+                //FastPersianCalendar
                 FastPersianCalendar now = new FastPersianCalendar();
                 FastPersianDateFormat.PersianDateNumberCharacter fastNumberFormat =
                         spnNumberFormat.getSelectedItemPosition() == 0 ?
@@ -753,15 +753,15 @@ public class PersianCalendarActivity extends Activity {
     private void updateCurrentDate() {
         try {
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                // PersianCalendar
+                //PersianCalendar
                 PersianCalendar now       = new PersianCalendar();
-                String          formatted = PersianDateFormat.format(now, "DDDD, d MMMM yyyy HH:mm:ss");
+                String          formatted = PersianDateFormat.format(now, "dddd, d MMMM yyyy HH:mm:ss");
                 tvCurrentDate.setText("Current: " + formatted);
                 showToast("Current: " + formatted);
             } else {
-                // FastPersianCalendar
+                //FastPersianCalendar
                 FastPersianCalendar now       = new FastPersianCalendar();
-                String              formatted = FastPersianDateFormat.format(now, "DDDD, d MMMM yyyy HH:mm:ss");
+                String              formatted = FastPersianDateFormat.format(now, "dddd, d MMMM yyyy HH:mm:ss");
                 tvCurrentDate.setText("Current: " + formatted);
                 showToast("Current: " + formatted);
             }
@@ -774,7 +774,7 @@ public class PersianCalendarActivity extends Activity {
         new Thread(() -> {
             int iterations = 10000;
 
-            // Test PersianCalendar
+            //Test PersianCalendar
             long startTime = System.currentTimeMillis();
             for (int i = 0; i < iterations; i++) {
                 PersianCalendar cal = new PersianCalendar();
@@ -782,7 +782,7 @@ public class PersianCalendarActivity extends Activity {
             }
             long myLibTime = System.currentTimeMillis() - startTime;
 
-            // Test FastPersianCalendar
+            //Test FastPersianCalendar
             startTime = System.currentTimeMillis();
             for (int i = 0; i < iterations; i++) {
                 FastPersianCalendar cal = new FastPersianCalendar();
@@ -795,11 +795,11 @@ public class PersianCalendarActivity extends Activity {
                 double percentage;
 
                 if (fastLibTime < myLibTime) {
-                    // Fast is faster
+                    //Fast is faster
                     percentage     = ((double) (myLibTime - fastLibTime) / myLibTime) * 100;
                     comparisonText = format(Locale.US, "Fast library is %.1f%% faster", percentage);
                 } else {
-                    // Fast is slower
+                    //Fast is slower
                     percentage     = ((double) (fastLibTime - myLibTime) / myLibTime) * 100;
                     comparisonText = format(Locale.US, "Fast library is %.1f%% slower", percentage);
                 }
@@ -822,7 +822,7 @@ public class PersianCalendarActivity extends Activity {
         new Thread(() -> {
             int iterations = 10000;
 
-            // Test PersianCalendar
+            //Test PersianCalendar
             long startTime = System.currentTimeMillis();
             for (int i = 0; i < iterations; i++) {
                 PersianCalendar cal = new PersianCalendar();
@@ -830,7 +830,7 @@ public class PersianCalendarActivity extends Activity {
             }
             long myLibTime = System.currentTimeMillis() - startTime;
 
-            // Test FastPersianCalendar
+            //Test FastPersianCalendar
             startTime = System.currentTimeMillis();
             for (int i = 0; i < iterations; i++) {
                 FastPersianCalendar cal = new FastPersianCalendar();
@@ -887,7 +887,7 @@ public class PersianCalendarActivity extends Activity {
         ).show());
     }
 
-    // Test Case Model
+    //Test Case Model
     public static class TestCase {
         private String title;
         private String description;

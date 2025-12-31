@@ -2,6 +2,9 @@ package com.farashian.pcalendar;
 
 import java.util.Locale;
 
+import static com.farashian.pcalendar.PCConstants.GREGORIAN_MONTH_NAMES_ENG;
+import static com.farashian.pcalendar.PCConstants.HIJRI_MONTH_NAMES;
+
 /**
  * Utility class with static methods for Persian calendar operations.
  */
@@ -127,20 +130,20 @@ public final class PCalendarUtils {
         }
         
         switch (month) {
-            case 0:  // January
-            case 2:  // March
-            case 4:  // May
-            case 6:  // July
-            case 7:  // August
-            case 9:  // October
-            case 11: // December
+            case 0:  //January
+            case 2:  //March
+            case 4:  //May
+            case 6:  //July
+            case 7:  //August
+            case 9:  //October
+            case 11: //December
                 return 31;
-            case 3:  // April
-            case 5:  // June
-            case 8:  // September
-            case 10: // November
+            case 3:  //April
+            case 5:  //June
+            case 8:  //September
+            case 10: //November
                 return 30;
-            case 1:  // February
+            case 1:  //February
                 return isGrgLeapYear(year) ? 29 : 28;
             default:
                 return 31;
@@ -156,7 +159,7 @@ public final class PCalendarUtils {
         return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
     }
     
-    // ===== STATIC CONVERSION METHODS =====
+    //===== STATIC CONVERSION METHODS =====
     
     /**
      * Converts Persian date to Gregorian date
@@ -169,9 +172,9 @@ public final class PCalendarUtils {
         validatePersianDate(year, month, day);
         
         int[] out = new int[3];
-        // Convert 0-based month to 1-based for algorithm
+        //Convert 0-based month to 1-based for algorithm
         jalaliToGregorianFast(year, month + 1, day, out);
-        // Convert 1-based month back to 0-based
+        //Convert 1-based month back to 0-based
         out[1] = out[1] - 1;
         return out;
     }
@@ -187,9 +190,9 @@ public final class PCalendarUtils {
         validateGregorianDate(year, month, day);
         
         int[] out = new int[3];
-        // Convert 0-based month to 1-based for algorithm
+        //Convert 0-based month to 1-based for algorithm
         gregorianToJalaliFast(year, month + 1, day, out);
-        // Convert 1-based month back to 0-based
+        //Convert 1-based month back to 0-based
         out[1] = out[1] - 1;
         return out;
     }
@@ -220,7 +223,7 @@ public final class PCalendarUtils {
     
     
     private static void gregorianToJalaliFast(int gy, int gm, int gd, int[] out) {
-        // Implementation from FastPersianCalendar
+        //Implementation from FastPersianCalendar
         int jy = (gm > 2) ? (gy + 1) : gy;
 
         final int[] g_d_m = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
@@ -252,7 +255,7 @@ public final class PCalendarUtils {
     }
     
     private static void jalaliToGregorianFast(int jy, int jm, int jd, int[] out) {
-        // Implementation from FastPersianCalendar
+        //Implementation from FastPersianCalendar
         jy += 1595;
         int dayOfYear = -355668 + (365 * jy) + ((jy / 33) * 8) +
                         (((jy % 33) + 3) / 4) + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
@@ -287,5 +290,13 @@ public final class PCalendarUtils {
         out[0] = gy;
         out[1] = gm;
         out[2] = dayOfYear;
+    }
+
+    public static String getGregorianMonthName(int month) {
+        return GREGORIAN_MONTH_NAMES_ENG[month];
+    }
+
+    public static String getHijriMonthName(int month) {
+        return HIJRI_MONTH_NAMES[month];
     }
 }

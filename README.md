@@ -42,18 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.4.0</version>
+<version>2.5.0</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.4.0</version>
+<version>2.5.0</version>
 </dependency>
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>fast-persian-calendar-android</artifactId>
-<version>2.4.0</version>
+<version>2.5.0</version>
 </dependency>
 ```
 ---
@@ -81,10 +81,10 @@ repositories {
 }
 
 dependencies {
-    // For Java/Kotlin projects:
+    //For Java/Kotlin projects:
     implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.4.0")
 
-    // For Android projects:
+    //For Android projects:
     implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.4.0")
     //or
     implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.4.0")
@@ -102,11 +102,18 @@ Thank you for helping keep this project alive!
 
 # what's new
 
+### version 2.5.0
+* - Add date calculation and comparison utility methods
+* - This commit introduces several utility methods to `PersianCalendar` for enhanced date operations:
+* - Day calculations**: `getDaysPassedFromStartOfYear()`, `getRemainingDaysUntilEndOfYear()`, and their Gregorian/Hijri equivalents
+* - Year operations**: `getStartOfPersianYear()`, `getStartOfHijriYear()`, `getStartOfGregorianYear()`
+* - New Year calculations**: `getNextNewYear()` methods for finding Persian New Year dates
+
 ### version 2.4.0
-* - Add setIslamicDate method with timezone support
-* - Implement setIslamicDate method in FastPersianCalendar
+* - Add setHijriDate method with timezone support
+* - Implement setHijriDate method in FastPersianCalendar
 * - Enhance IranianHijriConverter with timezone-aware conversion methods
-* - Properly handle Islamic-to-Gregorian date conversion with timezone normalization
+* - Properly handle Hijri-to-Gregorian date conversion with timezone normalization
 
 ### version 2.3.4
 * - Added fromGregorian(int gYear, int gMonth, int gDay) static method
@@ -167,22 +174,22 @@ import com.farashian.pcalendar.fast.FastPersianCalendar;
 public class DateFormatExample {
     public static void main(String[] args) {
 
-        // Create an instance of FastPersianCalendar
+        //Create an instance of FastPersianCalendar
         FastPersianCalendar date = new FastPersianCalendar();
 
-        // Create a formatter and set pattern inside a method
+        //Create a formatter and set pattern inside a method
         FastPersianDateFormat formatter = new FastPersianDateFormat();
         formatter.setPattern("yyyy/MM/dd");
         
-        System.out.println("📅 Simple Date: " + formatter.format(date)); // Output: 1404/09/10 (Example)
+        System.out.println("📅 Simple Date: " + formatter.format(date)); //Output: 1404/09/10 (Example)
 
-        formatter.setPattern("DDDD, d MMMM yyyy");
+        formatter.setPattern("dddd, d MMMM yyyy");
         formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.FARSI);
-        System.out.println("📝 Full Persian Date: " + formatter.format(date)); // Output: یکشنبه, ۱۰ آذر ۱۴۰۴ (Example)
+        System.out.println("📝 Full Persian Date: " + formatter.format(date)); //Output: یکشنبه, ۱۰ آذر ۱۴۰۴ (Example)
 
         formatter.setPattern("yyyy-MM-dd HH:mm:ss");
-        formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH); // Revert to English numbers
-        System.out.println("⏰ Date and Time: " + formatter.format(date)); // Output: 1404-09-10 17:54:30 (Example)
+        formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH); //Revert to English numbers
+        System.out.println("⏰ Date and Time: " + formatter.format(date)); //Output: 1404-09-10 17:54:30 (Example)
     }
 }
 
@@ -219,29 +226,29 @@ import com.farashian.pcalendar.fast.FastPersianCalendar;
 
 public class DateExample {
     public static void main(String[] args) {
-        FastPersianCalendar date = new FastPersianCalendar(1402, 0, 1); // Farvardin 1, 1402
+        FastPersianCalendar date = new FastPersianCalendar(1402, 0, 1); //Farvardin 1, 1402
 
-        // Add days
+        //Add days
         date.addDays(10);
-        System.out.println("➕ After 10 days: " + date.getLongDate()); // Output: 1402/01/11
+        System.out.println("➕ After 10 days: " + date.getLongDate()); //Output: 1402/01/11
 
-        // Add months
+        //Add months
         date.addMonths(2);
-        System.out.println("📆 After 2 months: " + date.getLongDate()); // Output: 1402/03/11
+        System.out.println("📆 After 2 months: " + date.getLongDate()); //Output: 1402/03/11
 
         
-        // Add years
+        //Add years
         date.addYears(1);
-        System.out.println("🎊 After 1 year: " + date.getLongDate()); // Output: 1403/03/11
+        System.out.println("🎊 After 1 year: " + date.getLongDate()); //Output: 1403/03/11
         
-        // Subtract days (using a negative number)
+        //Subtract days (using a negative number)
         date.addDays(-5);
-        System.out.println("➖ 5 days before: " + date.getLongDate()); // Output: 1403/03/06
+        System.out.println("➖ 5 days before: " + date.getLongDate()); //Output: 1403/03/06
 
-        // Add days  Get a copy of this calendar with days added
+        //Add days  Get a copy of this calendar with days added
         FastPersianCalendar nDate = date.plusDays(10);
-        System.out.println("➕ After 10 days: " + date.getLongDate()); // Output: 1403/03/06
-        System.out.println("➕ After 10 days: " + nDate.getLongDate()); // Output: 1403/03/16
+        System.out.println("➕ After 10 days: " + date.getLongDate()); //Output: 1403/03/06
+        System.out.println("➕ After 10 days: " + nDate.getLongDate()); //Output: 1403/03/16
 
     }
 }
@@ -264,17 +271,17 @@ public class Conversions {
         try {
             FastPersianDateFormat formatter = new FastPersianDateFormat();
             
-            // Convert String to Persian Date
+            //Convert String to Persian Date
             FastPersianCalendar date = formatter.parse("1402/10/15", "yyyy/MM/dd");
-            System.out.println("Parsed Date: " + date.getLongDate()); // Output: 1402/10/15
+            System.out.println("Parsed Date: " + date.getLongDate()); //Output: 1402/10/15
             
-            // Convert Gregorian Date to Persian Date (parseGrg)
+            //Convert Gregorian Date to Persian Date (parseGrg)
             FastPersianCalendar fromGregorian = formatter.parseGrg("2024-01-05", "yyyy-MM-dd");
-            System.out.println("From Gregorian Date: " + fromGregorian.getLongDate()); // Output: 1402/10/15
+            System.out.println("From Gregorian Date: " + fromGregorian.getLongDate()); //Output: 1402/10/15
             
-            // Convert Persian Date to String
+            //Convert Persian Date to String
             String dateString = formatter.format(date);
-            System.out.println("Date to String: " + dateString); // Output: 1402/10/15
+            System.out.println("Date to String: " + dateString); //Output: 1402/10/15
             
         } catch (ParseException e) {
             System.out.println("❌ Error parsing date: " + e.getMessage());
@@ -298,7 +305,7 @@ public class DateComparisonExample {
         FastPersianCalendar date1 = new FastPersianCalendar(1402, 0, 1);
         FastPersianCalendar date2 = new FastPersianCalendar(1402, 0, 15);
 
-        // Comparison
+        //Comparison
         if (date1.before(date2)) {
             System.out.println("Date1 is before Date2");
         }
@@ -311,10 +318,10 @@ public class DateComparisonExample {
             System.out.println("Dates are equal");
         }
 
-        // Difference in days (calculated based on milliseconds)
+        //Difference in days (calculated based on milliseconds)
         long difference = date2.getTimeInMillis() - date1.getTimeInMillis();
         long days = difference / (1000 * 60 * 60 * 24);
-        System.out.println("Difference in days: " + days + " days"); // Output: 14 days
+        System.out.println("Difference in days: " + days + " days"); //Output: 14 days
     }
 }
 
@@ -362,7 +369,7 @@ public class PerformanceTest {
     public static void main(String[] args) {
         int count = 100000;
         
-        // Standard Version Test
+        //Standard Version Test
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
             PersianCalendar date = new PersianCalendar();
@@ -371,7 +378,7 @@ public class PerformanceTest {
         long end = System.currentTimeMillis();
         System.out.println("⏳ Standard Version Time: " + (end - start) + " ms");
         
-        // Fast Version Test
+        //Fast Version Test
         start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
             FastPersianCalendar date = new FastPersianCalendar();
@@ -405,11 +412,11 @@ import java.util.TimeZone;
 
 public class TimeZoneExample {
     public static void main(String[] args) {
-        // Set Tehran time zone
+        //Set Tehran time zone
         TimeZone timeZone = TimeZone.getTimeZone("Asia/Tehran");
         FastPersianCalendar calendar = new FastPersianCalendar(timeZone);
 
-        // Or in the formatter
+        //Or in the formatter
         FastPersianDateFormat formatter = new FastPersianDateFormat();
         formatter.setTimeZone(timeZone);
     }
@@ -425,17 +432,17 @@ Checking if a year is a leap year and finding the number of days in a month.
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 public class LeapYearCheck {
     public static void main(String[] args) {
-        // Assuming FastPersianCalendar is already imported
-        FastPersianCalendar date = new FastPersianCalendar(1403, 11, 30); // Esfand 30, 1403
+        //Assuming FastPersianCalendar is already imported
+        FastPersianCalendar date = new FastPersianCalendar(1403, 11, 30); //Esfand 30, 1403
         if (date.isLeapYear()) {
             System.out.println("✅ Year " + date.getYear() + " is a leap year");
         } else {
             System.out.println("❌ Year " + date.getYear() + " is not a leap year");
         }
 
-        // Days in Esfand month during a leap year
+        //Days in Esfand month during a leap year
         int daysInEsfand = date.getDaysInMonth();
-        System.out.println("📊 Days in Esfand " + date.getYear() + ": " + daysInEsfand + " days"); // Output: 30 days
+        System.out.println("📊 Days in Esfand " + date.getYear() + ": " + daysInEsfand + " days"); //Output: 30 days
     }
 }
 
@@ -468,7 +475,7 @@ public class MonthlyCalendar {
             FastPersianCalendar date = new FastPersianCalendar(year, month, day);
             System.out.printf("%2d %s | ", day, date.getWeekdayName());
             
-            // Newline every 3 days for better readability
+            //Newline every 3 days for better readability
             if (day % 3 == 0) System.out.println();
         }
     }
@@ -494,8 +501,8 @@ public class DateCalculator {
         long difference = end.getTimeInMillis() - start.getTimeInMillis();
         long days = difference / (1000 * 60 * 60 * 24);
         
-        System.out.println("📊 Total days in 1402: " + days + " days"); // Output: 364 days (for a non-leap year)
-        // Approximate month calculation
+        System.out.println("📊 Total days in 1402: " + days + " days"); //Output: 364 days (for a non-leap year)
+        //Approximate month calculation
         System.out.println("📈 Total months: " + (end.getMonth() - start.getMonth() + 12) % 12 + " months"); 
     }
 }
@@ -526,7 +533,7 @@ public class Debugging {
     public static void main(String[] args) {
         FastPersianCalendar date = new FastPersianCalendar();
         
-        // Display debug information
+        //Display debug information
         System.out.println("🔍 Debug Information:");
         System.out.println("Persian Date: " + date.getLongDate());
         System.out.println("Gregorian Date: " + date.getTime());
@@ -553,7 +560,7 @@ public class TestDateUtils {
     public static void main(String[] args) {
         System.out.println("=== Testing DateUtils ===\n");
         
-        // Test 1: Basic Persian date formatting
+        //Test 1: Basic Persian date formatting
         System.out.println("🔍 Current Persian Dates:");
         System.out.println("Now (full): " + DateUtils.nowFullDateWithDayFarsi());
         System.out.println("Now (dash): " + DateUtils.nowDashDateFarsi());
@@ -564,38 +571,38 @@ public class TestDateUtils {
         System.out.println("DateTime: " + DateUtils.getFarsiDateWithTime());
         System.out.println();
         
-        // Test 2: Timestamp formatting
+        //Test 2: Timestamp formatting
         System.out.println("📅 Timestamp Formats:");
         System.out.println("Timestamp dash: " + DateUtils.nowTimeStampDashFarsi());
         System.out.println("Timestamp underscore: " + DateUtils.nowTimeStampUnderscoreFarsi());
         System.out.println("Custom pattern (yyyy/MM/dd HH:mm): " + DateUtils.nowFarsi("yyyy/MM/dd HH:mm"));
         System.out.println();
         
-        // Test 3: Date conversion
+        //Test 3: Date conversion
         System.out.println("🔄 Date Conversions:");
         Date            currentDate = new Date();
         PersianCalendar persianDate = DateUtils.toPersianDate(currentDate);
         System.out.println("Current Gregorian date: " + currentDate);
         System.out.println("Converted to Persian: " + DateUtils.getFarsiFullDate(currentDate));
         
-        // Convert back
+        //Convert back
         Date convertedBack = DateUtils.toDate(persianDate);
         System.out.println("Converted back to Gregorian: " + convertedBack);
         System.out.println();
         
-        // Test 4: Date manipulation
+        //Test 4: Date manipulation
         System.out.println("⚙️ Date Manipulation:");
         long startOfDay = DateUtils.getStartDate(System.currentTimeMillis());
         long endOfDay = DateUtils.getEndDate(System.currentTimeMillis());
         System.out.println("Start of today (UTC): " + new Date(startOfDay));
         System.out.println("End of today (UTC): " + new Date(endOfDay));
         
-        // Add one day
+        //Add one day
         Date tomorrow = DateUtils.addOneDay(currentDate);
         System.out.println("Tomorrow: " + tomorrow);
         System.out.println();
         
-        // Test 5: Date before now
+        //Test 5: Date before now
         System.out.println("⏮️ Past Dates:");
         String threeDaysAgo = DateUtils.dateBeforeNowFarsi(3);
         System.out.println("3 days ago (Persian): " + threeDaysAgo);
@@ -604,21 +611,21 @@ public class TestDateUtils {
         System.out.println("3 days ago (millis): " + threeDaysAgoMillis);
         System.out.println();
         
-        // Test 6: Islamic calendar conversion
-        System.out.println("🌙 Islamic Calendar Conversion:");
+        //Test 6: Hijri calendar conversion
+        System.out.println("🌙 Hijri Calendar Conversion:");
         GregorianCalendar gregorian = new GregorianCalendar(2024, Calendar.MARCH, 11);
         YMD               hijriDate = DateUtils.islamicFromGregorian(gregorian);
         System.out.println("Gregorian: " + gregorian.getTime());
         System.out.println("Iranian Hijri: " + hijriDate);
         
-        // Check if valid
+        //Check if valid
         if (DateUtils.isValidIranianHijriDate(hijriDate)) {
             System.out.println("Valid Iranian Hijri date");
             int dayOfYear = DateUtils.getDayOfIranianHijriYear(hijriDate);
             System.out.println("Day of year: " + dayOfYear);
         }
         
-        // Test official data lookup
+        //Test official data lookup
         System.out.println("Has official data for 1444 AH: " + DateUtils.hasOfficialData(1444));
         System.out.println("Month length for 1444-1: " + DateUtils.getOfficialMonthLength(1444, 1));
         System.out.println();

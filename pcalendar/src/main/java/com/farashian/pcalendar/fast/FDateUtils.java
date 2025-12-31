@@ -16,7 +16,7 @@ public class FDateUtils {
     public static int      THIS_YEAR;
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    static FastPersianDateFormat dayOfWeek           = new FastPersianDateFormat("dddd"); // Day of week
+    static FastPersianDateFormat dayOfWeek           = new FastPersianDateFormat("dddd"); //Day of week
     static FastPersianDateFormat fullDateWithDay     = new FastPersianDateFormat("dddd dd MMMM yyyy");
     static FastPersianDateFormat fullDate            = new FastPersianDateFormat("dd MMMM yyyy");
     static FastPersianDateFormat dashDate1           = new FastPersianDateFormat("dd-MMM-yyyy");
@@ -106,7 +106,7 @@ public class FDateUtils {
 
         try {
             FastPersianCalendar pc = new FastPersianCalendar();
-            // Parse date in format "yyyy/MM/dd"
+            //Parse date in format "yyyy/MM/dd"
             String[] parts = date.split("/");
             if (parts.length == 3) {
                 pc.setPersianDate(

@@ -40,10 +40,10 @@ public class YMD {
         return day;
     }
 
-    public String toString(String pattern) {
+    /*public String toString(String pattern) {
         PersianDateFormat pdf = new PersianDateFormat(pattern);
         return pdf.format(this, pattern);
-    }
+    }*/
 
     @Override
     public String toString() {
