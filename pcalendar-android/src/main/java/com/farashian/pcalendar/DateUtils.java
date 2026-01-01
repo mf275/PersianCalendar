@@ -17,7 +17,7 @@ public class DateUtils {
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
     static PersianDateFormat dayOfWeek           = new PersianDateFormat("dddd"); //Day of week
-    static PersianDateFormat fullDateWithDay     = new PersianDateFormat("dddd dd MMMM yyyy");
+    static PersianDateFormat fullDateWithDay     = new PersianDateFormat("dddd, dd MMMM yyyy");
     static PersianDateFormat fullDate            = new PersianDateFormat("dd MMMM yyyy");
     static PersianDateFormat dashDate1           = new PersianDateFormat("dd-MMM-yyyy");
     static PersianDateFormat dateTime            = new PersianDateFormat("dd MMMM yyyy HH:mm");

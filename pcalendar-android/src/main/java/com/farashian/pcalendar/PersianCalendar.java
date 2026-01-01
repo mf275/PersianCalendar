@@ -42,7 +42,6 @@ public class PersianCalendar extends Calendar implements Parcelable {
     private static final int[] PERSIAN_OFFSETS  = {0, 1, 2, 3, 4, 5, 6, 0};
 
 
-
     public PersianCalendar() {
         this(TimeZone.getDefault(), PERSIAN_LOCALE);
         setTimeInMillis(System.currentTimeMillis());
@@ -55,9 +54,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     public PersianCalendar(TimeZone zone, Locale locale) {
         super(zone, locale);
-        this.locale   = locale;
-        this.gCal     = new GregorianCalendar(zone, locale);
-        this.ymd      = new int[]{1400, 0, 1}; //Default date
+        this.locale = locale;
+        this.gCal   = new GregorianCalendar(zone, locale);
+        this.ymd    = new int[]{1400, 0, 1}; //Default date
     }
 
     public PersianCalendar(long timeStamp) {
@@ -313,6 +312,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
         return getDaysInMonth(getYear(), getMonth());
     }
 
+    /**
+     * @param month 0-based Persian month (0=Farvardin)
+     */
     public int getDaysInMonth(int year, int month) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
@@ -327,6 +329,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
         }
     }
 
+    /**
+     * @param month 0-based Persian month (0=Farvardin)
+     */
     public static int getDaysInMonthStatic(int year, int month) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
@@ -423,6 +428,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     /**
      * Get Gregorian month length for specific year and month
+     * @param month 0-based Persian month (0=Farvardin)
      */
     public static int getGrgMonthLength(int year, int month) {
         if (month < 0 || month > 11) {
@@ -450,8 +456,10 @@ public class PersianCalendar extends Calendar implements Parcelable {
         }
     }
 
+
     /**
      * Get Gregorian month name (fast version without Calendar)
+     * @param month 0-based Persian month (0=Farvardin)
      */
     public static String getGrgMonthNameFast(int month, Locale locale) {
         if (month < 0 || month > 11) {
@@ -475,6 +483,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     /**
      * Get Gregorian month short name (3-letter abbreviation)
+     * @param month 0-based Persian month (0=Farvardin)
      */
     public static String getGrgMonthShortName(int month, Locale locale) {
         if (month < 0 || month > 11) {
@@ -498,6 +507,8 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     /**
      * Static method: Get Gregorian month name without creating calendar instance
+     * @param month 0-based Persian month (0=Farvardin)
+     *
      */
     public static String getGrgMonthNameStatic(int month, Locale locale) {
         if (month < 0 || month > 11) {
@@ -535,7 +546,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
         YMD hijri = getHijriDate();
         return String.format(locale, "%4d, %s %s",
                              hijri.getDay(),
-                             getHijriMonthName(hijri.getMonth()-1),
+                             getHijriMonthName(hijri.getMonth() - 1),
                              hijri.getYear());
     }
 
@@ -660,6 +671,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     /**
      * Set Gregorian date
+     * @param month 0-based Persian month (0=Farvardin)
      */
     public void setGregorianDate(int year, int month, int day) {
         if (month < 0 || month > 11) {
@@ -808,7 +820,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
         fields[MILLISECOND] = gCal.get(MILLISECOND);
 
         int gregorianDayOfWeek = gCal.get(Calendar.DAY_OF_WEEK);
-        int persianOffset = calculatePersianOffset(gregorianDayOfWeek);
+        int persianOffset      = calculatePersianOffset(gregorianDayOfWeek);
 
         int persianDayOfWeek;
         if (persianOffset == 0) {
@@ -826,7 +838,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
         fields[HOUR]        = gCal.get(HOUR_OF_DAY) % 12;
         fields[DST_OFFSET]  = gCal.get(DST_OFFSET);
         fields[ZONE_OFFSET] = gCal.get(ZONE_OFFSET);
-        fields[ERA] = AD;
+        fields[ERA]         = AD;
 
         for (int i = 0; i < FIELD_COUNT; i++) {
             isSet[i] = true;
@@ -862,7 +874,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
         computeGregorianFromPersian();
 
         int gregorianDayOfWeek = gCal.get(DAY_OF_WEEK);
-        int persianOffset = calculatePersianOffset(gregorianDayOfWeek);
+        int persianOffset      = calculatePersianOffset(gregorianDayOfWeek);
         int persianDayOfWeek;
         if (persianOffset == 0) {
             persianDayOfWeek = Calendar.SATURDAY;
@@ -1140,7 +1152,6 @@ public class PersianCalendar extends Calendar implements Parcelable {
         return getLongDate();
     }
 
-    //=== VALIDATION METHODS ===
 
     private void validateDate(int year, int month, int day) {
         if (year < 1) {
@@ -1452,6 +1463,10 @@ public class PersianCalendar extends Calendar implements Parcelable {
                 : PCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
     }
 
+    /**
+     * Get Persian month name
+     * @param month 0-based Persian month (0=Farvardin)
+     */
     public static String getMonthName(int month, Locale locale) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Invalid month index for getMonthName: " + month);
@@ -1468,6 +1483,10 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     }
 
+    /**
+     * Get Persian month short name
+     * @param month 0-based Persian month (0=فرو)
+     */
     public static String getMonthNameShort(int month, Locale locale) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
@@ -1931,9 +1950,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
 
     public int getDaysPassedFromStartOfYear() {
-        int year = getYear();
+        int year  = getYear();
         int month = getMonth();
-        int day = getDayOfMonth();
+        int day   = getDayOfMonth();
 
         int daysPassed = day - 1;
 
@@ -1945,9 +1964,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
     }
 
     public int getRemainingDaysUntilEndOfYear() {
-        int year = getYear();
+        int year            = getYear();
         int totalDaysInYear = isLeapYear(year) ? 366 : 365;
-        int daysPassed = getDaysPassedFromStartOfYear();
+        int daysPassed      = getDaysPassedFromStartOfYear();
 
         return totalDaysInYear - daysPassed;
     }
@@ -1958,7 +1977,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     public int getGregorianRemainingDaysUntilEndOfYear() {
         int totalDaysInYear = gCal.getActualMaximum(Calendar.DAY_OF_YEAR);
-        int dayOfYear = gCal.get(Calendar.DAY_OF_YEAR);
+        int dayOfYear       = gCal.get(Calendar.DAY_OF_YEAR);
         return totalDaysInYear - dayOfYear;
     }
 
@@ -1982,9 +2001,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
         currentGreg.set(Calendar.SECOND, 0);
         currentGreg.set(Calendar.MILLISECOND, 0);
 
-        long startMillis = startOfYearGreg.getTimeInMillis();
+        long startMillis   = startOfYearGreg.getTimeInMillis();
         long currentMillis = currentGreg.getTimeInMillis();
-        long diffMillis = currentMillis - startMillis;
+        long diffMillis    = currentMillis - startMillis;
 
         // Return days between start of year and now
         return (int) (diffMillis / (24 * 60 * 60 * 1000));
@@ -2011,8 +2030,8 @@ public class PersianCalendar extends Calendar implements Parcelable {
         currentGreg.set(Calendar.MILLISECOND, 0);
 
         long nextYearMillis = nextYearStartGreg.getTimeInMillis();
-        long currentMillis = currentGreg.getTimeInMillis();
-        long diffMillis = nextYearMillis - currentMillis;
+        long currentMillis  = currentGreg.getTimeInMillis();
+        long diffMillis     = nextYearMillis - currentMillis;
 
         // Return days between now and start of next year
         return (int) (diffMillis / (24 * 60 * 60 * 1000));
@@ -2072,7 +2091,6 @@ public class PersianCalendar extends Calendar implements Parcelable {
     }
 
 
-
     /////////////////////
     // Add this method to get the next Persian New Year date
     public static PersianCalendar getNextNewYear(PersianCalendar persianDate) {
@@ -2080,9 +2098,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
             throw new IllegalArgumentException("Persian date cannot be null");
         }
 
-        int currentYear = persianDate.getYear();
+        int currentYear  = persianDate.getYear();
         int currentMonth = persianDate.getMonth();
-        int currentDay = persianDate.getDayOfMonth();
+        int currentDay   = persianDate.getDayOfMonth();
 
         // If current date is before or on New Year (1st of Farvardin)
         // then next New Year is in current year, otherwise next year
@@ -2096,9 +2114,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
     }
 
     public PersianCalendar getNextNewYear() {
-        int currentYear = getYear();
+        int currentYear  = getYear();
         int currentMonth = getMonth();
-        int currentDay = getDayOfMonth();
+        int currentDay   = getDayOfMonth();
 
         // If current date is on or after 1st of Farvardin, next new year is next year
         if (currentMonth > FARVARDIN || (currentMonth == FARVARDIN && currentDay >= 1)) {
@@ -2115,8 +2133,8 @@ public class PersianCalendar extends Calendar implements Parcelable {
      */
     public PersianCalendar getPreviousFriday() {
         PersianCalendar result           = new PersianCalendar(this);
-        int                 currentDayOfWeek = get(DAY_OF_WEEK);
-        int                 daysToSubtract   = (currentDayOfWeek - FRIDAY + 7) % 7;
+        int             currentDayOfWeek = get(DAY_OF_WEEK);
+        int             daysToSubtract   = (currentDayOfWeek - FRIDAY + 7) % 7;
         if (daysToSubtract == 0) {
             daysToSubtract = 7; // If it's already Friday, go to previous Friday
         }
@@ -2130,8 +2148,8 @@ public class PersianCalendar extends Calendar implements Parcelable {
      */
     public PersianCalendar getNextFriday() {
         PersianCalendar result           = new PersianCalendar(this);
-        int                 currentDayOfWeek = get(DAY_OF_WEEK);
-        int                 daysToAdd        = (FRIDAY - currentDayOfWeek + 7) % 7;
+        int             currentDayOfWeek = get(DAY_OF_WEEK);
+        int             daysToAdd        = (FRIDAY - currentDayOfWeek + 7) % 7;
         if (daysToAdd == 0) {
             daysToAdd = 7; // If it's already Friday, go to next Friday
         }
@@ -2333,7 +2351,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
         GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay, timeZone);
 
         //Adjust to target timezone
-        long timeInMillis = gCalendar.getTimeInMillis();
+        long              timeInMillis     = gCalendar.getTimeInMillis();
         GregorianCalendar adjustedCalendar = new GregorianCalendar(timeZone);
         adjustedCalendar.setTimeInMillis(timeInMillis);
 
@@ -2367,6 +2385,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
         //Use existing hijriToGregorian method to convert to Gregorian
         return hijriToGregorian(islamicYear, islamicMonth1Based, 1);
     }
+
     public void setPersianDate(int year, int month, int day) {
         validateDate(year, month, day);
 

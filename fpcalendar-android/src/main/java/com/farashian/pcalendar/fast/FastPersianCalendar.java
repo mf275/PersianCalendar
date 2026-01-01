@@ -375,6 +375,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return getDaysInMonth(getYear(), getMonth());
     }
 
+    /**
+     * @param month 0-based Persian month (0=Farvardin)
+     */
     public int getDaysInMonth(int year, int month) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
@@ -389,7 +392,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
     }
 
-    //Static utility method
+    /**
+     * @param month 0-based Persian month (0=Farvardin)
+     */
     public static int getDaysInMonthStatic(int year, int month) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
@@ -1312,6 +1317,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                 : PCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
     }
 
+    /**
+     * @param month 0-based Persian month (0=Farvardin)
+     */
     public static String getMonthName(int month, Locale locale) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
@@ -1339,6 +1347,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
     }
 
+    /**
+     * @param month 0-based Persian month (0=Farvardin)
+     */
     public static String getMonthNameShort(int month, Locale locale) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);

@@ -22,7 +22,7 @@ public class DateUtils {
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
     static FastPersianDateFormat dayOfWeek       = new FastPersianDateFormat("dddd"); //Day of week
-    static FastPersianDateFormat fullDateWithDay = new FastPersianDateFormat("dddd dd MMMM yyyy");
+    static FastPersianDateFormat fullDateWithDay = new FastPersianDateFormat("dddd, dd MMMM yyyy");
     static FastPersianDateFormat fullDate  = new FastPersianDateFormat("dd MMMM yyyy");
     static FastPersianDateFormat dashDate1 = new FastPersianDateFormat("dd-MMM-yyyy");
     static FastPersianDateFormat dateTime  = new FastPersianDateFormat("dd MMMM yyyy HH:mm");
