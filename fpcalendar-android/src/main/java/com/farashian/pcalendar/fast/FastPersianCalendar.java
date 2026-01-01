@@ -2426,7 +2426,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public int getGregorianRemainingDaysUntilEndOfYear() {
         int totalDaysInYear = gCal.getActualMaximum(Calendar.DAY_OF_YEAR);
         int dayOfYear = gCal.get(Calendar.DAY_OF_YEAR);
-        return totalDaysInYear - dayOfYear;
+        return totalDaysInYear - dayOfYear + 1;
     }
 
     public int getHijriDaysPassedFromStartOfYear() {
