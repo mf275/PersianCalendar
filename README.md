@@ -82,12 +82,12 @@ repositories {
 
 dependencies {
     //For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.4.0")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.5.1")
 
     //For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.4.0")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.5.1")
     //or
-    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.4.0")
+    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.5.1")
 }
 
 ```
