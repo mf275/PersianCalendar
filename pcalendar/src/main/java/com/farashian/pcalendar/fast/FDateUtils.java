@@ -38,6 +38,10 @@ public class FDateUtils {
         return System.currentTimeMillis();
     }
 
+    public static Date nowDate() {
+        return new Date(System.currentTimeMillis());
+    }
+
     public static Date from(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
@@ -161,6 +165,16 @@ public class FDateUtils {
         return fullDate.format(pdate);
     }
 
+    public static String getFarsiFullDate(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
+        return fullDate.format(pdate);
+    }
+
+    public static String getFarsiFullDateWithDay(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
+        return fullDateWithDay.format(pdate);
+    }
+
     public static String getFarsiFullDateWithDay(Date date) {
         FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
         return fullDateWithDay.format(pdate);
@@ -168,6 +182,9 @@ public class FDateUtils {
 
     public static String getFarsiDateWithTime(Date date) {
         FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
+        return dateTime.format(pdate);
+    }
+    public static String getFarsiDateWithTime(FastPersianCalendar pdate) {
         return dateTime.format(pdate);
     }
 
@@ -287,6 +304,13 @@ public class FDateUtils {
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
         return calendar.getTimeInMillis();
+    }
+
+    public static int calculateDaysBetween(FastPersianCalendar startDate, FastPersianCalendar endDate) {
+        long startMillis = startDate.getTimeInMillis();
+        long endMillis = endDate.getTimeInMillis();
+        long diffMillis = endMillis - startMillis;
+        return (int) (diffMillis / (24 * 60 * 60 * 1000));
     }
 
     public static long convertUTCToLocal(long utcDate) {

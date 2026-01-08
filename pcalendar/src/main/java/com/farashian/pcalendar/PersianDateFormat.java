@@ -2,7 +2,6 @@ package com.farashian.pcalendar;
 
 import com.farashian.pcalendar.util.Log;
 import com.farashian.pcalendar.util.TextUtils;
-import com.sun.istack.internal.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -97,21 +96,21 @@ public final class PersianDateFormat {
     }
 
     public static String format(PersianCalendar date,
-            @Nullable String pattern) {
+            String pattern) {
         return format(date, pattern, PersianDateNumberCharacter.ENGLISH,
                       getDefaultLocale());
     }
 
     
     public static String format(PersianCalendar date,
-            @Nullable String pattern,
+            String pattern,
             PersianDateNumberCharacter numberCharacter) {
         return format(date, pattern, numberCharacter, getDefaultLocale());
     }
 
     
     public static String format(PersianCalendar date,
-            @Nullable String pattern,
+            String pattern,
             PersianDateNumberCharacter numberCharacter,
             Locale locale) {
         if (TextUtils.isEmpty(pattern)) {
@@ -374,7 +373,6 @@ public final class PersianDateFormat {
         }
     }
 
-    
     private static String getShortDayName(int dayOfWeek, Locale locale) {
         String fullName = getWeekdayName(dayOfWeek, locale);
         if (locale.getLanguage().equals("fa")) {
@@ -390,7 +388,6 @@ public final class PersianDateFormat {
         }
     }
 
-    
     private static String getAmPm(PersianCalendar cal,
             Locale locale,
             boolean uppercase) {
@@ -404,7 +401,6 @@ public final class PersianDateFormat {
         }
     }
 
-    
     private static String convertToFarsiNumbers(String text) {
         if (TextUtils.isEmpty(text)) {
             return text;
@@ -422,7 +418,6 @@ public final class PersianDateFormat {
         }
         return result.toString();
     }
-
 
     private int safeParseInt(String str, int defaultValue) {
         if (TextUtils.isEmpty(str)) {
@@ -489,7 +484,6 @@ public final class PersianDateFormat {
         }
     }
 
-    
     public static String getDayName(PersianCalendar date) {
         return getWeekdayName(date.get(PersianCalendar.DAY_OF_WEEK), getDefaultLocale());
     }
@@ -497,7 +491,6 @@ public final class PersianDateFormat {
     public static boolean isLeapYear(PersianCalendar date) {
         return PersianCalendar.isLeapYear(date.getYear());
     }
-
 
     public static String getWeekdayName(int dayOfWeek, Locale locale) {
         int index = (dayOfWeek - 1) % 7;
@@ -515,8 +508,6 @@ public final class PersianDateFormat {
                 ? defaultLocale
                 : PCConstants.PERSIAN_LOCALE;
     }
-
-    //=== BUILDER PATTERN (Optional but useful) ===
 
     public static class Builder {
         private String                     pattern         = "dddd, d MMMM yyyy HH:mm:ss";
@@ -541,13 +532,10 @@ public final class PersianDateFormat {
             return this;
         }
 
-        
         public PersianDateFormat build() {
             return new PersianDateFormat(pattern, numberCharacter, locale);
         }
     }
-
-    //=== EQUALS AND HASHCODE ===
 
     @Override
     public boolean equals(Object o) {
@@ -569,7 +557,6 @@ public final class PersianDateFormat {
         return result;
     }
 
-    
     @Override
     public String toString() {
         return "PersianDateFormat{" +
