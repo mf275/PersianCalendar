@@ -8,6 +8,8 @@ import java.util.*;
 
 import static com.farashian.pcalendar.util.HijriConverter.*;
 import static com.farashian.pcalendar.PCConstants.*;
+import static com.farashian.pcalendar.util.NumberConverter.convertToEnglishNumbers;
+import static com.farashian.pcalendar.util.NumberConverter.convertToPersianNumbers;
 import static com.farashian.pcalendar.util.PCalendarUtils.*;
 
 public class PersianCalendar extends Calendar {

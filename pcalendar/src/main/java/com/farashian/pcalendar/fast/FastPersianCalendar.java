@@ -9,6 +9,7 @@ import java.util.*;
 
 import static com.farashian.pcalendar.util.HijriConverter.*;
 import static com.farashian.pcalendar.PCConstants.*;
+import static com.farashian.pcalendar.util.NumberConverter.convertToEnglishNumbers;
 import static com.farashian.pcalendar.util.PCalendarUtils.*;
 
 
@@ -400,7 +401,7 @@ public class FastPersianCalendar extends Calendar {
 
         //Set the Gregorian date
         setGregorianDate(adjustedCalendar.get(Calendar.YEAR),
-                         adjustedCalendar.get(Calendar.MONTH),
+                         adjustedCalendar.get(Calendar.MONTH) + 1,
                          adjustedCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
@@ -408,7 +409,7 @@ public class FastPersianCalendar extends Calendar {
         GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay);
         //gCalendar is in Tehran timezone - EXTRACT Tehran date
         setGregorianDate(gCalendar.get(Calendar.YEAR),
-                         gCalendar.get(Calendar.MONTH),
+                         gCalendar.get(Calendar.MONTH) + 1,
                          gCalendar.get(Calendar.DAY_OF_MONTH));
     }
 

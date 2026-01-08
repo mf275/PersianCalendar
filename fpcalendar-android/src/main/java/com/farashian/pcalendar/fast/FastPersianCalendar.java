@@ -506,7 +506,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
         //Set the Gregorian date
         setGregorianDate(adjustedCalendar.get(Calendar.YEAR),
-                         adjustedCalendar.get(Calendar.MONTH),
+                         adjustedCalendar.get(Calendar.MONTH) + 1,
                          adjustedCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
@@ -514,7 +514,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay);
         //gCalendar is in Tehran timezone - EXTRACT Tehran date
         setGregorianDate(gCalendar.get(Calendar.YEAR),
-                         gCalendar.get(Calendar.MONTH),
+                         gCalendar.get(Calendar.MONTH) + 1,
                          gCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
@@ -1730,20 +1730,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         gCal.set(year, month - 1, day);
         setTimeInMillis(gCal.getTimeInMillis());
     }
-
-    /**
-     * Set Gregorian date with 1-based month (convenience method)
-     * @param year Gregorian year
-     * @param month1Based 1-based Gregorian month (1=January)
-     * @param day day of month (1-31)
-     */
-    public void setGregorianDate1Based(int year, int month1Based, int day) {
-        if (month1Based < 1 || month1Based > 12) {
-            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month1Based);
-        }
-        setGregorianDate(year, month1Based - 1, day);
-    }
-
 
     /**
      * Add days to Gregorian date

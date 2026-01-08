@@ -1,5 +1,6 @@
 package com.farashian.pcalendar.fast;
 
+
 import com.farashian.pcalendar.YMD;
 
 import java.text.ParseException;
@@ -201,8 +202,6 @@ public class FastPersianDateFormat {
             //Remove any extra spaces
             dateString = dateString.trim();
 
-            dateString = convertToEnglishNumbers(dateString);
-
             //For "yyyy/MM/dd HH:mm" pattern, split by space
             String[] parts = dateString.split("\\s+");
             if (parts.length != 2) {
@@ -218,10 +217,10 @@ public class FastPersianDateFormat {
                 throw new ParseException("Invalid date format. Expected yyyy/MM/dd", 0);
             }
 
-            int year = Integer.parseInt(convertToPersianNumbers(dateParts[0]));
+            int year = Integer.parseInt(convertToEnglishNumbers(dateParts[0]));
             // ✅ Parse as 1-based month (from string)
-            int month = Integer.parseInt(convertToPersianNumbers(dateParts[1]));
-            int day = Integer.parseInt(convertToPersianNumbers(dateParts[2]));
+            int month = Integer.parseInt(convertToEnglishNumbers(dateParts[1]));
+            int day = Integer.parseInt(convertToEnglishNumbers(dateParts[2]));
 
             //Parse time part (HH:mm)
             String[] timeParts = timeStr.split(":");
@@ -229,11 +228,11 @@ public class FastPersianDateFormat {
                 throw new ParseException("Invalid time format. Expected HH:mm", 0);
             }
 
-            int hour = Integer.parseInt(convertToPersianNumbers(timeParts[0]));
-            int minute = Integer.parseInt(convertToPersianNumbers(timeParts[1]));
+            int hour = Integer.parseInt(convertToEnglishNumbers(timeParts[0]));
+            int minute = Integer.parseInt(convertToEnglishNumbers(timeParts[1]));
             int second = 0;
             if (timeParts.length >= 3) {
-                second = Integer.parseInt(convertToPersianNumbers(timeParts[2]));
+                second = Integer.parseInt(convertToEnglishNumbers(timeParts[2]));
             }
 
             //Create and set calendar
@@ -264,7 +263,7 @@ public class FastPersianDateFormat {
             result.setTime(date);
 
             return result;
-        } catch (java.text.ParseException e) {
+        } catch (ParseException e) {
             throw new ParseException("Invalid Gregorian date: " + dateString, 0);
         }
     }
@@ -287,10 +286,10 @@ public class FastPersianDateFormat {
         }
 
         try {
-            int year = Integer.parseInt(convertToPersianNumbers(parts[0]));
+            int year = Integer.parseInt(convertToEnglishNumbers(parts[0]));
             // ✅ Parse as 1-based month (from string)
-            int month = Integer.parseInt(convertToPersianNumbers(parts[1]));
-            int day = Integer.parseInt(convertToPersianNumbers(parts[2]));
+            int month = Integer.parseInt(convertToEnglishNumbers(parts[1]));
+            int day = Integer.parseInt(convertToEnglishNumbers(parts[2]));
 
             FastPersianCalendar calendar = new FastPersianCalendar(timeZone, locale);
             // ✅ Pass 1-based month to setPersianDate()
@@ -316,19 +315,20 @@ public class FastPersianDateFormat {
                 String timeStr = timeParts[1];
                 String[] hms = timeStr.split(":");
                 if (hms.length >= 1) {
-                    calendar.set(HOUR_OF_DAY, Integer.parseInt(convertToPersianNumbers(hms[0])));
+                    calendar.set(HOUR_OF_DAY, Integer.parseInt(convertToEnglishNumbers(hms[0])));
                 }
                 if (hms.length >= 2) {
-                    calendar.set(MINUTE, Integer.parseInt(convertToPersianNumbers(hms[1])));
+                    calendar.set(MINUTE, Integer.parseInt(convertToEnglishNumbers(hms[1])));
                 }
                 if (hms.length >= 3) {
-                    calendar.set(SECOND, Integer.parseInt(convertToPersianNumbers(hms[2])));
+                    calendar.set(SECOND, Integer.parseInt(convertToEnglishNumbers(hms[2])));
                 }
             }
         }
 
         return calendar;
     }
+
 
     private String convertPatternToGregorian(String persianPattern) {
         //Simple conversion
@@ -340,6 +340,8 @@ public class FastPersianDateFormat {
                 .replace("mm", "mm")
                 .replace("ss", "ss");
     }
+
+    //=== STATIC UTILITY METHODS ===
 
     public static String format(FastPersianCalendar calendar, String pattern) {
         return format(calendar, pattern, PersianDateNumberCharacter.ENGLISH);
@@ -375,6 +377,8 @@ public class FastPersianDateFormat {
         calendar.setTimeInMillis(milliseconds);
         return format(calendar, pattern, numberCharacter);
     }
+
+    //=== CALENDAR CONSTANTS ===
 
     private static final int HOUR_OF_DAY = FastPersianCalendar.HOUR_OF_DAY;
     private static final int MINUTE = FastPersianCalendar.MINUTE;
