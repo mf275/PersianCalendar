@@ -42,18 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.5.1</version>
+<version>2.5.2</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.5.1</version>
+<version>2.5.2</version>
 </dependency>
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>fast-persian-calendar-android</artifactId>
-<version>2.5.1</version>
+<version>2.5.2</version>
 </dependency>
 ```
 ---
@@ -102,6 +102,9 @@ Thank you for helping keep this project alive!
 
 # what's new
 
+### version 2.5.2
+* - Changed FastPersianCalendar and PersianCalendar to use 1-based months in public API (1=Farvardin, 12=Esfand)
+- 
 ### version 2.5.0
 * - Add date calculation and comparison utility methods
 * - This commit introduces several utility methods to `PersianCalendar` for enhanced date operations:
