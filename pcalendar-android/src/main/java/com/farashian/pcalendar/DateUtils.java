@@ -9,18 +9,21 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateUtils {
 
     public static int      THIS_YEAR;
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    static PersianDateFormat dayOfWeek           = new PersianDateFormat("dddd"); //Day of week
-    static PersianDateFormat fullDateWithDay     = new PersianDateFormat("dddd, dd MMMM yyyy");
-    static PersianDateFormat fullDate            = new PersianDateFormat("dd MMMM yyyy");
-    static PersianDateFormat dashDate1           = new PersianDateFormat("dd-MMM-yyyy");
-    static PersianDateFormat dateTime            = new PersianDateFormat("dd MMMM yyyy HH:mm");
+    static PersianDateFormat dayOfWeek       = new PersianDateFormat("dddd"); //Day of week
+    static PersianDateFormat fullDateWithDay = new PersianDateFormat("dddd, dd MMMM yyyy");
+    static PersianDateFormat fullDate  = new PersianDateFormat("dd MMMM yyyy");
+    static PersianDateFormat dashDate1 = new PersianDateFormat("dd-MMM-yyyy");
+    static PersianDateFormat dateTime  = new PersianDateFormat("dd MMMM yyyy HH:mm");
     static PersianDateFormat timestampDash       = new PersianDateFormat("yyyy-MM-dd-HH:mm");
     static PersianDateFormat timestampUnderscore = new PersianDateFormat("yyyy-MM-dd_HH-mm");
     static PersianDateFormat slashDate           = new PersianDateFormat("yyyy/MM/dd");
@@ -36,6 +39,10 @@ public class DateUtils {
 
     public static long now() {
         return System.currentTimeMillis();
+    }
+
+    public static Date nowDate() {
+        return new Date(System.currentTimeMillis());
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -200,6 +207,9 @@ public class DateUtils {
         PersianCalendar pdate = new PersianCalendar(date.getTime());
         return dateTime.format(pdate);
     }
+    public static String getFarsiDateWithTime(PersianCalendar pdate) {
+        return dateTime.format(pdate);
+    }
 
     public static String getFarsiDateWithTime(long dateInMilis) {
         PersianCalendar pdate = new PersianCalendar(dateInMilis);
@@ -216,8 +226,12 @@ public class DateUtils {
         return slashDate.format(pdate);
     }
 
-    public static String getSlashDateFarsi(long dateInMilis) {
+    public static String getDateFarsiSlash(long dateInMilis) {
         PersianCalendar pdate = new PersianCalendar(dateInMilis);
+        return slashDate.format(pdate);
+    }
+
+    public static String getDateFarsiSlash(PersianCalendar pdate) {
         return slashDate.format(pdate);
     }
 

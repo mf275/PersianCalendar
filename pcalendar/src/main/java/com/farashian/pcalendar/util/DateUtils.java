@@ -3,7 +3,6 @@ package com.farashian.pcalendar.util;
 
 import com.farashian.pcalendar.PersianCalendar;
 import com.farashian.pcalendar.PersianDateFormat;
-import com.farashian.pcalendar.fast.FastPersianCalendar;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -23,7 +22,6 @@ public class DateUtils {
     static PersianDateFormat dayOfWeek           = new PersianDateFormat("dddd"); //Day of week
     static PersianDateFormat fullDateWithDay     = new PersianDateFormat("dddd, dd MMMM yyyy");
     static PersianDateFormat fullDate            = new PersianDateFormat("dd MMMM yyyy");
-    static PersianDateFormat dashDate1           = new PersianDateFormat("dd-MMM-yyyy");
     static PersianDateFormat dateTime            = new PersianDateFormat("dd MMMM yyyy HH:mm");
     static PersianDateFormat timestampDash       = new PersianDateFormat("yyyy-MM-dd-HH:mm");
     static PersianDateFormat timestampUnderscore = new PersianDateFormat("yyyy-MM-dd_HH-mm");
@@ -42,6 +40,10 @@ public class DateUtils {
         return System.currentTimeMillis();
     }
 
+    public static Date nowDate() {
+        return new Date(System.currentTimeMillis());
+    }
+
     public static Date from(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
@@ -52,6 +54,7 @@ public class DateUtils {
 
     public static LocalDate fromDate(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+
     }
 
     public static LocalDateTime asLocalDateTime(Date date) {
@@ -140,16 +143,6 @@ public class DateUtils {
         return fullDateWithDay.format(pdate);
     }
 
-    public static String getFarsiFullDate(PersianCalendar pdate) {
-        if (pdate == null) return "";
-        return fullDate.format(pdate);
-    }
-
-    public static String getFarsiFullDateWithDay(PersianCalendar pdate) {
-        if (pdate == null) return "";
-        return fullDateWithDay.format(pdate);
-    }
-
     public static String nowFarsiDay() {
         PersianCalendar pdate = new PersianCalendar();
         return dayOfWeek.format(pdate);
@@ -175,6 +168,16 @@ public class DateUtils {
         return fullDate.format(pdate);
     }
 
+    public static String getFarsiFullDate(PersianCalendar pdate) {
+        if (pdate == null) return "";
+        return fullDate.format(pdate);
+    }
+
+    public static String getFarsiFullDateWithDay(PersianCalendar pdate) {
+        if (pdate == null) return "";
+        return fullDateWithDay.format(pdate);
+    }
+
     public static String getFarsiFullDateWithDay(Date date) {
         PersianCalendar pdate = new PersianCalendar(date.getTime());
         return fullDateWithDay.format(pdate);
@@ -182,6 +185,10 @@ public class DateUtils {
 
     public static String getFarsiDateWithTime(Date date) {
         PersianCalendar pdate = new PersianCalendar(date.getTime());
+        return dateTime.format(pdate);
+    }
+
+    public static String getFarsiDateWithTime(PersianCalendar pdate) {
         return dateTime.format(pdate);
     }
 
@@ -200,8 +207,12 @@ public class DateUtils {
         return slashDate.format(pdate);
     }
 
-    public static String getSlashDateFarsi(long dateInMilis) {
+    public static String getDateFarsiSlash(long dateInMilis) {
         PersianCalendar pdate = new PersianCalendar(dateInMilis);
+        return slashDate.format(pdate);
+    }
+
+    public static String getDateFarsiSlash(PersianCalendar pdate) {
         return slashDate.format(pdate);
     }
 
@@ -303,17 +314,10 @@ public class DateUtils {
         return calendar.getTimeInMillis();
     }
 
-    public static int calculateDaysBetween(FastPersianCalendar startDate, FastPersianCalendar endDate) {
-        long startMillis = startDate.getTimeInMillis();
-        long endMillis = endDate.getTimeInMillis();
-        long diffMillis = endMillis - startMillis;
-        return (int) (diffMillis / (24 * 60 * 60 * 1000));
-    }
-
     public static int calculateDaysBetween(PersianCalendar startDate, PersianCalendar endDate) {
         long startMillis = startDate.getTimeInMillis();
-        long endMillis = endDate.getTimeInMillis();
-        long diffMillis = endMillis - startMillis;
+        long endMillis   = endDate.getTimeInMillis();
+        long diffMillis  = endMillis - startMillis;
         return (int) (diffMillis / (24 * 60 * 60 * 1000));
     }
 

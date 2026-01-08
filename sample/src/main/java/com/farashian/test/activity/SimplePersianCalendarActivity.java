@@ -19,6 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.farashian.pcalendar.PersianCalendar.getMonthName;
+
 public class SimplePersianCalendarActivity extends Activity {
 
     //UI Components
@@ -150,7 +152,7 @@ public class SimplePersianCalendarActivity extends Activity {
             tvDayName.setText("📅 Day: " + dayName);
 
             //Month info - USE getDaysInMonth() instead of getActualMaximum()
-            String monthName = PersianDateFormat.getMonthName(persianCalendar);
+            String monthName = persianCalendar.getMonthName();
 
             //CORRECT WAY: Use the Persian calendar's method
             int daysInMonth = persianCalendar.getDaysInMonth(); //Your custom method
@@ -177,7 +179,7 @@ public class SimplePersianCalendarActivity extends Activity {
             tvDayName.setText("📅 Day: " + dayName);
             
             //Month info
-            String monthName = PersianDateFormat.getMonthName(persianCalendar);
+            String monthName = persianCalendar.getMonthName();
             int daysInMonth = persianCalendar.getActualMaximum(PersianCalendar.DAY_OF_MONTH);
             tvMonthInfo.setText("📆 Month: " + monthName + " (" + daysInMonth + " days)");
             
@@ -207,7 +209,7 @@ public class SimplePersianCalendarActivity extends Activity {
             }
             
             int year = Integer.parseInt(parts[0]);
-            int month = Integer.parseInt(parts[1]) - 1; //Convert to 0-based
+            int month = Integer.parseInt(parts[1]); //Convert to 0-based
             int day = Integer.parseInt(parts[2]);
             
             //Set the date

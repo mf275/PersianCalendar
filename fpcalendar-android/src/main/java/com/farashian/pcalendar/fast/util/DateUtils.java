@@ -43,6 +43,10 @@ public class DateUtils {
         return System.currentTimeMillis();
     }
 
+    public static Date nowDate() {
+        return new Date(System.currentTimeMillis());
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     public static Date from(LocalDate localDate) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -205,6 +209,9 @@ public class DateUtils {
         FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
         return dateTime.format(pdate);
     }
+    public static String getFarsiDateWithTime(FastPersianCalendar pdate) {
+        return dateTime.format(pdate);
+    }
 
     public static String getFarsiDateWithTime(long dateInMilis) {
         FastPersianCalendar pdate = new FastPersianCalendar(dateInMilis);
@@ -221,8 +228,12 @@ public class DateUtils {
         return slashDate.format(pdate);
     }
 
-    public static String getSlashDateFarsi(long dateInMilis) {
+    public static String getDateFarsiSlash(long dateInMilis) {
         FastPersianCalendar pdate = new FastPersianCalendar(dateInMilis);
+        return slashDate.format(pdate);
+    }
+
+    public static String getDateFarsiSlash(FastPersianCalendar pdate) {
         return slashDate.format(pdate);
     }
 

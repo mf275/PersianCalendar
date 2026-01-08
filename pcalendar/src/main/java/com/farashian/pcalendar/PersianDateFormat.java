@@ -537,9 +537,6 @@ public final class PersianDateFormat {
         return PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
     }
 
-
-    //Helper method to get default locale
-    
     private static Locale getDefaultLocale() {
         Locale defaultLocale = Locale.getDefault();
         return defaultLocale.getLanguage().equals("fa") 

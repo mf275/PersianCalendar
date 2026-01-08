@@ -15,6 +15,9 @@ import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
 import static com.farashian.pcalendar.PCConstants.PERSIAN_MONTH_NAMES_SHORT;
+import static com.farashian.pcalendar.NumberConvertor.convertToEnglishNumbers;
+import static com.farashian.pcalendar.PCalendarUtils.getLocaleFromTimezone;
+import static com.farashian.pcalendar.PersianCalendar.getMonthName;
 
 
 @Keep
@@ -175,7 +178,8 @@ public final class PersianDateFormat {
     public String format(YMD ymd, String pattern) {
         //Create a PersianCalendar object and set the date from YMD, and set time to zero.
         PersianCalendar pc = new PersianCalendar();
-        pc.setPersianDate(ymd.year, ymd.month - 1, ymd.day);
+        // ✅ YMD month is 1-based, pass it directly
+        pc.setPersianDate(ymd.year, ymd.month, ymd.day);
         pc.set(Calendar.HOUR_OF_DAY, 0);
         pc.set(Calendar.MINUTE, 0);
         pc.set(Calendar.SECOND, 0);
@@ -201,7 +205,8 @@ public final class PersianDateFormat {
 
         Map<String, Integer> values = new HashMap<>();
         values.put("year", 1400);
-        values.put("month", 0);
+        // ✅ Store 1-based month for constructor
+        values.put("month", 1);
         values.put("day", 1);
         values.put("hour", 0);
         values.put("minute", 0);
@@ -216,7 +221,8 @@ public final class PersianDateFormat {
             String[] parts     = normalizedDate.split(Pattern.quote(delimiter));
             if (parts.length == 3) {
                 values.put("year", safeParseInt(parts[0], 1400));
-                values.put("month", safeParseInt(parts[1], 1) - 1); //Convert to 0-based
+                // ✅ Parse as 1-based month (from string)
+                values.put("month", safeParseInt(parts[1], 1));
                 values.put("day", safeParseInt(parts[2], 1));
             } else {
                 throw new ParseException("Invalid date format. Expected yyyy/MM/dd or yyyy-MM-dd", 0);
@@ -233,7 +239,8 @@ public final class PersianDateFormat {
 
                 if (dateParts.length == 3 && timeParts.length >= 2) {
                     values.put("year", safeParseInt(dateParts[0], 1400));
-                    values.put("month", safeParseInt(dateParts[1], 1) - 1);
+                    // ✅ Parse as 1-based month
+                    values.put("month", safeParseInt(dateParts[1], 1));
                     values.put("day", safeParseInt(dateParts[2], 1));
                     values.put("hour", safeParseInt(timeParts[0], 0));
                     values.put("minute", safeParseInt(timeParts[1], 0));
@@ -258,7 +265,8 @@ public final class PersianDateFormat {
 
                 if (dateParts.length == 3 && timeParts.length >= 3) {
                     values.put("year", safeParseInt(dateParts[0], 1400));
-                    values.put("month", safeParseInt(dateParts[1], 1) - 1);
+                    // ✅ Parse as 1-based month
+                    values.put("month", safeParseInt(dateParts[1], 1));
                     values.put("day", safeParseInt(dateParts[2], 1));
                     values.put("hour", safeParseInt(timeParts[0], 0));
                     values.put("minute", safeParseInt(timeParts[1], 0));
@@ -278,7 +286,7 @@ public final class PersianDateFormat {
 
         return new PersianCalendar(
                 values.get("year"),
-                values.get("month"),
+                values.get("month"),  // ✅ Already 1-based
                 values.get("day"),
                 values.get("hour"),
                 values.get("minute"),
@@ -314,8 +322,6 @@ public final class PersianDateFormat {
         }
     }
 
-    //=== PRIVATE HELPER METHODS ===
-
     @NonNull
     private static Map<String, BiFunction<PersianCalendar, Locale, String>> createFormatters() {
         Map<String, BiFunction<PersianCalendar, Locale, String>> formatters = new ConcurrentHashMap<>();
@@ -325,22 +331,21 @@ public final class PersianDateFormat {
         formatters.put("yy", (cal, loc) -> String.format(loc, "%02d", cal.getYear() % 100));
 
         //Month
-        formatters.put("MMMM", (cal, loc) -> getMonthName(cal.getMonth(), loc));
+        formatters.put("MMMM", (cal, loc) -> getMonthName(cal.getMonth(), loc));  // getMonth() returns 1-based
         formatters.put("MMM", (cal, loc) -> getShortMonthName(cal.getMonth(), loc));
-        formatters.put("MM", (cal, loc) -> String.format(loc, "%02d", cal.getMonth() + 1));
-        formatters.put("M", (cal, loc) -> String.valueOf(cal.getMonth() + 1));
+        // ✅ Format 1-based month (MM = 01, 02, ..., 12)
+        formatters.put("MM", (cal, loc) -> String.format(loc, "%02d", cal.getMonth()));
+        formatters.put("M", (cal, loc) -> String.valueOf(cal.getMonth()));
 
         //Day
         formatters.put("dddd", (cal, loc) -> getWeekdayName(cal.get(PersianCalendar.DAY_OF_WEEK), loc));
         formatters.put("ddd", (cal, loc) -> getShortDayName(cal.get(PersianCalendar.DAY_OF_WEEK), loc));
         formatters.put("dd", (cal, loc) -> String.format(loc, "%02d", cal.getDayOfMonth()));
         formatters.put("d", (cal, loc) -> String.format(loc, "%d", cal.getDayOfMonth()));
-        //formatters.put("d", (cal, loc) -> String.valueOf(cal.getDayOfMonth()));
 
         //Hour
         formatters.put("HH", (cal, loc) -> String.format(loc, "%02d", cal.get(PersianCalendar.HOUR_OF_DAY)));
         formatters.put("H", (cal, loc) -> String.format(loc, "%d", cal.get(PersianCalendar.HOUR_OF_DAY)));
-        //formatters.put("H", (cal, loc) -> String.valueOf(cal.get(PersianCalendar.HOUR_OF_DAY)));
         formatters.put("hh", (cal, loc) -> {
             int hour12 = cal.get(PersianCalendar.HOUR_OF_DAY) % 12;
             hour12 = hour12 == 0 ? 12 : hour12;
@@ -369,7 +374,9 @@ public final class PersianDateFormat {
 
     @NonNull
     private static String getShortMonthName(int month, @NonNull Locale locale) {
-        String fullName = PERSIAN_MONTH_NAMES_SHORT[month];
+        // ✅ Month is 1-based, convert to 0-based for array access
+        int month0 = month - 1;
+        String fullName = PERSIAN_MONTH_NAMES_SHORT[month0];
         if (locale.getLanguage().equals("fa")) {
             //For Persian, return the full name as short name (common in Persian)
             return fullName;
@@ -377,7 +384,7 @@ public final class PersianDateFormat {
             //For English, return first 3 letters
             String[] englishMonths = {"Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar",
                     "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"};
-            String fullEnglish = englishMonths[month];
+            String fullEnglish = englishMonths[month0];
             return fullEnglish.substring(0, Math.min(3, fullEnglish.length()));
         }
     }
@@ -431,27 +438,6 @@ public final class PersianDateFormat {
         return result.toString();
     }
 
-    @NonNull
-    private static String convertToEnglishNumbers(@NonNull String text) {
-        if (TextUtils.isEmpty(text)) {
-            return text;
-        }
-
-        StringBuilder result = new StringBuilder(text.length());
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            if (c >= '۰' && c <= '۹') {
-                //Convert Persian digit to ASCII digit
-                result.append((char) ('0' + (c - '۰')));
-            } else if (c >= '٠' && c <= '٩') {
-                //Convert Arabic-Indic digit to ASCII digit
-                result.append((char) ('0' + (c - '٠')));
-            } else {
-                result.append(c);
-            }
-        }
-        return result.toString();
-    }
 
     private int safeParseInt(@NonNull String str, int defaultValue) {
         if (TextUtils.isEmpty(str)) {
@@ -467,7 +453,7 @@ public final class PersianDateFormat {
 
     private void validateParsedDate(@NonNull Map<String, Integer> values) throws ParseException {
         int year   = values.get("year");
-        int month  = values.get("month");
+        int month  = values.get("month");  // ✅ 1-based month
         int day    = values.get("day");
         int hour   = values.get("hour");
         int minute = values.get("minute");
@@ -477,13 +463,14 @@ public final class PersianDateFormat {
             throw new ParseException("Invalid year: " + year + ". Must be between 1-9999", 0);
         }
 
-        if (month < 0 || month > 11) {
-            throw new ParseException("Invalid month: " + (month + 1) + ". Must be between 1-12", 0);
+        // ✅ Validate 1-based month
+        if (month < 1 || month > 12) {
+            throw new ParseException("Invalid month: " + month + ". Must be between 1-12", 0);
         }
 
         int maxDays = getDaysInMonth(year, month);
         if (day < 1 || day > maxDays) {
-            throw new ParseException("Invalid day: " + day + " for month " + (month + 1) +
+            throw new ParseException("Invalid day: " + day + " for month " + month +
                                      ". Must be between 1-" + maxDays, 0);
         }
 
@@ -501,24 +488,20 @@ public final class PersianDateFormat {
     }
 
     private int getDaysInMonth(int year, int month) {
-        if (month < 0 || month > 11) {
+        // ✅ Month is 1-based, convert to 0-based for calculation
+        int month0 = month - 1;
+
+        if (month0 < 0 || month0 > 11) {
             return 31; //Fallback
         }
 
-        if (month < 6) {
+        if (month0 < 6) {
             return 31;
-        } else if (month < 11) {
+        } else if (month0 < 11) {
             return 30;
         } else {
             return PersianCalendar.isLeapYear(year) ? 30 : 29;
         }
-    }
-
-    //=== UTILITY METHODS FOR EXTERNAL USE ===
-
-    @NonNull
-    public static String getMonthName(@NonNull PersianCalendar date) {
-        return getMonthName(date.getMonth(), getDefaultLocale());
     }
 
     @NonNull
@@ -556,38 +539,10 @@ public final class PersianDateFormat {
                 : PCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
     }
 
-    @NonNull
-    public static String getMonthName(int month, @NonNull Locale locale) {
-        if (month < 0 || month > 11) {
-            throw new IllegalArgumentException("Invalid month index for getMonthName: " + month);
-        }
-
-        //Try to get from Android resources first if context is available
-        if (appContext != null) {
-            try {
-                String resName = "month_" + (month + 1);
-                int resId = appContext.getResources().getIdentifier(
-                        resName, "string", appContext.getPackageName()
-                );
-                if (resId != 0) {
-                    return appContext.getString(resId);
-                }
-            } catch (Exception e) {
-                Log.w(TAG, "Failed to load month name from resources", e);
-            }
-        }
-
-        if (locale.getLanguage().equals("fa")) {
-            return PCConstants.PERSIAN_MONTH_NAMES[month];
-        }
-        return PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month];
-    }
-
-
     //Helper method to get default locale
     @NonNull
     private static Locale getDefaultLocale() {
-        Locale defaultLocale = Locale.getDefault();
+        Locale defaultLocale = getLocaleFromTimezone();
         return defaultLocale.getLanguage().equals("fa")
                 ? defaultLocale
                 : PCConstants.PERSIAN_LOCALE;

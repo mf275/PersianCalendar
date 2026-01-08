@@ -41,10 +41,25 @@ public class YMD {
         return day;
     }
 
-    /*public String toString(String pattern) {
-        FastPersianDateFormat pdf = new FastPersianDateFormat(pattern);
-        return pdf.format(this, pattern);
-    }*/
+    public String getFormattedDate(String pattern) {
+        if (pattern == null || pattern.isEmpty()) {
+            return toString();
+        }
+
+        switch (pattern) {
+            case "yyyy/MM/dd":
+                return String.format("%04d/%02d/%02d",
+                                     getYear(), getMonth(), getDay());
+            case "yyyy-MM-dd":
+                return String.format("%04d-%02d-%02d",
+                                     getYear(), getMonth(), getDay());
+            case "dd MMMM yyyy":
+                return String.format("%02d %s %04d",
+                                     getDay(), getMonth(), getYear());
+            default:
+                return toString();
+        }
+    }
 
     @NotNull
     @Override

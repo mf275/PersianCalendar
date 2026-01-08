@@ -107,4 +107,51 @@ public class PCConstants {
             "Bah", //Bahman
             "Esf"  //Esfand
     };
+
+    // Add these constants to your FastPersianCalendar class
+    public static final String[] PERSIAN_HOROSCOPE_NAMES = {
+            "حَمَل",     // Aries (فروردین)
+            "ثَور",     // Taurus (اردیبهشت)
+            "جَوزا",    // Gemini (خرداد)
+            "سَرَطان",  // Cancer (تیر)
+            "اَسَد",    // Leo (مرداد)
+            "سُنبُلِه",  // Virgo (شهریور)
+            "مِیزان",   // Libra (مهر)
+            "عَقرب",    // Scorpio (آبان)
+            "قَوس",     // Sagittarius (آذر)
+            "جَدی",     // Capricorn (دی)
+            "دَلو",     // Aquarius (بهمن)
+            "حوت"       // Pisces (اسفند)
+    };
+
+    public static final String[] PERSIAN_HOROSCOPE_NAMES_EN = {
+            "Aries",        // حَمَل
+            "Taurus",       // ثَور
+            "Gemini",       // جَوزا
+            "Cancer",       // سَرَطان
+            "Leo",          // اَسَد
+            "Virgo",        // سُنبُلِه
+            "Libra",        // مِیزان
+            "Scorpio",      // عَقرب
+            "Sagittarius",  // قَوس
+            "Capricorn",    // جَدی
+            "Aquarius",     // دَلو
+            "Pisces"        // حوت
+    };
+
+    public static final String[] PERSIAN_HOROSCOPE_DATES = {
+            "فروردین: ۱ تا ۳۱ فروردین",
+            "اردیبهشت: ۱ تا ۳۱ اردیبهشت",
+            "خرداد: ۱ تا ۳۱ خرداد",
+            "تیر: ۱ تا ۳۱ تیر",
+            "مرداد: ۱ تا ۳۱ مرداد",
+            "شهریور: ۱ تا ۳۱ شهریور",
+            "مهر: ۱ تا ۳۰ مهر",
+            "آبان: ۱ تا ۳۰ آبان",
+            "آذر: ۱ تا ۳۰ آذر",
+            "دی: ۱ تا ۳۰ دی",
+            "بهمن: ۱ تا ۳۰ بهمن",
+            "اسفند: ۱ تا ۲۹ اسفند"
+    };
+    
 }

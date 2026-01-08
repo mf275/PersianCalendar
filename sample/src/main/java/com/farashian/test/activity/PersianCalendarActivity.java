@@ -29,9 +29,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.farashian.pcalendar.fast.FastPersianCalendar.gregorianToJalaliFast;
+import static com.farashian.pcalendar.PCalendarUtils.getHijriMonthName;
+import static com.farashian.pcalendar.fast.FastPersianCalendar.*;
 import static com.farashian.pcalendar.fast.util.HijriConverter.gregorianToHijri;
 import static com.farashian.pcalendar.fast.util.PCConstants.*;
+import static com.farashian.pcalendar.fast.util.NumberConverter.convertToEnglishNumbers;
 import static java.lang.String.format;
 
 public class PersianCalendarActivity extends Activity {
@@ -291,7 +293,7 @@ public class PersianCalendarActivity extends Activity {
         for (int month : testMonths) {
             cal.set(Calendar.MONTH, month);
             int    days      = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-            String monthName = PersianDateFormat.getMonthName(month, Locale.ENGLISH);
+            String monthName = getMonthName(month, Locale.ENGLISH);
             result.append(format("%-12s: %d days\n", monthName, days));
         }
 
@@ -325,9 +327,9 @@ public class PersianCalendarActivity extends Activity {
                           "Match: %s",
                           gregorianYear, gregorianMonth, gregorianDay,
                           directResult[0], directResult[1], directResult[2],
-                          persianCal.getYear(), persianCal.getMonth() + 1, persianCal.getDayOfMonth(),
+                          persianCal.getYear(), persianCal.getMonth(), persianCal.getDayOfMonth(),
                           (directResult[0] == persianCal.getYear() &&
-                           directResult[1] == persianCal.getMonth() + 1 &&
+                           directResult[1] == persianCal.getMonth() &&
                            directResult[2] == persianCal.getDayOfMonth()) ? "✓" : "✗");
         } catch (Exception e) {
             return "Error: " + e.getMessage();
@@ -477,7 +479,7 @@ public class PersianCalendarActivity extends Activity {
                 this,
                 (view, year, month, dayOfMonth) -> {
                     //Format selected date
-                    String selectedDate = format(Locale.US, "%04d/%02d/%02d", year, month + 1, dayOfMonth);
+                    String selectedDate = format(Locale.US, "%04d/%02d/%02d", year, month, dayOfMonth);
                     edtGregorianDate.setText(selectedDate);
 
                     //Automatically trigger conversion
@@ -485,7 +487,7 @@ public class PersianCalendarActivity extends Activity {
 
                 },
                 calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.MONTH)+1,
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
 
@@ -533,14 +535,15 @@ public class PersianCalendarActivity extends Activity {
                 perMonth = fastCalendar.getPersianMonth();
             }
 
+
             tvPResult.setText(format("Persian Date: %s", result));
             tvGResult.setText(format("Gregorian Date: %s", gregorianDate));
-            tvPResult.setText(format("Persian Date: %s %s", result, PERSIAN_MONTH_NAMES[perMonth]));
+            tvPResult.setText(format("Persian Date: %s %s", result, getMonthName(perMonth)));
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month-1]));
+                tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), getHijriMonthName(iresult2.month)));
             } else {
                 String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
-                tvIResult.setText(format("Hijri Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]-1]));
+                tvIResult.setText(format("Hijri Date: %s %s", ir, getHijriMonthName(iresult[1])));
             }
             hideKeyboard(tvPResult);
         } catch (ParseException e) {
@@ -626,13 +629,13 @@ public class PersianCalendarActivity extends Activity {
 
             tvPResult.setText(format("Persian Date: %s", result));
             tvGResult.setText(format("Gregorian Date: %s", result));
-            tvGResult.setText(format("Gregorian Date: %s %s", result, GREGORIAN_MONTH_NAMES[gMonth]));
-            tvPResult.setText(format("Persian Date: %s %s", persianDate, PERSIAN_MONTH_NAMES[perMonth]));
+            tvGResult.setText(format("Gregorian Date: %s %s", result, PersianCalendar.getGrgMonthName(gMonth)));
+            tvPResult.setText(format("Persian Date: %s %s", persianDate, getMonthName(perMonth)));
             if (spnLibrary.getSelectedItemPosition() == 0) {
-                tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), HIJRI_MONTH_NAMES[iresult2.month-1]));
+                tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), getHijriMonthName(iresult2.month)));
             } else {
                 String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
-                tvIResult.setText(format("Hijri Date: %s %s", ir, HIJRI_MONTH_NAMES[iresult[1]-1]));
+                tvIResult.setText(format("Hijri Date: %s %s", ir, getHijriMonthName(iresult[1])));
             }
             //showToast("Gregorian Date: " + result);
             hideKeyboard(tvPResult);
@@ -653,6 +656,7 @@ public class PersianCalendarActivity extends Activity {
             showToast("Please enter a date string");
             return;
         }
+        dateString = convertToEnglishNumbers(dateString);
 
         try {
             //For parsing simple dates like "1402/10/25", use appropriate patterns
