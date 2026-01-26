@@ -22,7 +22,6 @@ import com.farashian.pcalendar.PersianDateFormat;
 import com.farashian.pcalendar.YMD;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
 import com.farashian.pcalendar.fast.FastPersianDateFormat;
-import com.farashian.pcalendar.fast.util.HijriConverter;
 import com.farashian.test.R;
 
 import java.text.ParseException;
@@ -30,10 +29,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.farashian.pcalendar.PCalendarUtils.getHijriMonthName;
-import static com.farashian.pcalendar.fast.FastPersianCalendar.*;
-import static com.farashian.pcalendar.fast.util.HijriConverter.gregorianToHijri;
-import static com.farashian.pcalendar.fast.util.PCConstants.*;
-import static com.farashian.pcalendar.fast.util.NumberConverter.convertToEnglishNumbers;
+import static com.farashian.pcalendar.fast.FastPersianCalendar.getMonthName;
+import static com.farashian.pcalendar.fast.FastPersianCalendar.gregorianToJalaliFast;
+import static com.farashian.pcalendar.fast.util.HijriConvertor.gregorianToHijri;
+import static com.farashian.pcalendar.fast.util.NumberConvertor.convertToEnglishNumbers;
 import static java.lang.String.format;
 
 public class PersianCalendarActivity extends Activity {
@@ -487,7 +486,7 @@ public class PersianCalendarActivity extends Activity {
 
                 },
                 calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH)+1,
+                calendar.get(Calendar.MONTH) + 1,
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
 
@@ -506,45 +505,65 @@ public class PersianCalendarActivity extends Activity {
             }
 
             String pattern = edtCustomPattern.getText().toString().trim();
-            FastPersianDateFormat.PersianDateNumberCharacter numberFormat =
-                    spnNumberFormat.getSelectedItemPosition() == 0 ?
-                            FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH :
-                            FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
+            fastNumberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
+                    FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH :
+                    FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
+
+            numberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
+                    PersianDateFormat.PersianDateNumberCharacter.ENGLISH :
+                    PersianDateFormat.PersianDateNumberCharacter.FARSI;
 
             String result;
-            int[]   iresult  = null;
+            int[]  iresult  = null;
             YMD    iresult2 = null;
             int    perMonth;
+            String           pRresult;
+            String           gRresult;
+            String           iRresult = "";
             if (spnLibrary.getSelectedItemPosition() == 0) {
                 //PersianCalendar
                 PersianCalendar persianCalendar = new PersianCalendar();
                 persianCalendar.setTime(date);
-                PersianDateFormat.PersianDateNumberCharacter myNumberFormat =
-                        spnNumberFormat.getSelectedItemPosition() == 0 ?
-                                PersianDateFormat.PersianDateNumberCharacter.ENGLISH :
-                                PersianDateFormat.PersianDateNumberCharacter.FARSI;
-                result   = PersianDateFormat.format(persianCalendar, pattern, myNumberFormat);
-                iresult2 = persianCalendar.getHijriDate();
-                perMonth = persianCalendar.getMonth();
+                PersianDateFormat formatter = new PersianDateFormat(pattern);
+
+               /* result       = PersianDateFormat.format(persianCalendar, pattern, numberFormat);
+                iresult2     = persianCalendar.getHijriDate();
+                perMonth     = persianCalendar.getMonth();
+*/
+                pRresult   = formatter.format(persianCalendar, numberFormat);
+                formatter.setCalendarType(PersianDateFormat.CalendarType.GREGORIAN);
+                gRresult   = formatter.format(persianCalendar, numberFormat);
+                formatter.setCalendarType(PersianDateFormat.CalendarType.HEJRI);
+                iRresult   = formatter.format(persianCalendar, numberFormat);
             } else {
                 //FastPersianCalendar
                 FastPersianCalendar fastCalendar = new FastPersianCalendar();
                 fastCalendar.setTime(date);
-                result   = FastPersianDateFormat.format(fastCalendar, pattern, numberFormat);
+                FastPersianDateFormat formatter = new FastPersianDateFormat(pattern);
+                //date     = new Date(fastCalendar.getTimeInMillis());
+                //iresult  = fastCalendar.getHijriDate().toIntArray();
+                pRresult   = formatter.format(fastCalendar, fastNumberFormat);
+                formatter.setCalendarType(FastPersianDateFormat.CalendarType.GREGORIAN);
+                gRresult   = formatter.format(fastCalendar, fastNumberFormat);
+                formatter.setCalendarType(FastPersianDateFormat.CalendarType.HEJRI);
+                iRresult   = formatter.format(fastCalendar, fastNumberFormat);
+                /*result   = FastPersianDateFormat.format(fastCalendar, pattern, fastNumberFormat);
                 iresult  = gregorianToHijri(fastCalendar.gCal).toIntArray();
-                perMonth = fastCalendar.getPersianMonth();
+                perMonth = fastCalendar.getPersianMonth();*/
             }
+            tvPResult.setText(format("Persian Date: %s", pRresult));
+            tvGResult.setText(format("Gregorian Date: %s", gRresult));
+            tvIResult.setText(format("Hijri Date: %s", iRresult));
 
-
-            tvPResult.setText(format("Persian Date: %s", result));
+            /*tvPResult.setText(format("Persian Date: %s", result));
             tvGResult.setText(format("Gregorian Date: %s", gregorianDate));
             tvPResult.setText(format("Persian Date: %s %s", result, getMonthName(perMonth)));
             if (spnLibrary.getSelectedItemPosition() == 0) {
                 tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), getHijriMonthName(iresult2.month)));
             } else {
-                String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
+                String ir = format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
                 tvIResult.setText(format("Hijri Date: %s %s", ir, getHijriMonthName(iresult[1])));
-            }
+            }*/
             hideKeyboard(tvPResult);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -554,6 +573,99 @@ public class PersianCalendarActivity extends Activity {
             e.printStackTrace();
             showToast("Error: " + e.getMessage());
             tvPResult.setText(format("Error: %s", e.getMessage()));
+        }
+    }
+
+
+    private void convertPersianToGregorian() {
+        String persianDate = edtPersianDate.getText().toString().trim();
+        if (persianDate.isEmpty()) {
+            showToast("Please enter a Persian date");
+            return;
+        }
+        int perMonth = 0;
+        int gMonth   = 0;
+
+        try {
+
+            SimpleDateFormat sdf      = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
+            String           pattern  = "yyyy/MM/dd";
+            String           pattern1 = edtCustomPattern.getText().toString().trim();
+            String           pRresult;
+            String           gRresult;
+            String           iRresult = "";
+
+            fastNumberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
+                    FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH :
+                    FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
+
+            numberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
+                    PersianDateFormat.PersianDateNumberCharacter.ENGLISH :
+                    PersianDateFormat.PersianDateNumberCharacter.FARSI;
+
+            Date             date;
+            int[]            iresult  = null;
+            YMD              iresult2 = null;
+            String result="";
+            if (spnLibrary.getSelectedItemPosition() == 0) {
+                //PersianCalendar
+                PersianCalendar persianCalendar = myPersianDateFormat.parse(persianDate, pattern);
+                PersianDateFormat formatter = new PersianDateFormat(pattern1);
+
+                //date     = new Date(persianCalendar.getTimeInMillis());
+                //iresult2 = persianCalendar.getHijriDate();
+                //perMonth = persianCalendar.getMonth();
+                //result = sdf.format(date);
+                pRresult   = formatter.format(persianCalendar, numberFormat);
+                formatter.setCalendarType(PersianDateFormat.CalendarType.GREGORIAN);
+                gRresult   = formatter.format(persianCalendar, numberFormat);
+                formatter.setCalendarType(PersianDateFormat.CalendarType.HEJRI);
+                iRresult   = formatter.format(persianCalendar, numberFormat);
+                //gMonth   = persianCalendar.getGrgMonth();
+                //gRresult = format("Gregorian Date: %s %s", result, PersianCalendar.getGrgMonthName(gMonth));
+            } else {
+                //FastPersianCalendar
+                FastPersianCalendar fastCalendar = fastPersianDateFormat.parse(persianDate, pattern);
+                FastPersianDateFormat formatter = new FastPersianDateFormat(pattern1);
+                //date     = new Date(fastCalendar.getTimeInMillis());
+                //iresult  = fastCalendar.getHijriDate().toIntArray();
+                pRresult   = formatter.format(fastCalendar, fastNumberFormat);
+                formatter.setCalendarType(FastPersianDateFormat.CalendarType.GREGORIAN);
+                gRresult   = formatter.format(fastCalendar, fastNumberFormat);
+                formatter.setCalendarType(FastPersianDateFormat.CalendarType.HEJRI);
+                iRresult   = formatter.format(fastCalendar, fastNumberFormat);
+                //perMonth = fastCalendar.getPersianMonth();
+                //gMonth   = fastCalendar.getGrgMonth();
+            }
+
+
+
+            //tvGResult.setText("Gregorian Date: " + result);
+            //tvPResult.setText("Persian Date: " + persianDate);
+
+            tvPResult.setText(format("Persian Date: %s", pRresult));
+            //tvGResult.setText(format("Gregorian Date: %s", result));
+            tvGResult.setText(format("Gregorian Date: %s", gRresult));
+            tvIResult.setText(format("Hijri Date: %s", iRresult));
+           // tvGResult.setText(format("Gregorian Date: %s %s", result, PersianCalendar.getGrgMonthName(gMonth)));
+            //tvPResult.setText(format("Persian Date: %s %s", persianDate, getMonthName(perMonth)));
+            /*if (spnLibrary.getSelectedItemPosition() == 0) {
+                tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), getHijriMonthName(iresult2.month)));
+            } else {
+                //String ir = format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
+                //tvIResult.setText(format("Hijri Date: %s %s", ir, getHijriMonthName(iresult[1])));
+                tvIResult.setText(format("Hijri Date: %s", iRresult));
+            }*/
+            //showToast("Gregorian Date: " + result);
+            hideKeyboard(tvPResult);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            showToast("Error parsing Persian date: " + e.getMessage());
+            tvPResult.setText("Error: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showToast("Error: " + e.getMessage());
+            tvPResult.setText("Error: " + e.getMessage());
         }
     }
 
@@ -570,8 +682,8 @@ public class PersianCalendarActivity extends Activity {
         }
 
     }
-
     //Define the TextWatcher as a class member
+
     private TextWatcher gregorianDateTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -589,66 +701,6 @@ public class PersianCalendarActivity extends Activity {
             }
         }
     };
-
-    private void convertPersianToGregorian() {
-        String persianDate = edtPersianDate.getText().toString().trim();
-        if (persianDate.isEmpty()) {
-            showToast("Please enter a Persian date");
-            return;
-        }
-        int perMonth = 0;
-        int gMonth   = 0;
-
-        try {
-            SimpleDateFormat sdf     = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
-            String           pattern = "yyyy/MM/dd";
-
-            Date date;
-            int[] iresult = null;
-            YMD iresult2 = null;
-            if (spnLibrary.getSelectedItemPosition() == 0) {
-                //PersianCalendar
-                PersianCalendar persianCalendar = myPersianDateFormat.parse(persianDate, pattern);
-                date     = new Date(persianCalendar.getTimeInMillis());
-                iresult2  = persianCalendar.getHijriDate();
-                perMonth = persianCalendar.getMonth();
-                gMonth   = persianCalendar.getGrgMonth();
-            } else {
-                //FastPersianCalendar
-                FastPersianCalendar fastCalendar = fastPersianDateFormat.parse(persianDate, pattern);
-                date     = new Date(fastCalendar.getTimeInMillis());
-                iresult  = fastCalendar.getHijriDate().toIntArray();
-                perMonth = fastCalendar.getPersianMonth();
-                gMonth   = fastCalendar.getGrgMonth();
-            }
-
-            String result = sdf.format(date);
-
-            tvGResult.setText("Gregorian Date: " + result);
-            tvPResult.setText("Persian Date: " + persianDate);
-
-            tvPResult.setText(format("Persian Date: %s", result));
-            tvGResult.setText(format("Gregorian Date: %s", result));
-            tvGResult.setText(format("Gregorian Date: %s %s", result, PersianCalendar.getGrgMonthName(gMonth)));
-            tvPResult.setText(format("Persian Date: %s %s", persianDate, getMonthName(perMonth)));
-            if (spnLibrary.getSelectedItemPosition() == 0) {
-                tvIResult.setText(format("Hijri Date: %s %s", iresult2.toString(), getHijriMonthName(iresult2.month)));
-            } else {
-                String ir = String.format("%04d/%02d/%02d", iresult[0], iresult[1], iresult[2]);
-                tvIResult.setText(format("Hijri Date: %s %s", ir, getHijriMonthName(iresult[1])));
-            }
-            //showToast("Gregorian Date: " + result);
-            hideKeyboard(tvPResult);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            showToast("Error parsing Persian date: " + e.getMessage());
-            tvPResult.setText("Error: " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            showToast("Error: " + e.getMessage());
-            tvPResult.setText("Error: " + e.getMessage());
-        }
-    }
 
     private void parseDateString() {
         String dateString = edtPersianDate.getText().toString().trim();
@@ -718,6 +770,9 @@ public class PersianCalendarActivity extends Activity {
         }
     }
 
+    PersianDateFormat.PersianDateNumberCharacter     numberFormat;
+    FastPersianDateFormat.PersianDateNumberCharacter fastNumberFormat;
+
     private void formatCurrentDate() {
         try {
             String pattern = edtCustomPattern.getText().toString().trim();
@@ -725,10 +780,10 @@ public class PersianCalendarActivity extends Activity {
                 pattern = "yyyy/MM/dd";
             }
 
-            PersianDateFormat.PersianDateNumberCharacter numberFormat =
-                    spnNumberFormat.getSelectedItemPosition() == 0 ?
-                            PersianDateFormat.PersianDateNumberCharacter.ENGLISH :
-                            PersianDateFormat.PersianDateNumberCharacter.FARSI;
+
+            numberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
+                    PersianDateFormat.PersianDateNumberCharacter.ENGLISH :
+                    PersianDateFormat.PersianDateNumberCharacter.FARSI;
 
             String result;
             if (spnLibrary.getSelectedItemPosition() == 0) {
@@ -738,11 +793,11 @@ public class PersianCalendarActivity extends Activity {
             } else {
                 //FastPersianCalendar
                 FastPersianCalendar now = new FastPersianCalendar();
-                FastPersianDateFormat.PersianDateNumberCharacter fastNumberFormat =
-                        spnNumberFormat.getSelectedItemPosition() == 0 ?
-                                FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH :
-                                FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
-                result = FastPersianDateFormat.format(now, pattern, fastNumberFormat);
+
+                fastNumberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
+                        FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH :
+                        FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
+                result           = FastPersianDateFormat.format(now, pattern, fastNumberFormat);
             }
 
             tvCurrentDate.setText("Formatted: " + result);

@@ -71,7 +71,7 @@ public class PCConstants {
     };
 
     public static final String[] GREGORIAN_MONTH_NAMES = {
-            "ژانویه", "فوریه", "مارس", "آپریل", "می", "ژوئن",
+            "ژانویه", "فوریه", "مارس", "آوریل", "می", "ژوئن",
             "جولای", "آگوست", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
     };
 
@@ -80,7 +80,7 @@ public class PCConstants {
             "July", "August", "September", "October", "November", "December"
     };
 
-    public static final String[] WEEKDAY_NAMES_IN_ENGLISH = {
+    public static final String[] WEEKDAY_NAMES_ENGLISH = {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     };
 
@@ -108,35 +108,35 @@ public class PCConstants {
             "Esf"  //Esfand
     };
 
-    // Add these constants to your FastPersianCalendar class
+    //Add these constants to your FastPersianCalendar class
     public static final String[] PERSIAN_HOROSCOPE_NAMES = {
-            "حَمَل",     // Aries (فروردین)
-            "ثَور",     // Taurus (اردیبهشت)
-            "جَوزا",    // Gemini (خرداد)
-            "سَرَطان",  // Cancer (تیر)
-            "اَسَد",    // Leo (مرداد)
-            "سُنبُلِه",  // Virgo (شهریور)
-            "مِیزان",   // Libra (مهر)
-            "عَقرب",    // Scorpio (آبان)
-            "قَوس",     // Sagittarius (آذر)
-            "جَدی",     // Capricorn (دی)
-            "دَلو",     // Aquarius (بهمن)
-            "حوت"       // Pisces (اسفند)
+            "حَمَل",     //Aries (فروردین)
+            "ثَور",     //Taurus (اردیبهشت)
+            "جَوزا",    //Gemini (خرداد)
+            "سَرَطان",  //Cancer (تیر)
+            "اَسَد",    //Leo (مرداد)
+            "سُنبُلِه",  //Virgo (شهریور)
+            "مِیزان",   //Libra (مهر)
+            "عَقرب",    //Scorpio (آبان)
+            "قَوس",     //Sagittarius (آذر)
+            "جَدی",     //Capricorn (دی)
+            "دَلو",     //Aquarius (بهمن)
+            "حوت"       //Pisces (اسفند)
     };
 
     public static final String[] PERSIAN_HOROSCOPE_NAMES_EN = {
-            "Aries",        // حَمَل
-            "Taurus",       // ثَور
-            "Gemini",       // جَوزا
-            "Cancer",       // سَرَطان
-            "Leo",          // اَسَد
-            "Virgo",        // سُنبُلِه
-            "Libra",        // مِیزان
-            "Scorpio",      // عَقرب
-            "Sagittarius",  // قَوس
-            "Capricorn",    // جَدی
-            "Aquarius",     // دَلو
-            "Pisces"        // حوت
+            "Aries",        //حَمَل
+            "Taurus",       //ثَور
+            "Gemini",       //جَوزا
+            "Cancer",       //سَرَطان
+            "Leo",          //اَسَد
+            "Virgo",        //سُنبُلِه
+            "Libra",        //مِیزان
+            "Scorpio",      //عَقرب
+            "Sagittarius",  //قَوس
+            "Capricorn",    //جَدی
+            "Aquarius",     //دَلو
+            "Pisces"        //حوت
     };
 
     public static final String[] PERSIAN_HOROSCOPE_DATES = {
@@ -153,5 +153,5 @@ public class PCConstants {
             "بهمن: ۱ تا ۳۰ بهمن",
             "اسفند: ۱ تا ۲۹ اسفند"
     };
-    
+
 }

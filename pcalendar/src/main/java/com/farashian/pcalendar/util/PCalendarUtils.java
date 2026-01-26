@@ -86,7 +86,7 @@ public final class PCalendarUtils {
             throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
         }
 
-        // Convert to 0-based for calculation
+        //Convert to 0-based for calculation
         int month0 = month - 1;
 
         if (month0 < 6) {
@@ -109,24 +109,24 @@ public final class PCalendarUtils {
             throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
         }
 
-        // Convert to 0-based for calculation
+        //Convert to 0-based for calculation
         int month0 = month - 1;
 
         switch (month0) {
-            case 0:  // January
-            case 2:  // March
-            case 4:  // May
-            case 6:  // July
-            case 7:  // August
-            case 9:  // October
-            case 11: // December
+            case 0:  //January
+            case 2:  //March
+            case 4:  //May
+            case 6:  //July
+            case 7:  //August
+            case 9:  //October
+            case 11: //December
                 return 31;
-            case 3:  // April
-            case 5:  // June
-            case 8:  // September
-            case 10: // November
+            case 3:  //April
+            case 5:  //June
+            case 8:  //September
+            case 10: //November
                 return 30;
-            case 1:  // February
+            case 1:  //February
                 return isGrgLeapYear(year) ? 29 : 28;
             default:
                 return 31;
@@ -153,9 +153,9 @@ public final class PCalendarUtils {
         validatePersianDate(year, month, day);
 
         int[] out = new int[3];
-        // Convert 1-based month to 1-based for algorithm
+        //Convert 1-based month to 1-based for algorithm
         jalaliToGregorianFast(year, month, day, out);
-        // Return 1-based month
+        //Return 1-based month
         return out;
     }
 
@@ -170,9 +170,9 @@ public final class PCalendarUtils {
         validateGregorianDate(year, month, day);
 
         int[] out = new int[3];
-        // Convert 1-based month to 1-based for algorithm
+        //Convert 1-based month to 1-based for algorithm
         gregorianToJalaliFast(year, month, day, out);
-        // Return 1-based month
+        //Return 1-based month
         return out;
     }
 
@@ -288,16 +288,16 @@ public final class PCalendarUtils {
                 if ("IR".equals(locale.getCountry())) {
                     return PCConstants.PERSIAN_MONTH_NAMES[month - 1];
                 } else if ("AF".equals(locale.getCountry())) {
-                    return PCConstants.AFGHAN_MONTH_NAMES[month-1];
+                    return PCConstants.AFGHAN_MONTH_NAMES[month - 1];
                 }
             } else if ("ps".equals(locale.getLanguage())) {
                 if ("AF".equals(locale.getCountry())) {
-                    return PCConstants.PASHTO_AFGHAN_MONTH_NAMES[month-1];
+                    return PCConstants.PASHTO_AFGHAN_MONTH_NAMES[month - 1];
                 }
             }
         }
 
-        return PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month-1];
+        return PCConstants.PERSIAN_MONTH_NAMES_IN_ENGLISH[month - 1];
     }
 
     /**
@@ -309,7 +309,18 @@ public final class PCalendarUtils {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
         }
-        return GREGORIAN_MONTH_NAMES_ENG[month-1];
+        Locale locale = getLocaleFromTimezone();
+        if ("fa".equals(locale.getLanguage())) {
+            return PCConstants.GREGORIAN_MONTH_NAMES[month - 1];
+        }
+        return GREGORIAN_MONTH_NAMES_ENG[month - 1];
+    }
+
+    public static String getGregorianMonthNameEn(int month) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
+        }
+        return GREGORIAN_MONTH_NAMES_ENG[month - 1];
     }
 
     /**
@@ -321,7 +332,7 @@ public final class PCalendarUtils {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
         }
-        return HIJRI_MONTH_NAMES[month-1];
+        return HIJRI_MONTH_NAMES[month - 1];
     }
 
     /**
@@ -345,7 +356,7 @@ public final class PCalendarUtils {
     public static Locale getLocaleFromTimezone() {
         String tzId = TimeZone.getDefault().getID();
 
-        // Simplified heuristic mapping (incomplete — extend as needed)
+        //Simplified heuristic mapping (incomplete — extend as needed)
         switch (tzId) {
             case "America/New_York":
             case "America/Chicago":

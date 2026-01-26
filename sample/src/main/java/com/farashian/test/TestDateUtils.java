@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static com.farashian.pcalendar.HijriConverter.gregorianToHijri;
+import static com.farashian.pcalendar.HijriConvertor.gregorianToHijri;
 
 
 public class TestDateUtils {
@@ -19,9 +19,9 @@ public class TestDateUtils {
         //Test 1: Basic Persian date formatting
         System.out.println("🔍 Current Persian Dates:");
         System.out.println("Now (full): " + DateUtils.nowFullDateWithDayFarsi());
-        System.out.println("Now (dash): " + DateUtils.nowDashDateFarsi());
+        System.out.println("Now (dash): " + DateUtils.getDateFarsiDash());
         System.out.println("Now (slash): " + DateUtils.nowSlashDateFarsi());
-        System.out.println("Day of week: " + DateUtils.nowFarsiDay());
+        System.out.println("Day of week: " + DateUtils.getDayName());
         System.out.println("Time: " + DateUtils.getNowTime());
         System.out.println("Time with seconds: " + DateUtils.getNowTimeWithSeconds());
         System.out.println("DateTime: " + DateUtils.getFarsiDateWithTime());

@@ -1,6 +1,8 @@
 package com.farashian.pcalendar.fast;
 
 
+import com.farashian.pcalendar.PersianCalendar;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -89,9 +91,14 @@ public class FDateUtils {
         return dashDate.format(pdate);
     }
 
-    public static String getFarsidate(String pattern) {
+    public static String getFarsiDate(String pattern) {
         FastPersianCalendar   pdate = new FastPersianCalendar();
         FastPersianDateFormat pdf   = new FastPersianDateFormat(pattern);
+        return pdf.format(pdate);
+    }
+
+    public static String getFarsiDate(FastPersianCalendar pdate, String pattern) {
+        FastPersianDateFormat pdf = new FastPersianDateFormat(pattern);
         return pdf.format(pdate);
     }
 
@@ -140,12 +147,16 @@ public class FDateUtils {
         return fullDateWithDay.format(pdate);
     }
 
-    public static String nowFarsiDay() {
-        FastPersianCalendar pdate = new FastPersianCalendar();
+     public static String getDayName() {
+         FastPersianCalendar pdate = new FastPersianCalendar();
         return dayOfWeek.format(pdate);
     }
 
-    public static String nowDashDateFarsi() {
+    public static String getDayName(FastPersianCalendar pdate) {
+        return dayOfWeek.format(pdate);
+    }
+
+    public static String getDateFarsiDash() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return dashDate.format(pdate);
     }
@@ -184,6 +195,7 @@ public class FDateUtils {
         FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
         return dateTime.format(pdate);
     }
+
     public static String getFarsiDateWithTime(FastPersianCalendar pdate) {
         return dateTime.format(pdate);
     }
@@ -203,8 +215,12 @@ public class FDateUtils {
         return slashDate.format(pdate);
     }
 
-    public static String getSlashDateFarsi(long dateInMilis) {
+    public static String getFarsiDateSlash(long dateInMilis) {
         FastPersianCalendar pdate = new FastPersianCalendar(dateInMilis);
+        return slashDate.format(pdate);
+    }
+
+    public static String getFarsiDateSlash(FastPersianCalendar pdate) {
         return slashDate.format(pdate);
     }
 
@@ -308,8 +324,8 @@ public class FDateUtils {
 
     public static int calculateDaysBetween(FastPersianCalendar startDate, FastPersianCalendar endDate) {
         long startMillis = startDate.getTimeInMillis();
-        long endMillis = endDate.getTimeInMillis();
-        long diffMillis = endMillis - startMillis;
+        long endMillis   = endDate.getTimeInMillis();
+        long diffMillis  = endMillis - startMillis;
         return (int) (diffMillis / (24 * 60 * 60 * 1000));
     }
 

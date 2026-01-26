@@ -5,11 +5,12 @@ import android.os.Parcelable;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.HijriConverter.*;
+import static com.farashian.pcalendar.HijriConvertor.*;
 import static com.farashian.pcalendar.NumberConvertor.convertToEnglishNumbers;
 import static com.farashian.pcalendar.NumberConvertor.convertToPersianNumbers;
 import static com.farashian.pcalendar.PCConstants.*;
-import static com.farashian.pcalendar.PCalendarUtils.*;
+import static com.farashian.pcalendar.PCalendarUtils.getHijriMonthName;
+import static com.farashian.pcalendar.PCalendarUtils.getLocaleFromTimezone;
 
 public class PersianCalendar extends Calendar implements Parcelable {
 
@@ -331,6 +332,10 @@ public class PersianCalendar extends Calendar implements Parcelable {
         ensureComputed();
         return ymd[2];
     }
+    public int getDay() {
+        ensureComputed();
+        return ymd[2];
+    }
 
     public int getDaysInMonth() {
         return getDaysInMonth(getYear(), getMonth());
@@ -524,7 +529,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
      * Get Gregorian month short name (3-letter abbreviation)
      * ✅ @param month 1-based Gregorian month (1=January, 12=December)
      */
-    public static String getGrgMonthShortName(int month, Locale locale) {
+    public static String getGrgMonthNameShort(int month, Locale locale) {
         int month0 = month - 1; // Convert to 0-based
 
         if (month0 < 0 || month0 > 11) {
@@ -566,7 +571,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
     /**
      * Get full Gregorian date as string
      */
-    public String getGrgLongDate(Locale locale) {
+    public String getGrgLongDateWithDay(Locale locale) {
         gCal.setTimeInMillis(getTimeInMillis());
         return String.format(locale, "%s, %d %s %d",
                              getGrgDayOfWeekName(locale),
@@ -575,8 +580,16 @@ public class PersianCalendar extends Calendar implements Parcelable {
                              gCal.get(Calendar.YEAR));
     }
 
-    public String getGrgLongDate() {
-        complete();
+    public String getGrgLongDate(Locale locale) {
+        gCal.setTimeInMillis(getTimeInMillis());
+        return String.format(locale, "%d %s %d",
+                             gCal.get(Calendar.DAY_OF_MONTH),
+                             getGrgMonthName(locale),
+                             gCal.get(Calendar.YEAR));
+    }
+
+    public String getGrgLongDateWithDay() {
+        gCal.setTimeInMillis(getTimeInMillis());
         return String.format(locale, "%s, %d %s %d",
                              getGrgDayOfWeekName(locale),
                              getGrgDay(),
@@ -584,12 +597,24 @@ public class PersianCalendar extends Calendar implements Parcelable {
                              getGrgYear());
     }
 
+    public String getGrgLongDate() {
+        gCal.setTimeInMillis(getTimeInMillis());
+        return String.format(locale, "%d %s %d",
+                             getGrgDay(),
+                             getGrgMonthName(locale),
+                             getGrgYear());
+    }
+
     public String getHijriLongDate() {
         YMD hijri = getHijriDate();
-        return String.format(locale, "%4d, %s %s",
+        return String.format(locale, "%4d %s %s",
                              hijri.getDay(),
-                             getHijriMonthName(hijri.getMonth() - 1),
+                             getHijriMonthName(hijri.getMonth()),
                              hijri.getYear());
+    }
+
+    public String getHijriSortDate() {
+        return getHijriDate().toString();
     }
 
     /**
@@ -610,8 +635,13 @@ public class PersianCalendar extends Calendar implements Parcelable {
     /**
      * Get Gregorian month short name (3-letter abbreviation)
      */
-    public String getGrgMonthShortName(Locale locale) {
+    public String getGrgMonthNameShort(Locale locale) {
         gCal.setTimeInMillis(getTimeInMillis());
+        return gCal.getDisplayName(Calendar.MONTH, Calendar.SHORT, locale);
+    }
+
+    public String getGrgMonthNameShort() {
+        complete();
         return gCal.getDisplayName(Calendar.MONTH, Calendar.SHORT, locale);
     }
 
@@ -664,6 +694,10 @@ public class PersianCalendar extends Calendar implements Parcelable {
                String.format("%02d", gCal.get(Calendar.DAY_OF_MONTH));
     }
 
+    public String getGrgShortDate() {
+        return getGrgShortDate("/");
+    }
+
     /**
      * Check if current Gregorian date is today
      */
@@ -681,7 +715,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
     /**
      * Get Gregorian date as Date object
      */
-    public Date getGrgDate() {
+    public Date toDate() {
         return new Date(getTimeInMillis());
     }
 
@@ -725,9 +759,9 @@ public class PersianCalendar extends Calendar implements Parcelable {
             throw new IllegalArgumentException("Invalid date format");
         }
 
-        int year = Integer.parseInt(parts[0].trim());
+        int year  = Integer.parseInt(parts[0].trim());
         int month = Integer.parseInt(parts[1].trim()); // 1-based from string
-        int day = Integer.parseInt(parts[2].trim());
+        int day   = Integer.parseInt(parts[2].trim());
 
         PersianCalendar result = new PersianCalendar();
         result.setGregorianDate(year, month, day);
@@ -1354,6 +1388,14 @@ public class PersianCalendar extends Calendar implements Parcelable {
         return get(DAY_OF_WEEK);
     }
 
+    public String getDayOfWeekTitle() {
+        return WEEKDAY_NAMES[get(DAY_OF_WEEK) - 1];
+    }
+
+    public String getDayOfWeekTitleEng() {
+        return WEEKDAY_NAMES_ENGLISH[get(DAY_OF_WEEK) - 1];
+    }
+
     /**
      * Get era (always returns AD for Persian calendar)
      */
@@ -1765,6 +1807,393 @@ public class PersianCalendar extends Calendar implements Parcelable {
         return diffMillis / (1000 * 60 * 60 * 24);
     }
 
+    /**
+     * Calculate the number of days between two Persian dates
+     * This method properly handles both positive and negative differences
+     *
+     * @param other the other Persian date
+     * @return number of days between this date and the other date
+     *         Positive if this date is later than the other date
+     *         Negative if this date is earlier than the other date
+     *         Zero if both dates are the same
+     */
+    public int calculateDaysBetween(PersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        // Ensure both dates are computed
+        ensureComputed();
+        other.ensureComputed();
+
+        // If dates are equal, return 0
+        if (this.isSameDay(other)) {
+            return 0;
+        }
+
+        // Convert both dates to milliseconds at midnight (00:00:00.000)
+        long thisMillis  = this.atStartOfDay().getTimeInMillis();
+        long otherMillis = other.atStartOfDay().getTimeInMillis();
+
+        // Calculate difference in days
+        long diffMillis = thisMillis - otherMillis;
+        long diffDays   = diffMillis / (1000 * 60 * 60 * 24);
+
+        // Handle potential rounding errors near daylight saving time boundaries
+        // Check if the calculated days match the actual date difference
+        PersianCalendar testDate = other.copy();
+        testDate.addDays((int) diffDays);
+
+        if (!testDate.isSameDay(this)) {
+            // Adjust for daylight saving time or other anomalies
+            if (diffDays > 0) {
+                diffDays--;
+            } else {
+                diffDays++;
+            }
+        }
+
+        return (int) diffDays;
+    }
+
+    /**
+     * Calculate the number of days between two Persian dates (static version)
+     *
+     * @param date1 the first Persian date
+     * @param date2 the second Persian date
+     * @return absolute number of days between the two dates
+     */
+    public static int calculateDaysBetween(PersianCalendar date1, PersianCalendar date2) {
+        if (date1 == null || date2 == null) {
+            throw new IllegalArgumentException("Dates cannot be null");
+        }
+
+        int daysDiff = date1.calculateDaysBetween(date2);
+        return Math.abs(daysDiff);
+    }
+
+    /**
+     * Calculate the number of business days (excluding Fridays) between two dates
+     *
+     * @param other the other Persian date
+     * @return number of business days between this date and the other date
+     */
+    public int calculateBusinessDaysBetween(PersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        int totalDays    = Math.abs(calculateDaysBetween(other));
+        int businessDays = 0;
+
+        // Determine which date is earlier for iteration
+        PersianCalendar startDate, endDate;
+        if (this.isBefore(other)) {
+            startDate = this.copy();
+            endDate   = other.copy();
+        } else {
+            startDate = other.copy();
+            endDate   = this.copy();
+        }
+
+        // Count business days (skip Fridays)
+        PersianCalendar currentDate = startDate.copy();
+        while (!currentDate.isAfter(endDate)) {
+            if (!currentDate.isHoliday()) { // Friday is holiday in Persian calendar
+                businessDays++;
+            }
+            currentDate.addDays(1);
+        }
+
+        return businessDays;
+    }
+
+    /**
+     * Calculate the number of weeks between two dates
+     *
+     * @param other the other Persian date
+     * @return number of full weeks between this date and the other date
+     */
+    public int calculateWeeksBetween(PersianCalendar other) {
+        int daysBetween = calculateDaysBetween(other);
+        return Math.abs(daysBetween) / 7;
+    }
+
+    /**
+     * Calculate the number of months between two dates
+     * This method considers calendar months, not just 30-day periods
+     *
+     * @param other the other Persian date
+     * @return number of months between this date and the other date
+     */
+    public int calculateMonthsBetween(PersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        ensureComputed();
+        other.ensureComputed();
+
+        // Calculate year and month differences
+        int yearDiff  = this.ymd[0] - other.ymd[0];
+        int monthDiff = this.ymd[1] - other.ymd[1];
+
+        int totalMonths = yearDiff * 12 + monthDiff;
+
+        // Adjust for day difference
+        if (totalMonths > 0 && this.ymd[2] < other.ymd[2]) {
+            totalMonths--;
+        } else if (totalMonths < 0 && this.ymd[2] > other.ymd[2]) {
+            totalMonths++;
+        }
+
+        return totalMonths;
+    }
+
+    /**
+     * Calculate the number of years between two dates
+     * This method considers calendar years, not just 365-day periods
+     *
+     * @param other the other Persian date
+     * @return number of years between this date and the other date
+     */
+    public int calculateYearsBetween(PersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        ensureComputed();
+        other.ensureComputed();
+
+        int yearDiff = this.ymd[0] - other.ymd[0];
+
+        // Adjust if the month/day hasn't occurred yet this year
+        if (yearDiff > 0) {
+            if (this.ymd[1] < other.ymd[1] ||
+                (this.ymd[1] == other.ymd[1] && this.ymd[2] < other.ymd[2])) {
+                yearDiff--;
+            }
+        } else if (yearDiff < 0) {
+            if (this.ymd[1] > other.ymd[1] ||
+                (this.ymd[1] == other.ymd[1] && this.ymd[2] > other.ymd[2])) {
+                yearDiff++;
+            }
+        }
+
+        return yearDiff;
+    }
+
+    /**
+     * Check if a date is within a certain number of days from this date
+     *
+     * @param other the other Persian date
+     * @param maxDays maximum number of days allowed
+     * @return true if the other date is within maxDays from this date
+     */
+    public boolean isWithinDays(PersianCalendar other, int maxDays) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        int daysBetween = Math.abs(calculateDaysBetween(other));
+        return daysBetween <= maxDays;
+    }
+
+    /**
+     * Calculate the midpoint date between this date and another date
+     *
+     * @param other the other Persian date
+     * @return the midpoint date between this date and the other date
+     */
+    public PersianCalendar calculateMidpoint(PersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        // Find which date is earlier
+        PersianCalendar earlier, later;
+        if (this.isBefore(other)) {
+            earlier = this.copy();
+            later   = other.copy();
+        } else {
+            earlier = other.copy();
+            later   = this.copy();
+        }
+
+        // Calculate days between
+        int daysBetween = earlier.calculateDaysBetween(later);
+
+        // If days between is odd, we need to handle the midpoint carefully
+        if (daysBetween % 2 == 0) {
+            // Even number of days - exact midpoint
+            int             halfDays = daysBetween / 2;
+            PersianCalendar midpoint = earlier.copy();
+            midpoint.addDays(halfDays);
+            return midpoint;
+        } else {
+            // Odd number of days - choose the later of the two middle days
+            int             halfDays = daysBetween / 2;
+            PersianCalendar midpoint = earlier.copy();
+            midpoint.addDays(halfDays + 1); // Take the later day
+            return midpoint;
+        }
+    }
+
+    /**
+     * Calculate the number of specific weekdays between two dates
+     *
+     * @param other the other Persian date
+     * @param targetDayOfWeek the day of week to count (Calendar.SUNDAY, Calendar.MONDAY, etc.)
+     * @return number of occurrences of the target day of week between the dates
+     */
+    public int calculateSpecificWeekdaysBetween(PersianCalendar other, int targetDayOfWeek) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        if (targetDayOfWeek < Calendar.SUNDAY || targetDayOfWeek > Calendar.SATURDAY) {
+            throw new IllegalArgumentException("Invalid day of week: " + targetDayOfWeek);
+        }
+
+        // Determine which date is earlier for iteration
+        PersianCalendar startDate, endDate;
+        if (this.isBefore(other)) {
+            startDate = this.copy();
+            endDate   = other.copy();
+        } else {
+            startDate = other.copy();
+            endDate   = this.copy();
+        }
+
+        int             count       = 0;
+        PersianCalendar currentDate = startDate.copy();
+
+        while (!currentDate.isAfter(endDate)) {
+            if (currentDate.get(DAY_OF_WEEK) == targetDayOfWeek) {
+                count++;
+            }
+            currentDate.addDays(1);
+        }
+
+        return count;
+    }
+
+    /**
+     * Calculate age in years, months, and days
+     *
+     * @param referenceDate the reference date (usually today)
+     * @return array of [years, months, days] representing the age
+     */
+    public int[] calculateAgeDetailed(PersianCalendar referenceDate) {
+        if (referenceDate == null) {
+            referenceDate = new PersianCalendar();
+        }
+
+        ensureComputed();
+        referenceDate.ensureComputed();
+
+        int years, months, days;
+
+        // Calculate years
+        years = referenceDate.ymd[0] - this.ymd[0];
+
+        // Calculate months
+        months = referenceDate.ymd[1] - this.ymd[1];
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        // Calculate days
+        days = referenceDate.ymd[2] - this.ymd[2];
+        if (days < 0) {
+            months--;
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+            // Add days from previous month
+            PersianCalendar temp = referenceDate.copy();
+            temp.addMonths(-1);
+            days += temp.getDaysInMonth();
+        }
+
+        // Ensure non-negative values
+        if (years < 0) years = 0;
+        if (months < 0) months = 0;
+        if (days < 0) days = 0;
+
+        return new int[]{years, months, days};
+    }
+
+    /**
+     * Calculate the number of days until a target date
+     *
+     * @param targetDate the target Persian date
+     * @return number of days until the target date (negative if target is in the past)
+     */
+    public int calculateDaysUntil(PersianCalendar targetDate) {
+        return calculateDaysBetween(targetDate);
+    }
+
+    /**
+     * Calculate the number of days since a reference date
+     *
+     * @param referenceDate the reference Persian date
+     * @return number of days since the reference date (negative if reference is in the future)
+     */
+    public int calculateDaysSince(PersianCalendar referenceDate) {
+        return -calculateDaysBetween(referenceDate);
+    }
+
+    /**
+     * Check if this date is within a date range (inclusive)
+     *
+     * @param startDate start of the range
+     * @param endDate end of the range
+     * @return true if this date is between startDate and endDate (inclusive)
+     */
+    public boolean isWithinRange(PersianCalendar startDate, PersianCalendar endDate) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Start and end dates cannot be null");
+        }
+
+        return !this.isBefore(startDate) && !this.isAfter(endDate);
+    }
+
+    /**
+     * Calculate overlapping days between two date ranges
+     *
+     * @param range1Start start of first range
+     * @param range1End end of first range
+     * @param range2Start start of second range
+     * @param range2End end of second range
+     * @return number of overlapping days, or 0 if no overlap
+     */
+    public static int calculateOverlapDays(PersianCalendar range1Start, PersianCalendar range1End,
+            PersianCalendar range2Start, PersianCalendar range2End) {
+        if (range1Start == null || range1End == null || range2Start == null || range2End == null) {
+            throw new IllegalArgumentException("All date parameters must not be null");
+        }
+
+        // Ensure ranges are valid (start <= end)
+        if (range1Start.isAfter(range1End) || range2Start.isAfter(range2End)) {
+            throw new IllegalArgumentException("Start date must be before or equal to end date");
+        }
+
+        // Check if ranges overlap
+        if (range1End.isBefore(range2Start) || range2End.isBefore(range1Start)) {
+            return 0; // No overlap
+        }
+
+        // Calculate overlap
+        PersianCalendar overlapStart = range1Start.isAfter(range2Start) ? range1Start : range2Start;
+        PersianCalendar overlapEnd   = range1End.isBefore(range2End) ? range1End : range2End;
+
+        return overlapStart.calculateDaysBetween(overlapEnd) + 1; // +1 because inclusive
+    }
+
+
     public int getHourOfDay() {
         return get(HOUR_OF_DAY);
     }
@@ -2112,7 +2541,7 @@ public class PersianCalendar extends Calendar implements Parcelable {
         int dayOfYear = hijriDate.day;
 
         for (int month = 1; month < hijriDate.month; month++) {
-            dayOfYear += HijriConverter.getMonthLength(hijriDate.year, month);
+            dayOfYear += HijriConvertor.getMonthLength(hijriDate.year, month);
         }
 
         return dayOfYear;
@@ -2362,6 +2791,11 @@ public class PersianCalendar extends Calendar implements Parcelable {
         return new Date(getTimeInMillis());
     }
 
+    public GregorianCalendar getGregorianDate() {
+        return gCal;
+    }
+
+
     public void setDate(Date date) {
         setTimeInMillis(date.getTime());
     }
@@ -2394,28 +2828,28 @@ public class PersianCalendar extends Calendar implements Parcelable {
         return getShortDate(getYear(), getMonth(), getDayOfMonth(), delimiter, locale);
     }
 
-    public YMD getHijriDate() {
-        complete();
+   public YMD getHijriDate() {
+        ensureComputed();
         return gregorianToHijri(gCal);
     }
 
     /**
-     * Set the date using Islamic (Hijri) calendar values
+     * Set the date using Hijri (Hijri) calendar values
      * @param hYear Hijri year
      * @param hMonth Hijri month (1-12)
      * @param hDay Hijri day of month
      * @param timeZone Target timezone for the date
      */
     public void setHijriDate(int hYear, int hMonth, int hDay, TimeZone timeZone) {
-        // Convert Hijri date to Gregorian using IranianHijriConverter
+        //Convert Hijri date to Gregorian using HijriConvertor
         GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay, timeZone);
 
-        // Adjust to target timezone
+        //Adjust to target timezone
         long              timeInMillis     = gCalendar.getTimeInMillis();
         GregorianCalendar adjustedCalendar = new GregorianCalendar(timeZone);
         adjustedCalendar.setTimeInMillis(timeInMillis);
 
-        // Set the Gregorian date
+        //Set the Gregorian date
         setGregorianDate(adjustedCalendar.get(Calendar.YEAR),
                          adjustedCalendar.get(Calendar.MONTH) + 1,
                          adjustedCalendar.get(Calendar.DAY_OF_MONTH));
@@ -2423,26 +2857,31 @@ public class PersianCalendar extends Calendar implements Parcelable {
 
     public void setHijriDate(int hYear, int hMonth, int hDay) {
         GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay);
-        // gCalendar is in Tehran timezone - EXTRACT Tehran date
+        //gCalendar is in Tehran timezone - EXTRACT Tehran date
         setGregorianDate(gCalendar.get(Calendar.YEAR),
                          gCalendar.get(Calendar.MONTH) + 1,
                          gCalendar.get(Calendar.DAY_OF_MONTH));
     }
+
+    public static PersianCalendar fromHjri(int iyear, int imonth, int iday) {
+        PersianCalendar result = new PersianCalendar();
+        result.setHijriDate(iyear, imonth, iday);
+
+        return result;
+    }
+
 
     /**
      * Find the Gregorian date corresponding to the first day (Hijri day 1)
      * of a given Hijri month and year.
      *
      * @param islamicYear   Hijri year (e.g., 1446)
-     * @param islamicMonth0 Hijri month (0-based: 0 = Muharram, 1 = Safar, ..., 11 = Dhu al-Hijjah)
+     * @param islamicMonth Hijri month (1-based: 1 = Muharram, 2 = Safar, ..., 12 = Dhu al-Hijjah)
      * @return Calendar object representing the Gregorian date of the first day of the Hijri month
      */
-    public static Calendar findFirstDayOfHijriMonth(int islamicYear, int islamicMonth0) {
-        // Convert 0-based month to 1-based for YMD class
-        int islamicMonth1Based = islamicMonth0 + 1;
-
-        // Use existing hijriToGregorian method to convert to Gregorian
-        return hijriToGregorian(islamicYear, islamicMonth1Based, 1);
+    public static Calendar findFirstDayOfHijriMonth(int islamicYear, int islamicMonth) {
+        //Use existing hijriToGregorian method to convert to Gregorian
+        return hijriToGregorian(islamicYear, islamicMonth, 1);
     }
 
     /**

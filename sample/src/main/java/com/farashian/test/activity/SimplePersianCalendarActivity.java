@@ -19,7 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.farashian.pcalendar.DateUtils.getDayName;
 import static com.farashian.pcalendar.PersianCalendar.getMonthName;
+import static com.farashian.pcalendar.fast.FastPersianCalendar.isLeapYear;
 
 public class SimplePersianCalendarActivity extends Activity {
 
@@ -148,7 +150,7 @@ public class SimplePersianCalendarActivity extends Activity {
     private void updateDateInfo() {
         try {
             //Day name
-            String dayName = PersianDateFormat.getDayName(persianCalendar);
+            String dayName = getDayName(persianCalendar);
             tvDayName.setText("📅 Day: " + dayName);
 
             //Month info - USE getDaysInMonth() instead of getActualMaximum()
@@ -164,7 +166,7 @@ public class SimplePersianCalendarActivity extends Activity {
             tvMonthInfo.setText("📆 Month: " + monthName + " (" + daysInMonth + " days)");
 
             //Leap year
-            boolean isLeap = PersianDateFormat.isLeapYear(persianCalendar);
+            boolean isLeap = isLeapYear(persianCalendar.getYear());
             tvLeapYear.setText(isLeap ? "🌟 Leap Year" : "📅 Common Year");
 
         } catch (Exception e) {
@@ -175,7 +177,7 @@ public class SimplePersianCalendarActivity extends Activity {
     private void updateDateInfo1() {
         try {
             //Day name
-            String dayName = PersianDateFormat.getDayName(persianCalendar);
+            String dayName = getDayName(persianCalendar);
             tvDayName.setText("📅 Day: " + dayName);
             
             //Month info
@@ -184,7 +186,7 @@ public class SimplePersianCalendarActivity extends Activity {
             tvMonthInfo.setText("📆 Month: " + monthName + " (" + daysInMonth + " days)");
             
             //Leap year
-            boolean isLeap = PersianDateFormat.isLeapYear(persianCalendar);
+            boolean isLeap = isLeapYear(persianCalendar.getYear());
             tvLeapYear.setText(isLeap ? "🌟 Leap Year" : "📅 Common Year");
             
         } catch (Exception e) {

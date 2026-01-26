@@ -2,12 +2,7 @@ package com.farashian.pcalendar.util;
 
 import com.farashian.pcalendar.YMD;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Iranian Hijri (lunar) calendar converter, anchored to Iran's official data.
@@ -22,7 +17,7 @@ import java.util.TimeZone;
  * NOTE: For years outside 1340–1448, results are approximate (tabular).
  *       Extend HIJRI_MONTH_DATA if you add more official years.
  */
-public class HijriConverter {
+public class HijriConvertor {
 
     private static final long MILLIS_PER_DAY = 24L * 60 * 60 * 1000L;
 
@@ -156,7 +151,7 @@ public class HijriConverter {
      */
     private static YMD calculateHijriFromGregorian(GregorianCalendar tehranDate) {
         long diffMillis = tehranDate.getTimeInMillis() - EPOCH_GREGORIAN_TEHRAN.getTimeInMillis();
-        int diffDays = (int) (diffMillis / MILLIS_PER_DAY); //safe at midnight
+        int  diffDays   = (int) (diffMillis / MILLIS_PER_DAY); //safe at midnight
 
         int y = EPOCH_HIJRI.year;
         int m = EPOCH_HIJRI.month - 1; //0-based
@@ -197,16 +192,16 @@ public class HijriConverter {
      * Positive: target is after epoch. Negative: target is before epoch.
      */
     private static int calculateHijriOffsetDays(YMD hijri) {
+        if (hijri.month < 1 || hijri.month > 12) {
+            throw new IllegalArgumentException("Hijri month out of range: " + hijri.month);
+        }
         int targetY = hijri.year;
         int targetM = hijri.month - 1; //0-based
         int targetD = hijri.day;
 
-        if (targetM < 0 || targetM >= 12) {
-            throw new IllegalArgumentException("Hijri month out of range: " + hijri.month);
-        }
 
         int[] monthLengthsTargetYear = getMonthLengthsForYear(targetY);
-        int maxDay = monthLengthsTargetYear[targetM];
+        int   maxDay                 = monthLengthsTargetYear[targetM];
         if (targetD < 1 || targetD > maxDay) {
             throw new IllegalArgumentException(
                     "Hijri day out of range: " + targetD + " for " + targetY + "/" + (targetM + 1)

@@ -1,6 +1,5 @@
 package com.farashian.pcalendar;
 
-
 import static java.lang.String.format;
 
 public class YMD {

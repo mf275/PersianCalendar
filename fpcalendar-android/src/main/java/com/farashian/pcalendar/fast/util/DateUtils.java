@@ -21,11 +21,11 @@ public class DateUtils {
     public static int      THIS_YEAR;
     static        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    static FastPersianDateFormat dayOfWeek       = new FastPersianDateFormat("dddd"); //Day of week
-    static FastPersianDateFormat fullDateWithDay = new FastPersianDateFormat("dddd, dd MMMM yyyy");
-    static FastPersianDateFormat fullDate  = new FastPersianDateFormat("dd MMMM yyyy");
-    static FastPersianDateFormat dashDate1 = new FastPersianDateFormat("dd-MMM-yyyy");
-    static FastPersianDateFormat dateTime  = new FastPersianDateFormat("dd MMMM yyyy HH:mm");
+    static FastPersianDateFormat dayOfWeek           = new FastPersianDateFormat("dddd"); //Day of week
+    static FastPersianDateFormat fullDateWithDay     = new FastPersianDateFormat("dddd, dd MMMM yyyy");
+    static FastPersianDateFormat fullDate            = new FastPersianDateFormat("dd MMMM yyyy");
+    static FastPersianDateFormat dashDate1           = new FastPersianDateFormat("dd-MMM-yyyy");
+    static FastPersianDateFormat dateTime            = new FastPersianDateFormat("dd MMMM yyyy HH:mm");
     static FastPersianDateFormat timestampDash       = new FastPersianDateFormat("yyyy-MM-dd-HH:mm");
     static FastPersianDateFormat timestampUnderscore = new FastPersianDateFormat("yyyy-MM-dd_HH-mm");
     static FastPersianDateFormat slashDate           = new FastPersianDateFormat("yyyy/MM/dd");
@@ -109,14 +109,19 @@ public class DateUtils {
         return date.before(new Date());
     }
 
-    public static String nowFarsiDashDate() {
+    public static String getDateFarsiDash() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return dashDate.format(pdate);
     }
 
-    public static String getFarsidate(String pattern) {
+    public static String getFarsiDate(String pattern) {
         FastPersianCalendar   pdate = new FastPersianCalendar();
         FastPersianDateFormat pdf   = new FastPersianDateFormat(pattern);
+        return pdf.format(pdate);
+    }
+
+    public static String getFarsiDate(FastPersianCalendar pdate, String pattern) {
+        FastPersianDateFormat pdf = new FastPersianDateFormat(pattern);
         return pdf.format(pdate);
     }
 
@@ -165,13 +170,17 @@ public class DateUtils {
         return fullDateWithDay.format(pdate);
     }
 
-    public static String nowFarsiDay() {
+    public static String getDayName() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return dayOfWeek.format(pdate);
     }
 
-    public static String nowDashDateFarsi() {
-        FastPersianCalendar pdate = new FastPersianCalendar();
+    public static String getDayName(FastPersianCalendar pdate) {
+        return dayOfWeek.format(pdate);
+    }
+
+
+    public static String getDateFarsiDash(FastPersianCalendar pdate) {
         return dashDate.format(pdate);
     }
 
@@ -209,6 +218,7 @@ public class DateUtils {
         FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
         return dateTime.format(pdate);
     }
+
     public static String getFarsiDateWithTime(FastPersianCalendar pdate) {
         return dateTime.format(pdate);
     }
@@ -228,12 +238,12 @@ public class DateUtils {
         return slashDate.format(pdate);
     }
 
-    public static String getDateFarsiSlash(long dateInMilis) {
+    public static String getFarsiDateSlash(long dateInMilis) {
         FastPersianCalendar pdate = new FastPersianCalendar(dateInMilis);
         return slashDate.format(pdate);
     }
 
-    public static String getDateFarsiSlash(FastPersianCalendar pdate) {
+    public static String getFarsiDateSlash(FastPersianCalendar pdate) {
         return slashDate.format(pdate);
     }
 
@@ -337,8 +347,8 @@ public class DateUtils {
 
     public static int calculateDaysBetween(FastPersianCalendar startDate, FastPersianCalendar endDate) {
         long startMillis = startDate.getTimeInMillis();
-        long endMillis = endDate.getTimeInMillis();
-        long diffMillis = endMillis - startMillis;
+        long endMillis   = endDate.getTimeInMillis();
+        long diffMillis  = endMillis - startMillis;
         return (int) (diffMillis / (24 * 60 * 60 * 1000));
     }
 

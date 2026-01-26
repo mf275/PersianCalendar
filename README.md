@@ -42,18 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.5.2</version>
+<version>2.6.0</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.5.2</version>
+<version>2.6.0</version>
 </dependency>
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>fast-persian-calendar-android</artifactId>
-<version>2.5.2</version>
+<version>2.6.0</version>
 </dependency>
 ```
 ---
@@ -566,7 +566,7 @@ public class TestDateUtils {
         //Test 1: Basic Persian date formatting
         System.out.println("🔍 Current Persian Dates:");
         System.out.println("Now (full): " + DateUtils.nowFullDateWithDayFarsi());
-        System.out.println("Now (dash): " + DateUtils.nowDashDateFarsi());
+        System.out.println("Now (dash): " + DateUtils.getDateFarsiDash());
         System.out.println("Now (slash): " + DateUtils.nowSlashDateFarsi());
         System.out.println("Day of week: " + DateUtils.nowFarsiDay());
         System.out.println("Time: " + DateUtils.getNowTime());

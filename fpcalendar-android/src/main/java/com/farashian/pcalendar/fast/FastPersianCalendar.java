@@ -2,15 +2,15 @@ package com.farashian.pcalendar.fast;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.farashian.pcalendar.fast.util.HijriConverter;
+import com.farashian.pcalendar.fast.util.HijriConvertor;
 import com.farashian.pcalendar.fast.util.PCConstants;
 import com.farashian.pcalendar.fast.util.PCalendarUtils;
 import com.farashian.pcalendar.fast.util.YMD;
 
 import java.util.*;
 
-import static com.farashian.pcalendar.fast.util.HijriConverter.*;
-import static com.farashian.pcalendar.fast.util.NumberConverter.convertToEnglishNumbers;
+import static com.farashian.pcalendar.fast.util.HijriConvertor.*;
+import static com.farashian.pcalendar.fast.util.NumberConvertor.convertToEnglishNumbers;
 import static com.farashian.pcalendar.fast.util.PCConstants.*;
 import static com.farashian.pcalendar.fast.util.PCalendarUtils.*;
 
@@ -315,6 +315,10 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return new Date(getTimeInMillis());
     }
 
+    public GregorianCalendar getGregorianDate() {
+        return gCal;
+    }
+
     public void setDate(Date date) {
         setTimeInMillis(date.getTime());
     }
@@ -458,12 +462,12 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
     public String getLongDate() {
         return getLongDate(
-                persianYear, persianMonth, persianDay, get(DAY_OF_WEEK), locale);
+                persianYear, persianMonth + 1, persianDay, get(DAY_OF_WEEK), locale);
     }
 
     public String getLongDateTime() {
         return getLongDateTime(
-                persianYear, persianMonth, persianDay, get(DAY_OF_WEEK),
+                persianYear, persianMonth + 1, persianDay, get(DAY_OF_WEEK),
                 get(HOUR_OF_DAY), get(MINUTE), get(SECOND), locale);
     }
 
@@ -484,7 +488,8 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * Get Islamic (Hijri) year
      * @return Hijri date
      */
-    public YMD getHijriDate() {
+   public YMD getHijriDate() {
+        ensureComputed();
         return gregorianToHijri(gCal);
     }
 
@@ -496,7 +501,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param timeZone Target timezone for the date
      */
     public void setHijriDate(int hYear, int hMonth, int hDay, TimeZone timeZone) {
-        //Convert Hijri date to Gregorian using HijriConverter
+        //Convert Hijri date to Gregorian using HijriConvertor
         GregorianCalendar gCalendar = hijriToGregorian(hYear, hMonth, hDay, timeZone);
 
         //Adjust to target timezone
@@ -516,6 +521,13 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         setGregorianDate(gCalendar.get(Calendar.YEAR),
                          gCalendar.get(Calendar.MONTH) + 1,
                          gCalendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public static FastPersianCalendar fromHjri(int iyear, int imonth, int iday) {
+        FastPersianCalendar result = new FastPersianCalendar();
+        result.setHijriDate(iyear, imonth, iday);
+
+        return result;
     }
 
 
@@ -576,6 +588,8 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         FastPersianCalendar parsed = parseOrNullToCompat(dateString);
         if (parsed != null) {
             //Create fresh instance instead of copying internal state
+            /// TODO loooooooook ath this
+            //setPersianDateInternal(parsed.persianYear, parsed.persianMonth, parsed.persianDay);
             setPersianDateInternal(parsed.persianYear, parsed.persianMonth - 1, parsed.persianDay);
             //Copy time fields if they exist
             if (parsed.isSet[HOUR_OF_DAY]) set(HOUR_OF_DAY, parsed.get(HOUR_OF_DAY));
@@ -616,7 +630,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             computeAllFields();
         }
     }
-
 
     /**
      * Compute all calendar fields that parent class expects
@@ -1257,6 +1270,14 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return get(DAY_OF_WEEK);
     }
 
+    public String getDayOfWeekTitle() {
+        return WEEKDAY_NAMES[get(DAY_OF_WEEK) - 1];
+    }
+
+    public String getDayOfWeekTitleEng() {
+        return WEEKDAY_NAMES_ENGLISH[get(DAY_OF_WEEK) - 1];
+    }
+
     /**
      * Get era (always returns AD for Persian calendar)
      */
@@ -1454,6 +1475,10 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return gCal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
     }
 
+    public String getGrgMonthName() {
+        return getGregorianMonthName(getGrgMonth());
+    }
+
 
     /**
      * Get Gregorian month length (days in month)
@@ -1538,7 +1563,12 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param locale locale for month name
      * @return Gregorian month short name
      */
-    public String getGrgMonthShortName(Locale locale) {
+    public String getGrgMonthNameShort(Locale locale) {
+        complete();
+        return gCal.getDisplayName(Calendar.MONTH, Calendar.SHORT, locale);
+    }
+    
+    public String getGrgMonthNameShort() {
         complete();
         return gCal.getDisplayName(Calendar.MONTH, Calendar.SHORT, locale);
     }
@@ -1549,7 +1579,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * @param locale locale for month name
      * @return month short name
      */
-    public static String getGrgMonthShortName(int month, Locale locale) {
+    public static String getGrgMonthNameShort(int month, Locale locale) {
         if (month < 0 || month > 11) {
             throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
         }
@@ -1616,16 +1646,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return result;
     }
 
-    /**
-     * Convert Gregorian date to Persian date (1-based month)
-     * @param year Gregorian year
-     * @param month1Based 1-based Gregorian month (1=January)
-     * @param day Gregorian day
-     * @return Persian date as FastPersianCalendar
-     */
-    public static FastPersianCalendar fromGregorian1Based(int year, int month1Based, int day) {
-        return fromGregorian(year, month1Based - 1, day);
-    }
 
     /**
      * Get current Gregorian date
@@ -1652,7 +1672,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                              getGrgYear());
     }
 
-    public String getGrgLongDate() {
+    public String getGrgLongDateWithDay() {
         complete();
         return String.format(locale, "%s, %d %s %d",
                              getGrgDayOfWeekName(locale),
@@ -1661,12 +1681,24 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
                              getGrgYear());
     }
 
+    public String getGrgLongDate() {
+        complete();
+        return String.format(locale, "%d %s %d",
+                             getGrgDay(),
+                             getGrgMonthName(locale),
+                             getGrgYear());
+    }
+
     public String getHijriLongDate() {
         YMD hijri = getHijriDate();
-        return String.format(locale, "%4d, %s %s",
+        return String.format(locale, "%4d %s %s",
                              hijri.getDay(),
                              getHijriMonthName(hijri.getMonth()),
                              hijri.getYear());
+    }
+
+    public String getHijriSortDate() {
+        return getHijriDate().toString();
     }
 
     /**
@@ -1679,6 +1711,10 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         return getGrgYear() + delimiter +
                String.format("%02d", getGrgMonth()) + delimiter + //1-based month
                String.format("%02d", getGrgDay());
+    }
+
+    public String getGrgShortDate() {
+        return getGrgShortDate("/");
     }
 
     /**
@@ -1699,7 +1735,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
      * Get Gregorian date as Date object
      * @return Date object representing the Gregorian date
      */
-    public Date getGrgDate() {
+    public Date toDate() {
         complete();
         return gCal.getTime();
     }
@@ -1991,6 +2027,392 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public long daysBetween(FastPersianCalendar other) {
         long diffMillis = this.getTimeInMillis() - other.getTimeInMillis();
         return diffMillis / (1000 * 60 * 60 * 24);
+    }
+
+    /**
+     * Calculate the number of days between two Persian dates
+     * This method properly handles both positive and negative differences
+     *
+     * @param other the other Persian date
+     * @return number of days between this date and the other date
+     *         Positive if this date is later than the other date
+     *         Negative if this date is earlier than the other date
+     *         Zero if both dates are the same
+     */
+    public int calculateDaysBetween(FastPersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        // Ensure both dates are computed
+        ensureComputed();
+        other.ensureComputed();
+
+        // If dates are equal, return 0
+        if (this.isSameDay(other)) {
+            return 0;
+        }
+
+        // Convert both dates to milliseconds at midnight (00:00:00.000)
+        long thisMillis  = this.atStartOfDay().getTimeInMillis();
+        long otherMillis = other.atStartOfDay().getTimeInMillis();
+
+        // Calculate difference in days
+        long diffMillis = thisMillis - otherMillis;
+        long diffDays   = diffMillis / (1000 * 60 * 60 * 24);
+
+        // Handle potential rounding errors near daylight saving time boundaries
+        // Check if the calculated days match the actual date difference
+        FastPersianCalendar testDate = other.copy();
+        testDate.addDays((int) diffDays);
+
+        if (!testDate.isSameDay(this)) {
+            // Adjust for daylight saving time or other anomalies
+            if (diffDays > 0) {
+                diffDays--;
+            } else {
+                diffDays++;
+            }
+        }
+
+        return (int) diffDays;
+    }
+
+    /**
+     * Calculate the number of days between two Persian dates (static version)
+     *
+     * @param date1 the first Persian date
+     * @param date2 the second Persian date
+     * @return absolute number of days between the two dates
+     */
+    public static int calculateDaysBetween(FastPersianCalendar date1, FastPersianCalendar date2) {
+        if (date1 == null || date2 == null) {
+            throw new IllegalArgumentException("Dates cannot be null");
+        }
+
+        int daysDiff = date1.calculateDaysBetween(date2);
+        return Math.abs(daysDiff);
+    }
+
+    /**
+     * Calculate the number of business days (excluding Fridays) between two dates
+     *
+     * @param other the other Persian date
+     * @return number of business days between this date and the other date
+     */
+    public int calculateBusinessDaysBetween(FastPersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        int totalDays    = Math.abs(calculateDaysBetween(other));
+        int businessDays = 0;
+
+        // Determine which date is earlier for iteration
+        FastPersianCalendar startDate, endDate;
+        if (this.isBefore(other)) {
+            startDate = this.copy();
+            endDate   = other.copy();
+        } else {
+            startDate = other.copy();
+            endDate   = this.copy();
+        }
+
+        // Count business days (skip Fridays)
+        FastPersianCalendar currentDate = startDate.copy();
+        while (!currentDate.isAfter(endDate)) {
+            if (!currentDate.isHoliday()) { // Friday is holiday in Persian calendar
+                businessDays++;
+            }
+            currentDate.addDays(1);
+        }
+
+        return businessDays;
+    }
+
+    /**
+     * Calculate the number of weeks between two dates
+     *
+     * @param other the other Persian date
+     * @return number of full weeks between this date and the other date
+     */
+    public int calculateWeeksBetween(FastPersianCalendar other) {
+        int daysBetween = calculateDaysBetween(other);
+        return Math.abs(daysBetween) / 7;
+    }
+
+    /**
+     * Calculate the number of months between two dates
+     * This method considers calendar months, not just 30-day periods
+     *
+     * @param other the other Persian date
+     * @return number of months between this date and the other date
+     */
+    public int calculateMonthsBetween(FastPersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        ensureComputed();
+        other.ensureComputed();
+
+        // Calculate year and month differences
+        int yearDiff  = this.persianYear - other.persianYear;
+        int monthDiff = this.persianMonth - other.persianMonth;
+
+        int totalMonths = yearDiff * 12 + monthDiff;
+
+        // Adjust for day difference
+        if (totalMonths > 0 && this.persianDay < other.persianDay) {
+            totalMonths--;
+        } else if (totalMonths < 0 && this.persianDay > other.persianDay) {
+            totalMonths++;
+        }
+
+        return totalMonths;
+    }
+
+    /**
+     * Calculate the number of years between two dates
+     * This method considers calendar years, not just 365-day periods
+     *
+     * @param other the other Persian date
+     * @return number of years between this date and the other date
+     */
+    public int calculateYearsBetween(FastPersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        ensureComputed();
+        other.ensureComputed();
+
+        int yearDiff = this.persianYear - other.persianYear;
+
+        // Adjust if the month/day hasn't occurred yet this year
+        if (yearDiff > 0) {
+            if (this.persianMonth < other.persianMonth ||
+                (this.persianMonth == other.persianMonth && this.persianDay < other.persianDay)) {
+                yearDiff--;
+            }
+        } else if (yearDiff < 0) {
+            if (this.persianMonth > other.persianMonth ||
+                (this.persianMonth == other.persianMonth && this.persianDay > other.persianDay)) {
+                yearDiff++;
+            }
+        }
+
+        return yearDiff;
+    }
+
+    /**
+     * Check if a date is within a certain number of days from this date
+     *
+     * @param other the other Persian date
+     * @param maxDays maximum number of days allowed
+     * @return true if the other date is within maxDays from this date
+     */
+    public boolean isWithinDays(FastPersianCalendar other, int maxDays) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        int daysBetween = Math.abs(calculateDaysBetween(other));
+        return daysBetween <= maxDays;
+    }
+
+    /**
+     * Calculate the midpoint date between this date and another date
+     *
+     * @param other the other Persian date
+     * @return the midpoint date between this date and the other date
+     */
+    public FastPersianCalendar calculateMidpoint(FastPersianCalendar other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        // Find which date is earlier
+        FastPersianCalendar earlier, later;
+        if (this.isBefore(other)) {
+            earlier = this.copy();
+            later   = other.copy();
+        } else {
+            earlier = other.copy();
+            later   = this.copy();
+        }
+
+        // Calculate days between
+        int daysBetween = earlier.calculateDaysBetween(later);
+
+        // If days between is odd, we need to handle the midpoint carefully
+        if (daysBetween % 2 == 0) {
+            // Even number of days - exact midpoint
+            int                 halfDays = daysBetween / 2;
+            FastPersianCalendar midpoint = earlier.copy();
+            midpoint.addDays(halfDays);
+            return midpoint;
+        } else {
+            // Odd number of days - choose the later of the two middle days
+            int                 halfDays = daysBetween / 2;
+            FastPersianCalendar midpoint = earlier.copy();
+            midpoint.addDays(halfDays + 1); // Take the later day
+            return midpoint;
+        }
+    }
+
+    /**
+     * Calculate the number of specific weekdays between two dates
+     *
+     * @param other the other Persian date
+     * @param targetDayOfWeek the day of week to count (Calendar.SUNDAY, Calendar.MONDAY, etc.)
+     * @return number of occurrences of the target day of week between the dates
+     */
+    public int calculateSpecificWeekdaysBetween(FastPersianCalendar other, int targetDayOfWeek) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other date cannot be null");
+        }
+
+        if (targetDayOfWeek < Calendar.SUNDAY || targetDayOfWeek > Calendar.SATURDAY) {
+            throw new IllegalArgumentException("Invalid day of week: " + targetDayOfWeek);
+        }
+
+        // Determine which date is earlier for iteration
+        FastPersianCalendar startDate, endDate;
+        if (this.isBefore(other)) {
+            startDate = this.copy();
+            endDate   = other.copy();
+        } else {
+            startDate = other.copy();
+            endDate   = this.copy();
+        }
+
+        int                 count       = 0;
+        FastPersianCalendar currentDate = startDate.copy();
+
+        while (!currentDate.isAfter(endDate)) {
+            if (currentDate.get(DAY_OF_WEEK) == targetDayOfWeek) {
+                count++;
+            }
+            currentDate.addDays(1);
+        }
+
+        return count;
+    }
+
+    /**
+     * Calculate age in years, months, and days
+     *
+     * @param referenceDate the reference date (usually today)
+     * @return array of [years, months, days] representing the age
+     */
+    public int[] calculateAgeDetailed(FastPersianCalendar referenceDate) {
+        if (referenceDate == null) {
+            referenceDate = new FastPersianCalendar();
+        }
+
+        ensureComputed();
+        referenceDate.ensureComputed();
+
+        int years, months, days;
+
+        // Calculate years
+        years = referenceDate.persianYear - this.persianYear;
+
+        // Calculate months
+        months = referenceDate.persianMonth - this.persianMonth;
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        // Calculate days
+        days = referenceDate.persianDay - this.persianDay;
+        if (days < 0) {
+            months--;
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+            // Add days from previous month
+            FastPersianCalendar temp = referenceDate.copy();
+            temp.addMonths(-1);
+            days += temp.getDaysInMonth();
+        }
+
+        // Ensure non-negative values
+        if (years < 0) years = 0;
+        if (months < 0) months = 0;
+        if (days < 0) days = 0;
+
+        return new int[]{years, months, days};
+    }
+
+    /**
+     * Calculate the number of days until a target date
+     *
+     * @param targetDate the target Persian date
+     * @return number of days until the target date (negative if target is in the past)
+     */
+    public int calculateDaysUntil(FastPersianCalendar targetDate) {
+        return calculateDaysBetween(targetDate);
+    }
+
+    /**
+     * Calculate the number of days since a reference date
+     *
+     * @param referenceDate the reference Persian date
+     * @return number of days since the reference date (negative if reference is in the future)
+     */
+    public int calculateDaysSince(FastPersianCalendar referenceDate) {
+        return -calculateDaysBetween(referenceDate);
+    }
+
+    /**
+     * Check if this date is within a date range (inclusive)
+     *
+     * @param startDate start of the range
+     * @param endDate end of the range
+     * @return true if this date is between startDate and endDate (inclusive)
+     */
+    public boolean isWithinRange(FastPersianCalendar startDate, FastPersianCalendar endDate) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Start and end dates cannot be null");
+        }
+
+        return !this.isBefore(startDate) && !this.isAfter(endDate);
+    }
+
+    /**
+     * Calculate overlapping days between two date ranges
+     *
+     * @param range1Start start of first range
+     * @param range1End end of first range
+     * @param range2Start start of second range
+     * @param range2End end of second range
+     * @return number of overlapping days, or 0 if no overlap
+     */
+    public static int calculateOverlapDays(FastPersianCalendar range1Start, FastPersianCalendar range1End,
+            FastPersianCalendar range2Start, FastPersianCalendar range2End) {
+        if (range1Start == null || range1End == null || range2Start == null || range2End == null) {
+            throw new IllegalArgumentException("All date parameters must not be null");
+        }
+
+        // Ensure ranges are valid (start <= end)
+        if (range1Start.isAfter(range1End) || range2Start.isAfter(range2End)) {
+            throw new IllegalArgumentException("Start date must be before or equal to end date");
+        }
+
+        // Check if ranges overlap
+        if (range1End.isBefore(range2Start) || range2End.isBefore(range1Start)) {
+            return 0; // No overlap
+        }
+
+        // Calculate overlap
+        FastPersianCalendar overlapStart = range1Start.isAfter(range2Start) ? range1Start : range2Start;
+        FastPersianCalendar overlapEnd   = range1End.isBefore(range2End) ? range1End : range2End;
+
+        return overlapStart.calculateDaysBetween(overlapEnd) + 1; // +1 because inclusive
     }
 
     /**
@@ -2474,7 +2896,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         int dayOfYear = hijriDate.day;
 
         for (int month = 1; month < hijriDate.month; month++) {
-            dayOfYear += HijriConverter.getMonthLength(hijriDate.year, month);
+            dayOfYear += HijriConvertor.getMonthLength(hijriDate.year, month);
         }
 
         return dayOfYear;
@@ -3038,8 +3460,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         }
     }
 
-    // ==================== SERIALIZATION METHODS ====================
-
     /**
      * Convert to JSON string
      */
@@ -3070,8 +3490,6 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             throw new IllegalArgumentException("Invalid JSON format", e);
         }
     }
-
-    // ==================== CALENDAR COMPATIBILITY METHODS ====================
 
     /**
      * Get the value of the given calendar field

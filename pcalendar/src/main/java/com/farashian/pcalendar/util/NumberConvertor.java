@@ -1,9 +1,9 @@
 package com.farashian.pcalendar.util;
 
-public class NumberConverter {
-    
+public class NumberConvertor {
+
     private static final char[] PERSIAN_DIGITS = {'۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'};
-    
+
     /**
      * Convert English digits (0-9) to Persian digits (۰-۹)
      * @param text Input string with English digits
@@ -27,7 +27,7 @@ public class NumberConverter {
 
         return result.toString();
     }
-    
+
     /**
      * Convert Persian/Arabic digits to English digits
      * @param text Input string with Persian/Arabic digits
@@ -42,16 +42,16 @@ public class NumberConverter {
 
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            
-            // Convert Persian digits (۰-۹)
+
+            //Convert Persian digits (۰-۹)
             if (c >= '۰' && c <= '۹') {
                 result.append((char) ('0' + (c - '۰')));
             }
-            // Convert Arabic-Indic digits (٠-٩)
+            //Convert Arabic-Indic digits (٠-٩)
             else if (c >= '٠' && c <= '٩') {
                 result.append((char) ('0' + (c - '٠')));
             }
-            // Keep other characters as-is
+            //Keep other characters as-is
             else {
                 result.append(c);
             }
@@ -59,7 +59,7 @@ public class NumberConverter {
 
         return result.toString();
     }
-    
+
     /**
      * Check if text contains Persian or Arabic digits
      * @param text Input string to check
@@ -69,17 +69,17 @@ public class NumberConverter {
         if (text == null || text.isEmpty()) {
             return false;
         }
-        
+
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if ((c >= '۰' && c <= '۹') || (c >= '٠' && c <= '٩')) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Check if text contains only English digits
      * @param text Input string to check
@@ -89,17 +89,17 @@ public class NumberConverter {
         if (text == null || text.isEmpty()) {
             return true;
         }
-        
+
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c < '0' || c > '9') {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Normalize numbers to English digits regardless of input
      * @param text Input string
@@ -108,7 +108,7 @@ public class NumberConverter {
     public static String normalizeToEnglishNumbers(String text) {
         return convertToEnglishNumbers(text);
     }
-    
+
     /**
      * Normalize numbers to Persian digits regardless of input
      * First convert any Arabic digits to Persian, then any English to Persian
@@ -119,20 +119,20 @@ public class NumberConverter {
         if (text == null || text.isEmpty()) {
             return text;
         }
-        
-        // First convert Arabic-Indic to Persian
+
+        //First convert Arabic-Indic to Persian
         text = text.replace('٠', '۰')
-                   .replace('١', '۱')
-                   .replace('٢', '۲')
-                   .replace('٣', '۳')
-                   .replace('٤', '۴')
-                   .replace('٥', '۵')
-                   .replace('٦', '۶')
-                   .replace('٧', '۷')
-                   .replace('٨', '۸')
-                   .replace('٩', '۹');
-        
-        // Then convert English to Persian
+                .replace('١', '۱')
+                .replace('٢', '۲')
+                .replace('٣', '۳')
+                .replace('٤', '۴')
+                .replace('٥', '۵')
+                .replace('٦', '۶')
+                .replace('٧', '۷')
+                .replace('٨', '۸')
+                .replace('٩', '۹');
+
+        //Then convert English to Persian
         return convertToPersianNumbers(text);
     }
 }

@@ -1,6 +1,5 @@
 package com.farashian.pcalendar.fast;
 
-
 import com.farashian.pcalendar.YMD;
 
 import java.text.ParseException;
@@ -10,8 +9,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static com.farashian.pcalendar.util.NumberConverter.convertToEnglishNumbers;
-import static com.farashian.pcalendar.util.NumberConverter.convertToPersianNumbers;
+import static com.farashian.pcalendar.util.NumberConvertor.convertToEnglishNumbers;
+import static com.farashian.pcalendar.util.NumberConvertor.convertToPersianNumbers;
+import static com.farashian.pcalendar.util.PCalendarUtils.getHijriMonthName;
 
 /**
  * Fast Persian Date Formatter - Direct replacement of PersianCalendar with FastPersianCalendar
@@ -22,19 +22,34 @@ public class FastPersianDateFormat {
         ENGLISH, FARSI
     }
 
-    private String pattern;
+    public enum CalendarType {
+        PERSIAN, GREGORIAN, HEJRI
+    }
+
+    private String                     pattern;
     private PersianDateNumberCharacter numberCharacter = PersianDateNumberCharacter.ENGLISH;
-    private Locale locale;
-    private TimeZone timeZone;
+    private CalendarType               calendarType    = CalendarType.PERSIAN;
+    private Locale                     locale;
+    private TimeZone                   timeZone;
+
+    private YMD hijri;
 
     public FastPersianDateFormat() {
-        this.locale = new Locale("fa");
-        this.timeZone = TimeZone.getTimeZone("Asia/Tehran");
+        this.locale          = new Locale("fa", "IR");
+        this.timeZone        = TimeZone.getTimeZone("Asia/Tehran");
+        this.calendarType    = CalendarType.PERSIAN;
+        this.numberCharacter = PersianDateNumberCharacter.FARSI;
     }
 
     public FastPersianDateFormat(String pattern) {
         this();
         this.pattern = pattern;
+    }
+
+    public FastPersianDateFormat(String pattern, CalendarType type) {
+        this();
+        this.pattern      = pattern;
+        this.calendarType = type;
     }
 
     public FastPersianDateFormat(String pattern, Locale locale) {
@@ -49,6 +64,10 @@ public class FastPersianDateFormat {
 
     public void setPattern(String pattern) {
         this.pattern = pattern;
+    }
+
+    public void setCalendarType(CalendarType calendarType) {
+        this.calendarType = calendarType;
     }
 
     public String getPattern() {
@@ -79,9 +98,19 @@ public class FastPersianDateFormat {
         return timeZone;
     }
 
+    public String format(FastPersianCalendar calendar, PersianDateNumberCharacter nc) {
+        this.numberCharacter = nc;
+        return format(calendar);
+    }
+
     public String format(FastPersianCalendar calendar) {
         if (pattern == null) {
-            return calendar.getLongDate();
+            if (calendarType.equals(CalendarType.PERSIAN))
+                return calendar.getLongDate();
+            else if (calendarType.equals(CalendarType.GREGORIAN))
+                return calendar.getGrgLongDate();
+            else if (calendarType.equals(CalendarType.HEJRI))
+                return calendar.getHijriLongDate();
         }
 
         return formatWithPattern(calendar, pattern);
@@ -117,19 +146,27 @@ public class FastPersianDateFormat {
         if (formatPattern == null || formatPattern.isEmpty()) {
             return calendar.getLongDate();
         }
-
+        if (calendarType.equals(CalendarType.HEJRI)) {
+            hijri = calendar.getHijriDate();
+        }
         String result = formatPattern;
 
         //Replace pattern tokens
         result = result.replace("dddd", calendar.getWeekdayName());
         result = result.replace("ddd", calendar.getWeekdayName()); //Using full name for short
-        result = result.replace("MMMM", calendar.getMonthName());
-        result = result.replace("MMM", calendar.getMonthName()); //Using full name for short
+        //result = result.replace("MMMM", calendar.getMonthName());
+        result = result.replace("MMMM", getMonthName(calendar));
+        //result = result.replace("MMM", calendar.getMonthName()); //Using full name for short
+        result = result.replace("MMM", getShortMonthName(calendar)); //Using full name for short
         // ✅ Use getMonth() which returns 1-based month
-        result = result.replace("MM", formatToTwoDigits(calendar.getMonth()));
-        result = result.replace("dd", formatToTwoDigits(calendar.getDayOfMonth()));
-        result = result.replace("yyyy", formatToTwoDigits(calendar.getYear()));
-        result = result.replace("yy", formatToTwoDigits(calendar.getYear() % 100));
+        //result = result.replace("MM", formatToTwoDigits(calendar.getMonth()));
+        result = result.replace("MM", formatToTwoDigits(getMonth(calendar)));
+        //result = result.replace("dd", formatToTwoDigits(calendar.getDayOfMonth()));
+        result = result.replace("dd", formatToTwoDigits(getDayOfMonth(calendar)));
+        //result = result.replace("yyyy", formatToTwoDigits(calendar.getYear()));
+        result = result.replace("yyyy", formatToTwoDigits(getYear(calendar)));
+        //result = result.replace("yy", formatToTwoDigits(calendar.getYear() % 100));
+        result = result.replace("yy", formatToTwoDigits(getYear(calendar) % 100));
         result = result.replace("HH", formatToTwoDigits(calendar.get(HOUR_OF_DAY)));
         result = result.replace("hh", formatToTwoDigits(calendar.get(HOUR) == 0 ? 12 : calendar.get(HOUR)));
         result = result.replace("mm", formatToTwoDigits(calendar.get(MINUTE)));
@@ -137,11 +174,68 @@ public class FastPersianDateFormat {
         result = result.replace("a", getAmPm(calendar));
 
         //Handle single 'd' and 'M'
-        result = result.replace("d", String.valueOf(calendar.getDayOfMonth()));
+        //result = result.replace("d", String.valueOf(calendar.getDayOfMonth()));
+        result = result.replace("d", String.valueOf(getDayOfMonth(calendar)));
         // ✅ Use getMonth() which returns 1-based month
-        result = result.replace("M", String.valueOf(calendar.getMonth()));
+        //result = result.replace("M", String.valueOf(calendar.getMonth()));
+        result = result.replace("M", String.valueOf(getMonth(calendar)));
 
         return convertNumbersToLocale(result);
+    }
+
+    private String getMonthName(FastPersianCalendar calendar) {
+        if (calendarType.equals(CalendarType.PERSIAN))
+            return calendar.getMonthName();
+        else if (calendarType.equals(CalendarType.GREGORIAN))
+            return calendar.getGrgMonthName();
+        else if (calendarType.equals(CalendarType.HEJRI))
+            return getHijriMonthName(hijri.getMonth());
+
+        return calendar.getMonthName();
+    }
+
+    private int getMonth(FastPersianCalendar calendar) {
+        if (calendarType.equals(CalendarType.PERSIAN))
+            return calendar.getMonth();
+        else if (calendarType.equals(CalendarType.GREGORIAN))
+            return calendar.getGrgMonth();
+        else if (calendarType.equals(CalendarType.HEJRI))
+            return hijri.getMonth();
+
+        return calendar.getMonth();
+    }
+
+    private int getDayOfMonth(FastPersianCalendar calendar) {
+        if (calendarType.equals(CalendarType.PERSIAN))
+            return calendar.getDayOfMonth();
+        else if (calendarType.equals(CalendarType.GREGORIAN))
+            return calendar.getGrgDay();
+        else if (calendarType.equals(CalendarType.HEJRI))
+            return hijri.getDay();
+
+        return calendar.getDay();
+    }
+
+    private int getYear(FastPersianCalendar calendar) {
+        if (calendarType.equals(CalendarType.PERSIAN))
+            return calendar.getYear();
+        else if (calendarType.equals(CalendarType.GREGORIAN))
+            return calendar.getGrgYear();
+        else if (calendarType.equals(CalendarType.HEJRI))
+            return hijri.getYear();
+
+        return calendar.getYear();
+    }
+
+    private String getShortMonthName(FastPersianCalendar calendar) {
+        if (calendarType.equals(CalendarType.PERSIAN))
+            return calendar.getMonthNameShort();
+        else if (calendarType.equals(CalendarType.GREGORIAN))
+            return calendar.getGrgMonthNameShort();
+        else if (calendarType.equals(CalendarType.HEJRI))
+            return getHijriMonthName(hijri.getMonth());
+
+        return calendar.getMonthName();
     }
 
     private String formatToTwoDigits(int number) {
@@ -220,7 +314,7 @@ public class FastPersianDateFormat {
             int year = Integer.parseInt(convertToEnglishNumbers(dateParts[0]));
             // ✅ Parse as 1-based month (from string)
             int month = Integer.parseInt(convertToEnglishNumbers(dateParts[1]));
-            int day = Integer.parseInt(convertToEnglishNumbers(dateParts[2]));
+            int day   = Integer.parseInt(convertToEnglishNumbers(dateParts[2]));
 
             //Parse time part (HH:mm)
             String[] timeParts = timeStr.split(":");
@@ -228,7 +322,7 @@ public class FastPersianDateFormat {
                 throw new ParseException("Invalid time format. Expected HH:mm", 0);
             }
 
-            int hour = Integer.parseInt(convertToEnglishNumbers(timeParts[0]));
+            int hour   = Integer.parseInt(convertToEnglishNumbers(timeParts[0]));
             int minute = Integer.parseInt(convertToEnglishNumbers(timeParts[1]));
             int second = 0;
             if (timeParts.length >= 3) {
@@ -278,8 +372,8 @@ public class FastPersianDateFormat {
     }
 
     private FastPersianCalendar parseStandardDate(String dateString) throws ParseException {
-        String normalized = dateString.replaceAll("[\\-/\\s]", "/");
-        String[] parts = normalized.split("/");
+        String   normalized = dateString.replaceAll("[\\-/\\s]", "/");
+        String[] parts      = normalized.split("/");
 
         if (parts.length != 3) {
             throw new ParseException("Invalid date format: " + dateString, 0);
@@ -289,7 +383,7 @@ public class FastPersianDateFormat {
             int year = Integer.parseInt(convertToEnglishNumbers(parts[0]));
             // ✅ Parse as 1-based month (from string)
             int month = Integer.parseInt(convertToEnglishNumbers(parts[1]));
-            int day = Integer.parseInt(convertToEnglishNumbers(parts[2]));
+            int day   = Integer.parseInt(convertToEnglishNumbers(parts[2]));
 
             FastPersianCalendar calendar = new FastPersianCalendar(timeZone, locale);
             // ✅ Pass 1-based month to setPersianDate()
@@ -312,8 +406,8 @@ public class FastPersianDateFormat {
             //Simple time extraction - you might need more sophisticated parsing
             String[] timeParts = dateString.split("\\s+");
             if (timeParts.length > 1) {
-                String timeStr = timeParts[1];
-                String[] hms = timeStr.split(":");
+                String   timeStr = timeParts[1];
+                String[] hms     = timeStr.split(":");
                 if (hms.length >= 1) {
                     calendar.set(HOUR_OF_DAY, Integer.parseInt(convertToEnglishNumbers(hms[0])));
                 }
@@ -354,6 +448,13 @@ public class FastPersianDateFormat {
         return formatter.format(calendar);
     }
 
+    public static String format(FastPersianCalendar calendar, String pattern,
+            PersianDateNumberCharacter numberCharacter, CalendarType type) {
+        FastPersianDateFormat formatter = new FastPersianDateFormat(pattern, type);
+        formatter.setNumberCharacter(numberCharacter);
+        return formatter.format(calendar);
+    }
+
     public static String format(Date date, String pattern) {
         FastPersianCalendar calendar = new FastPersianCalendar();
         calendar.setTime(date);
@@ -381,11 +482,11 @@ public class FastPersianDateFormat {
     //=== CALENDAR CONSTANTS ===
 
     private static final int HOUR_OF_DAY = FastPersianCalendar.HOUR_OF_DAY;
-    private static final int MINUTE = FastPersianCalendar.MINUTE;
-    private static final int SECOND = FastPersianCalendar.SECOND;
+    private static final int MINUTE      = FastPersianCalendar.MINUTE;
+    private static final int SECOND      = FastPersianCalendar.SECOND;
     private static final int MILLISECOND = FastPersianCalendar.MILLISECOND;
-    private static final int HOUR = FastPersianCalendar.HOUR;
-    private static final int AM_PM = FastPersianCalendar.AM_PM;
-    private static final int AM = FastPersianCalendar.AM;
-    private static final int PM = FastPersianCalendar.PM;
+    private static final int HOUR        = FastPersianCalendar.HOUR;
+    private static final int AM_PM       = FastPersianCalendar.AM_PM;
+    private static final int AM          = FastPersianCalendar.AM;
+    private static final int PM          = FastPersianCalendar.PM;
 }
