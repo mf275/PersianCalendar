@@ -174,19 +174,18 @@ Using `FastPersianDateFormat`, you can display Shamsi dates with various pattern
 ```java
 import com.farashian.pcalendar.fast.FastPersianDateFormat;
 import com.farashian.pcalendar.fast.FastPersianCalendar;
-import com.farashian.pcalendar.fast.FastPersianDateFormat;
-import com.farashian.pcalendar.fast.FastPersianCalendar;
 
 public class DateFormatExample {
     public static void main(String[] args) {
-
+        String           pRresult;
+        String           gRresult;
+        String           iRresult = "";
         //Create an instance of FastPersianCalendar
         FastPersianCalendar date = new FastPersianCalendar();
-
         //Create a formatter and set pattern inside a method
-        FastPersianDateFormat formatter = new FastPersianDateFormat();
-        formatter.setPattern("yyyy/MM/dd");
-        
+        FastPersianDateFormat formatter = new FastPersianDateFormat("yyyy/MM/dd");
+        FastPersianDateFormat.PersianDateNumberCharacter numberFormat
+                = FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
         System.out.println("📅 Simple Date: " + formatter.format(date)); //Output: 1404/09/10 (Example)
 
         formatter.setPattern("dddd, d MMMM yyyy");
@@ -196,6 +195,16 @@ public class DateFormatExample {
         formatter.setPattern("yyyy-MM-dd HH:mm:ss");
         formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH); //Revert to English numbers
         System.out.println("⏰ Date and Time: " + formatter.format(date)); //Output: 1404-09-10 17:54:30 (Example)
+
+        pRresult   = formatter.format(date, numberFormat);
+        formatter.setCalendarType(FastPersianDateFormat.CalendarType.GREGORIAN);
+        gRresult   = formatter.format(date, numberFormat);
+        formatter.setCalendarType(FastPersianDateFormat.CalendarType.HEJRI);
+        iRresult   = formatter.format(date, numberFormat);
+
+        System.out.println("⏰ Persian Date and Time: " + pRresult);
+        System.out.println("⏰ Gregorian Date and Time: " + gRresult);
+        System.out.println("⏰ Hijri Date and Time: " + iRresult);
     }
 }
 
