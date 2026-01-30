@@ -82,12 +82,12 @@ repositories {
 
 dependencies {
     //For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.5.1")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.6.0")
 
     //For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.5.1")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.6.0")
     //or
-    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.5.1")
+    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.6.0")
 }
 
 ```
@@ -102,6 +102,9 @@ Thank you for helping keep this project alive!
 
 # what's new
 
+### version 2.6.0
+* - add CalendarType for  date formatting
+- 
 ### version 2.5.2
 * - Changed FastPersianCalendar and PersianCalendar to use 1-based months in public API (1=Farvardin, 12=Esfand)
 - 
