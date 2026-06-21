@@ -76,7 +76,7 @@ public class MainFastTest {
         System.out.println("========================================");
 
 
-        formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.FARSI);
+        formatter.setNumberCharacter(FastPersianDateFormat.NumberCharacter.FARSI);
         formatter.setPattern("yyyy/MM/dd HH:mm:ss");
         System.out.println("With Farsi numbers: " + formatter.format(now));
 
@@ -84,7 +84,7 @@ public class MainFastTest {
         System.out.println("Full date Farsi: " + formatter.format(now));
 
         //Switch back to English
-        formatter.setNumberCharacter(FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH);
+        formatter.setNumberCharacter(FastPersianDateFormat.NumberCharacter.ENGLISH);
         System.out.println();
 
         //Test 5: Static Format Methods
@@ -96,14 +96,14 @@ public class MainFastTest {
         String staticFormatted = FastPersianDateFormat.format(
                 now,
                 "yyyy-MM-dd HH:mm",
-                FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH
+                FastPersianDateFormat.NumberCharacter.ENGLISH
         );
         System.out.println("Static format: " + staticFormatted);
 
         String staticFarsi = FastPersianDateFormat.format(
                 now,
                 "dddd, d MMMM yyyy",
-                FastPersianDateFormat.PersianDateNumberCharacter.FARSI
+                FastPersianDateFormat.NumberCharacter.FARSI
         );
         System.out.println("Static Farsi: " + staticFarsi);
         System.out.println();
@@ -278,8 +278,8 @@ public class MainFastTest {
                 //FastPersianCalendar
                 FastPersianCalendar fastCalendar = new FastPersianCalendar();
                 fastCalendar.setTime(date);
-                FastPersianDateFormat.PersianDateNumberCharacter fastNumberFormat =
-                                FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
+                FastPersianDateFormat.NumberCharacter fastNumberFormat =
+                                FastPersianDateFormat.NumberCharacter.FARSI;
                 result = FastPersianDateFormat.format(fastCalendar, "yyyy/MM/dd", fastNumberFormat);
             }
 

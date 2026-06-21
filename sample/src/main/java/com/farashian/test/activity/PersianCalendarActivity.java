@@ -506,8 +506,8 @@ public class PersianCalendarActivity extends Activity {
 
             String pattern = edtCustomPattern.getText().toString().trim();
             fastNumberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
-                    FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH :
-                    FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
+                    FastPersianDateFormat.NumberCharacter.ENGLISH :
+                    FastPersianDateFormat.NumberCharacter.FARSI;
 
             numberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
                     PersianDateFormat.PersianDateNumberCharacter.ENGLISH :
@@ -596,8 +596,8 @@ public class PersianCalendarActivity extends Activity {
             String           iRresult = "";
 
             fastNumberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
-                    FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH :
-                    FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
+                    FastPersianDateFormat.NumberCharacter.ENGLISH :
+                    FastPersianDateFormat.NumberCharacter.FARSI;
 
             numberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
                     PersianDateFormat.PersianDateNumberCharacter.ENGLISH :
@@ -771,7 +771,7 @@ public class PersianCalendarActivity extends Activity {
     }
 
     PersianDateFormat.PersianDateNumberCharacter     numberFormat;
-    FastPersianDateFormat.PersianDateNumberCharacter fastNumberFormat;
+    FastPersianDateFormat.NumberCharacter fastNumberFormat;
 
     private void formatCurrentDate() {
         try {
@@ -795,8 +795,8 @@ public class PersianCalendarActivity extends Activity {
                 FastPersianCalendar now = new FastPersianCalendar();
 
                 fastNumberFormat = spnNumberFormat.getSelectedItemPosition() == 0 ?
-                        FastPersianDateFormat.PersianDateNumberCharacter.ENGLISH :
-                        FastPersianDateFormat.PersianDateNumberCharacter.FARSI;
+                        FastPersianDateFormat.NumberCharacter.ENGLISH :
+                        FastPersianDateFormat.NumberCharacter.FARSI;
                 result           = FastPersianDateFormat.format(now, pattern, fastNumberFormat);
             }
 

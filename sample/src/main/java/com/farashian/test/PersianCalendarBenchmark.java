@@ -37,7 +37,7 @@ public class PersianCalendarBenchmark {
     private static void testFastCalendar(int iterations) {
         FastPersianCalendar cal = new FastPersianCalendar();
         for (int i = 0; i < iterations; i++) {
-            cal.setPersianDate(1400 + (i % 3), i % 12, (i % 28) + 1);
+            cal.setDate(1400 + (i % 3), i % 12, (i % 28) + 1);
             cal.addDays(1);
             String formatted = cal.getShortDate();
            /* String formatted = formatDateFast(

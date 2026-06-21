@@ -4,16 +4,16 @@ import java.util.*;
 
 /**
  * Iranian Hijri (lunar) calendar converter, anchored to Iran's official data.
- *
+ * <p>
  * Epoch:
- *   Hijri 1447-07-01  ==  Gregorian 2025-12-22 (Tehran midnight)
- *
+ * Hijri 1447-07-01  ==  Gregorian 2025-12-22 (Tehran midnight)
+ * <p>
  * - Uses official Iranian month lengths when available (1340–1448).
  * - Falls back to tabular 30/29 month pattern + 30-year leap cycle when missing.
  * - All conversions are done relative to Tehran time.
- *
+ * <p>
  * NOTE: For years outside 1340–1448, results are approximate (tabular).
- *       Extend HIJRI_MONTH_DATA if you add more official years.
+ * Extend HIJRI_MONTH_DATA if you add more official years.
  */
 public class HijriConvertor {
 

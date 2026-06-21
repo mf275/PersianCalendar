@@ -15,8 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keep class com.farashian.pcalendar.fast.FastPersianCalendar { *; }
--keep class com.farashian.pcalendar.fast.FastPersianDateFormat { *; }
 
 -keep class com.farashian.pcalendar.PersianCalendar { *; }
 -keep class com.farashian.pcalendar.PersianDateFormat { *; }

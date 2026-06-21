@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace 'com.farashian.pcalendar'
+    namespace 'com.farashian.fpcalendar'
     compileSdkVersion 36
 
     defaultConfig {
@@ -16,7 +16,6 @@ android {
         versionName "2.6.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {

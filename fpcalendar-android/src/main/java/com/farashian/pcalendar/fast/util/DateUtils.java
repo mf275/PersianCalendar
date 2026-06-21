@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.farashian.pcalendar.fast.util.PCConstants.PERSIAN_MONTH_NAMES;
+
 public class DateUtils {
 
     public static int      THIS_YEAR;
@@ -26,11 +28,14 @@ public class DateUtils {
     static FastPersianDateFormat fullDate            = new FastPersianDateFormat("dd MMMM yyyy");
     static FastPersianDateFormat dashDate1           = new FastPersianDateFormat("dd-MMM-yyyy");
     static FastPersianDateFormat dateTime            = new FastPersianDateFormat("dd MMMM yyyy HH:mm");
+    static FastPersianDateFormat fullDateTimeWithDay = new FastPersianDateFormat("dddd, dd MMMM yyyy HH:mm");
     static FastPersianDateFormat timestampDash       = new FastPersianDateFormat("yyyy-MM-dd-HH:mm");
     static FastPersianDateFormat timestampUnderscore = new FastPersianDateFormat("yyyy-MM-dd_HH-mm");
     static FastPersianDateFormat slashDate           = new FastPersianDateFormat("yyyy/MM/dd");
     static FastPersianDateFormat dashDate            = new FastPersianDateFormat("yyyy-MM-dd");
     static FastPersianDateFormat time                = new FastPersianDateFormat("HH:mm");
+    static FastPersianDateFormat hour                = new FastPersianDateFormat("HH");
+    static FastPersianDateFormat minute              = new FastPersianDateFormat("mm");
     static FastPersianDateFormat timeWithSeconds     = new FastPersianDateFormat("HH:mm:ss");
 
     public static final String TIMESTAMP_FORMAT = "yyyyMMdd_HHmmss";
@@ -68,7 +73,8 @@ public class DateUtils {
     @RequiresApi(Build.VERSION_CODES.O)
     public static LocalDate fromDate(Date date) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault())
+                    .toLocalDate();
         }
 
         return null;
@@ -77,7 +83,8 @@ public class DateUtils {
     @RequiresApi(Build.VERSION_CODES.O)
     public static LocalDateTime asLocalDateTime(Date date) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
         }
 
         return null;
@@ -114,13 +121,8 @@ public class DateUtils {
         return dashDate.format(pdate);
     }
 
-    public static String getFarsiDate(String pattern) {
-        FastPersianCalendar   pdate = new FastPersianCalendar();
-        FastPersianDateFormat pdf   = new FastPersianDateFormat(pattern);
-        return pdf.format(pdate);
-    }
 
-    public static String getFarsiDate(FastPersianCalendar pdate, String pattern) {
+    public static String getDateFarsi(FastPersianCalendar pdate, String pattern) {
         FastPersianDateFormat pdf = new FastPersianDateFormat(pattern);
         return pdf.format(pdate);
     }
@@ -130,12 +132,12 @@ public class DateUtils {
         return date.getTime();
     }
 
-    public static FastPersianCalendar toPersianDate(Date date) {
+    public static FastPersianCalendar toFastPersianCalendar(Date date) {
         if (date == null) return null;
         return new FastPersianCalendar(date.getTime());
     }
 
-    public static FastPersianCalendar toPersianDate(String date) {
+    public static FastPersianCalendar toFastPersianCalendar(String date) {
         if (date == null) return null;
 
         try {
@@ -143,7 +145,7 @@ public class DateUtils {
             //Parse date in format "yyyy/MM/dd"
             String[] parts = date.split("/");
             if (parts.length == 3) {
-                pc.setPersianDate(
+                pc.setDate(
                         Integer.parseInt(parts[0]),
                         Integer.parseInt(parts[1]),
                         Integer.parseInt(parts[2])
@@ -160,14 +162,39 @@ public class DateUtils {
         return slashDate.format(date);
     }
 
-    public static String nowFullDateFarsi() {
-        FastPersianCalendar pdate = new FastPersianCalendar();
-        return fullDate.format(pdate);
-    }
-
-    public static String nowFullDateWithDayFarsi() {
+    public static String getFullDateWithDayFarsi() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return fullDateWithDay.format(pdate);
+    }
+
+    public static String getFullDateTimeWithDayFarsi() {
+        FastPersianCalendar pdate = new FastPersianCalendar();
+        return fullDateTimeWithDay.format(pdate);
+    }
+
+    public static String toDateString(Date date) {
+        if (date == null) return "";
+        FastPersianCalendar pdate = new FastPersianCalendar(date);
+
+        return slashDate.format(pdate);
+    }
+
+    public static String toDateString(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
+        slashDate.setNumberCharacter(FastPersianDateFormat.NumberCharacter.ENGLISH);
+        return slashDate.format(pdate);
+    }
+
+    public static String toDateStringFarsi(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
+        slashDate.setNumberCharacter(FastPersianDateFormat.NumberCharacter.FARSI);
+        return slashDate.format(pdate);
+    }
+
+    public static String toDateString(long timeStamp) {
+        FastPersianCalendar pdate = new FastPersianCalendar(timeStamp);
+        slashDate.setNumberCharacter(FastPersianDateFormat.NumberCharacter.ENGLISH);
+        return slashDate.format(pdate);
     }
 
     public static String getDayName() {
@@ -184,66 +211,111 @@ public class DateUtils {
         return dashDate.format(pdate);
     }
 
-    public static String getFarsiFullDate(long timeStamp) {
+    public static String getDateFarsiDash(Date date) {
+        FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
+        return fullDate.format(pdate);
+    }
+
+    public static String getFullDateFarsi(long timeStamp) {
         FastPersianCalendar pdate = new FastPersianCalendar(timeStamp);
         return fullDate.format(pdate);
     }
 
-    public static String getFarsiFullDateWithDay(long timeStamp) {
+    public static String getFullDateFarsi() {
+        FastPersianCalendar pdate = new FastPersianCalendar();
+        return fullDate.format(pdate);
+    }
+
+    public static String getFullDateFarsi(Date date) {
+        FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
+        return fullDate.format(pdate);
+    }
+
+    public static String getFullDateFarsi(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
+        return fullDate.format(pdate);
+    }
+
+    public static String getFullDateTimeWithDayFarsi(long timeStamp) {
+        FastPersianCalendar pdate = new FastPersianCalendar(timeStamp);
+        return fullDateTimeWithDay.format(pdate);
+    }
+
+    public static String getFullDateTimeWithDayFarsi(Date date) {
+        FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
+        return fullDateTimeWithDay.format(pdate);
+    }
+
+    public static String getFullDateTimeWithDayFarsi(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
+        return fullDateTimeWithDay.format(pdate);
+    }
+
+    public static String getFullDateWithDayFarsi(long timeStamp) {
         FastPersianCalendar pdate = new FastPersianCalendar(timeStamp);
         return fullDateWithDay.format(pdate);
     }
 
-    public static String getFarsiFullDate(Date date) {
-        FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
-        return fullDate.format(pdate);
-    }
-
-    public static String getFarsiFullDate(FastPersianCalendar pdate) {
-        if (pdate == null) return "";
-        return fullDate.format(pdate);
-    }
-
-    public static String getFarsiFullDateWithDay(FastPersianCalendar pdate) {
+    public static String getFullDateWithDayFarsi(FastPersianCalendar pdate) {
         if (pdate == null) return "";
         return fullDateWithDay.format(pdate);
     }
 
-    public static String getFarsiFullDateWithDay(Date date) {
+    public static String getFullDateMiladi() {
+        FastPersianCalendar pdate = new FastPersianCalendar();
+
+        return pdate.getGrgLongDate();
+    }
+
+    public static String getFullDateWithDayMiladi() {
+        FastPersianCalendar pdate = new FastPersianCalendar();
+
+        return pdate.getGrgLongDateWithDay();
+    }
+
+    public static String getFullDateWithDayFarsi(Date date) {
+        if (date == null) return "";
         FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
         return fullDateWithDay.format(pdate);
     }
 
-    public static String getFarsiDateWithTime(Date date) {
+    public static String getDateWithTimeFarsi(Date date) {
         FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
         return dateTime.format(pdate);
     }
 
-    public static String getFarsiDateWithTime(FastPersianCalendar pdate) {
+    public static String getDateWithTimeFarsi(FastPersianCalendar pdate) {
         return dateTime.format(pdate);
     }
 
-    public static String getFarsiDateWithTime(long dateInMilis) {
+    public static String getDateWithTimeFarsi(long dateInMilis) {
         FastPersianCalendar pdate = new FastPersianCalendar(dateInMilis);
         return dateTime.format(pdate);
     }
 
-    public static String getFarsiDateWithTime() {
+    public static String getDateWithTimeFarsi() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return dateTime.format(pdate);
     }
 
-    public static String nowSlashDateFarsi() {
+    public static String getDateSlashFarsi() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return slashDate.format(pdate);
     }
 
-    public static String getFarsiDateSlash(long dateInMilis) {
+    public static String getDateSlashFarsi(Date date) {
+        if (date == null) return "";
+        FastPersianCalendar pdate = new FastPersianCalendar(date);
+        return slashDate.format(pdate);
+    }
+
+    public static String getDateSlashFarsi(long dateInMilis) {
         FastPersianCalendar pdate = new FastPersianCalendar(dateInMilis);
         return slashDate.format(pdate);
     }
 
-    public static String getFarsiDateSlash(FastPersianCalendar pdate) {
+    public static String getDateSlashFarsi(FastPersianCalendar pdate) {
+        if (pdate == null) return "";
         return slashDate.format(pdate);
     }
 
@@ -254,18 +326,33 @@ public class DateUtils {
         return slashDate.format(pdate);
     }
 
-    public static String[] nowOnlyTime() {
+    public static String[] getTimeOnly() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return time.format(pdate).split(":");
     }
 
-    public static String nowTimeStampDashFarsi() {
+    public static String getDateTimeStampDashFarsi(Date date) {
+        FastPersianCalendar pdate = new FastPersianCalendar(date);
+        return timestampDash.format(pdate);
+    }
+
+    public static String getDateTimeStampDashFarsi() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return timestampDash.format(pdate);
     }
 
-    public static String nowTimeStampUnderscoreFarsi() {
+    public static String getDateTimeStampUnderscoreFarsi() {
         FastPersianCalendar pdate = new FastPersianCalendar();
+        return timestampUnderscore.format(pdate);
+    }
+
+    public static String getDateTimeStampUnderscoreEnglish() {
+        FastPersianCalendar pdate = new FastPersianCalendar();
+        return timestampUnderscore.format(pdate, FastPersianDateFormat.NumberCharacter.ENGLISH);
+    }
+
+    public static String getDateTimeStampUnderscoreFarsi(Date date) {
+        FastPersianCalendar pdate = new FastPersianCalendar(date.getTime());
         return timestampUnderscore.format(pdate);
     }
 
@@ -275,20 +362,59 @@ public class DateUtils {
         return time.format(pdate);
     }
 
-    public static String getNowTime() {
+    public static String getTime() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return time.format(pdate);
     }
 
-    public static String getNowTimeWithSeconds() {
+    public static String getTimeWithSeconds() {
         FastPersianCalendar pdate = new FastPersianCalendar();
         return timeWithSeconds.format(pdate);
     }
 
-    public static String nowFarsi(String pattern) {
+    public static String getDateFarsi(String pattern) {
+        if (pattern == null) return "";
         FastPersianCalendar   pdate = new FastPersianCalendar();
         FastPersianDateFormat pdf   = new FastPersianDateFormat(pattern);
         return pdf.format(pdate);
+    }
+
+
+    public static String[] weekNames = new String[]{
+            "", "یک‌شنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه", "شنبه"
+
+    };
+
+    public static int getDay(String day) {
+        for (int i = 0; i < weekNames.length; i++) {
+            if (day.equals(weekNames[i]))
+                return i;
+        }
+
+        return -1;
+    }
+
+    public static String getDay(int day) {
+        return weekNames[day];
+    }
+
+    public static int getMonth(Date date) {
+        FastPersianCalendar pdate = new FastPersianCalendar(date);
+        return pdate.getMonth();
+    }
+
+    public static String getMonthName(Date date) {
+        FastPersianCalendar pdate = new FastPersianCalendar(date);
+        return pdate.getMonthName();
+    }
+
+    public static String getMonthName(long date) {
+        FastPersianCalendar pdate = new FastPersianCalendar(date);
+        return pdate.getMonthName();
+    }
+
+    public static String getMonthNameByNumber(int number) {
+        return PERSIAN_MONTH_NAMES[number - 1];
     }
 
     public static long dateBeforeNow(int days) {
@@ -307,12 +433,20 @@ public class DateUtils {
         return calendar.getTimeInMillis();
     }
 
-    public static long getStartDate(int persianYear, int persianMonth, int persianDay) {
-        FastPersianCalendar FastPersianCalendar = new FastPersianCalendar();
-        FastPersianCalendar.setPersianDate(persianYear, persianMonth, persianDay);
+    public static long getStartDate(FastPersianCalendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    public static long getStartDate1(int persianYear, int persianMonth, int persianDay) {
+        FastPersianCalendar persianCalendar = new FastPersianCalendar();
+        persianCalendar.setDate(persianYear, persianMonth, persianDay);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(FastPersianCalendar.getTime());
+        calendar.setTime(persianCalendar.getTime());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -321,12 +455,126 @@ public class DateUtils {
         return calendar.getTimeInMillis();
     }
 
-    public static long getEndDate(int persianYear, int persianMonth, int persianDay) {
+    public static long getStartDate(int persianYear, int persianMonth, int persianDay) {
+        FastPersianCalendar persianCalendar = new FastPersianCalendar();
+        persianCalendar.setDate(persianYear, persianMonth, persianDay);
+
+        persianCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        persianCalendar.set(Calendar.MINUTE, 0);
+        persianCalendar.set(Calendar.SECOND, 0);
+        persianCalendar.set(Calendar.MILLISECOND, 0);
+
+        return persianCalendar.getTimeInMillis();
+    }
+
+    public static long getStartDate(int persianYear) {
+        FastPersianCalendar persianCalendar = new FastPersianCalendar();
+        persianCalendar.setDate(persianYear, 1, 1);
+
+        persianCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        persianCalendar.set(Calendar.MINUTE, 0);
+        persianCalendar.set(Calendar.SECOND, 0);
+        persianCalendar.set(Calendar.MILLISECOND, 0);
+
+        return persianCalendar.getTimeInMillis();
+    }
+
+    public static long getStartOfCurrentYear() {
+        FastPersianCalendar persianCalendar = new FastPersianCalendar();
+        int                 currentYear     = persianCalendar.getPersianYear();
+
+        persianCalendar.setDate(currentYear, 1, 1);
+        persianCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        persianCalendar.set(Calendar.MINUTE, 0);
+        persianCalendar.set(Calendar.SECOND, 0);
+        persianCalendar.set(Calendar.MILLISECOND, 0);
+
+        return persianCalendar.getTimeInMillis();
+    }
+
+    public static long getStartOfYear(int persianYear) {
+        FastPersianCalendar persianCalendar = new FastPersianCalendar();
+        persianCalendar.setDate(persianYear, 1, 1);
+
+        persianCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        persianCalendar.set(Calendar.MINUTE, 0);
+        persianCalendar.set(Calendar.SECOND, 0);
+        persianCalendar.set(Calendar.MILLISECOND, 0);
+
+        return persianCalendar.getTimeInMillis();
+    }
+
+    public static long getEndOfYear(int persianYear) {
+        FastPersianCalendar persianCalendar = new FastPersianCalendar();
+
+        // Check if the year is a leap year FIRST
+        int lastDay = FastPersianCalendar.isLeapYear(persianYear) ? 30 : 29;
+
+        // Then set the date to the last day of Esfand
+        persianCalendar.setDate(persianYear, 12, lastDay);
+
+        // Set to end of day
+        persianCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        persianCalendar.set(Calendar.MINUTE, 59);
+        persianCalendar.set(Calendar.SECOND, 59);
+        persianCalendar.set(Calendar.MILLISECOND, 999); // Should be 999, not 59
+
+        return persianCalendar.getTimeInMillis();
+    }
+
+    public static long getStartOfMonth(int persianYear, int persianMonth) {
+        FastPersianCalendar cal = new FastPersianCalendar();
+        cal.setDate(persianYear, persianMonth, 1);
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal.getTimeInMillis();
+    }
+
+    public static long getEndOfMonth(int persianYear, int persianMonth) {
+        FastPersianCalendar cal = new FastPersianCalendar();
+
+        int lastDay;
+        if (persianMonth <= 6) {
+            lastDay = 31;
+        } else if (persianMonth <= 11) {
+            lastDay = 30;
+        } else {
+            lastDay = FastPersianCalendar.isLeapYear(persianYear) ? 30 : 29;
+        }
+
+        cal.setDate(persianYear, persianMonth, lastDay);
+
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+
+        return cal.getTimeInMillis();
+    }
+
+
+    public static long getEndDate1(int persianYear, int persianMonth, int persianDay) {
         FastPersianCalendar FastPersianCalendar = new FastPersianCalendar();
-        FastPersianCalendar.setPersianDate(persianYear, persianMonth, persianDay);
+        FastPersianCalendar.setDate(persianYear, persianMonth, persianDay);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(FastPersianCalendar.getTime());
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+
+        return calendar.getTimeInMillis();
+    }
+
+    public static long getEndDate(int persianYear, int persianMonth, int persianDay) {
+        FastPersianCalendar calendar = new FastPersianCalendar();
+        calendar.setDate(persianYear, persianMonth, persianDay);
+
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
@@ -345,7 +593,29 @@ public class DateUtils {
         return calendar.getTimeInMillis();
     }
 
-    public static int calculateDaysBetween(FastPersianCalendar startDate, FastPersianCalendar endDate) {
+    public static long getCurrentDateEndDate() {
+        FastPersianCalendar calendar = new FastPersianCalendar();
+
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+
+        return calendar.getTimeInMillis();
+    }
+
+    public static long getEndDate(FastPersianCalendar calendar) {
+        //Calendar calendar = Calendar.getInstance();
+        //calendar.setTimeInMillis(dateTime);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTimeInMillis();
+    }
+
+    public static int calculateDaysBetween(FastPersianCalendar startDate,
+            FastPersianCalendar endDate) {
         long startMillis = startDate.getTimeInMillis();
         long endMillis   = endDate.getTimeInMillis();
         long diffMillis  = endMillis - startMillis;
@@ -401,5 +671,4 @@ public class DateUtils {
         calendar.add(Calendar.MINUTE, -1);
         return calendar.getTime();
     }
-
 }

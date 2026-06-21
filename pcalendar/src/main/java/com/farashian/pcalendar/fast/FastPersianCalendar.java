@@ -1,8 +1,7 @@
 package com.farashian.pcalendar.fast;
 
-import com.farashian.pcalendar.PCConstants;
+
 import com.farashian.pcalendar.YMD;
-import com.farashian.pcalendar.util.HijriConvertor;
 import com.farashian.pcalendar.util.PCalendarUtils;
 
 import java.util.*;
@@ -101,7 +100,8 @@ public class FastPersianCalendar extends Calendar {
         this(year, month, dayOfMonth, hourOfDay, minute, 0);
     }
 
-    public FastPersianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
+    public FastPersianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute,
+            int second) {
         this();
         setPersianDateInternal(year, month - 1, dayOfMonth);
         //Set time fields directly
@@ -114,6 +114,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Constructor that accepts Java GregorianCalendar object
+     *
      * @param gregorianCalendar GregorianCalendar object
      */
     public FastPersianCalendar(GregorianCalendar gregorianCalendar) {
@@ -146,6 +147,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Constructor that accepts a Calendar object (can be any Calendar type)
+     *
      * @param calendar Any Calendar object (Gregorian, Persian, etc.)
      */
     public FastPersianCalendar(Calendar calendar) {
@@ -190,12 +192,6 @@ public class FastPersianCalendar extends Calendar {
         return get(SECOND);
     }
 
-    public void setPersianDate(int year, int month, int day, int hourOfDay, int minute, int second) {
-        setPersianDate(year, month, day);
-        set(HOUR_OF_DAY, hourOfDay);
-        set(MINUTE, minute);
-        set(SECOND, second);
-    }
 
     public FastPersianCalendar copy() {
         return new FastPersianCalendar(this);
@@ -215,6 +211,23 @@ public class FastPersianCalendar extends Calendar {
 
     public void setDate(Date date) {
         setTimeInMillis(date.getTime());
+    }
+
+    /**
+     * Set Persian date (1-based month)
+     */
+    public void setDate(int year, int month, int day) {
+        setPersianDateInternal(year, month - 1, day);
+    }
+
+    /**
+     * Set Persian date with time
+     */
+    public void setDate(int year, int month, int day, int hour, int minute, int second) {
+        setPersianDateInternal(year, month - 1, day);
+        set(HOUR_OF_DAY, hour);
+        set(MINUTE, minute);
+        set(SECOND, second);
     }
 
     public static FastPersianCalendar gregorianToPersian(int gYear, int gMonth, int gDay) {
@@ -284,47 +297,17 @@ public class FastPersianCalendar extends Calendar {
     /**
      * ✅ PUBLIC API: month is 1-based (1=Farvardin, 12=Esfand)
      */
+
     public int getDaysInMonth(int year, int month) {
-        // Convert 1-based month to 0-based for internal calculation
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
-        }
-        int month0Based = month - 1;
-
-        if (month0Based < 6) {
-            return 31;
-        } else if (month0Based < 11) {
-            return 30;
-        } else {
-            return isLeapYear(year) ? 30 : 29;
-        }
+        validateMonth1Based(month);
+        return getDaysInMonthInternal(year, month - 1);
     }
 
-    private int getDaysInMonthInternal(int year, int month) {
-        int month0Based = month - 1;
-        if (month0Based < 6) return 31;
-        if (month0Based < 11) return 30;
-        return isLeapYear(year) ? 30 : 29;
-    }
-
-    /**
-     * ✅ PUBLIC API: month is 1-based (1=Farvardin, 12=Esfand)
-     */
     public static int getDaysInMonthStatic(int year, int month) {
-        // Convert 1-based month to 0-based for internal calculation
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
-        }
-        int month0Based = month - 1;
-
-        if (month0Based < 6) {
-            return 31;
-        } else if (month0Based < 11) {
-            return 30;
-        } else {
-            return isLeapYear(year) ? 30 : 29;
-        }
+        validateMonth1Based(month);
+        return getDaysInMonthInternalStatic(year, month - 1);
     }
+
 
     public static int getMaximumMonthWeeks() {
         return 6;
@@ -380,18 +363,20 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Islamic (Hijri) year
+     *
      * @return Hijri date
      */
-   public YMD getHijriDate() {
+    public YMD getHijriDate() {
         ensureComputed();
         return gregorianToHijri(gCal);
     }
 
     /**
      * Set the date using Hijri (Hijri) calendar values
-     * @param hYear Hijri year
-     * @param hMonth Hijri month (1-12)
-     * @param hDay Hijri day of month
+     *
+     * @param hYear    Hijri year
+     * @param hMonth   Hijri month (1-12)
+     * @param hDay     Hijri day of month
      * @param timeZone Target timezone for the date
      */
     public void setHijriDate(int hYear, int hMonth, int hDay, TimeZone timeZone) {
@@ -429,21 +414,13 @@ public class FastPersianCalendar extends Calendar {
      * Find the Gregorian date corresponding to the first day (Hijri day 1)
      * of a given Hijri month and year.
      *
-     * @param islamicYear   Hijri year (e.g., 1446)
-     * @param islamicMonth Hijri month (1-based: 1 = Muharram, 2 = Safar, ..., 12 = Dhu al-Hijjah)
+     * @param tvHijriYear  Hijri year (e.g., 1446)
+     * @param tvHijriMonth Hijri month (1-based: 1 = Muharram, 2 = Safar, ..., 12 = Dhu al-Hijjah)
      * @return Calendar object representing the Gregorian date of the first day of the Hijri month
      */
-    public static Calendar findFirstDayOfHijriMonth(int islamicYear, int islamicMonth) {
+    public static Calendar findFirstDayOfHijriMonth(int tvHijriYear, int tvHijriMonth) {
         //Use existing hijriToGregorian method to convert to Gregorian
-        return hijriToGregorian(islamicYear, islamicMonth, 1);
-    }
-
-    /**
-     * ✅ PUBLIC API: month is 1-based (1=Farvardin, 12=Esfand)
-     */
-    public void setPersianDate(int year, int month, int day) {
-        validatePersianDate(year, month, day);
-        setPersianDateInternal(year, month - 1, day);
+        return hijriToGregorian(tvHijriYear, tvHijriMonth, 1);
     }
 
 
@@ -481,11 +458,9 @@ public class FastPersianCalendar extends Calendar {
     public void parse(String dateString) {
         FastPersianCalendar parsed = parseOrNullToCompat(dateString);
         if (parsed != null) {
-            //Create fresh instance instead of copying internal state
-            /// TODO loooooooook ath this
-            //setPersianDateInternal(parsed.persianYear, parsed.persianMonth, parsed.persianDay);
-            setPersianDateInternal(parsed.persianYear, parsed.persianMonth - 1, parsed.persianDay);
-            //Copy time fields if they exist
+            // FIXED: parsed.getMonth() returns 1-based, subtract 1 for internal
+            setPersianDateInternal(parsed.persianYear, parsed.getMonth() - 1, parsed.persianDay);
+            // Copy time fields if they exist
             if (parsed.isSet[HOUR_OF_DAY]) set(HOUR_OF_DAY, parsed.get(HOUR_OF_DAY));
             if (parsed.isSet[MINUTE]) set(MINUTE, parsed.get(MINUTE));
             if (parsed.isSet[SECOND]) set(SECOND, parsed.get(SECOND));
@@ -645,7 +620,7 @@ public class FastPersianCalendar extends Calendar {
     private int calculateDayOfYear() {
         int dayOfYear = 0;
         for (int month = 0; month < persianMonth; month++) {
-            dayOfYear += getDaysInMonth(persianYear, month + 1);
+            dayOfYear += getDaysInMonthInternal(persianYear, month);
         }
         dayOfYear += persianDay;
         return dayOfYear;
@@ -707,39 +682,16 @@ public class FastPersianCalendar extends Calendar {
         }
     }
 
-    @Override
-    public void add(int field, int amount) {
-        if (amount == 0) return;
-        if (field < 0 || field >= ZONE_OFFSET) return;
-
-        complete();
-
-        //For Persian date fields, use direct Persian math
-        if (field == YEAR || field == MONTH || field == DAY_OF_MONTH) {
-            handlePersianDateArithmetic(field, amount);
-        } else {
-            //For other fields, use Gregorian but optimized
-            computeTime();
-            gCal.add(field, amount);
-            time = gCal.getTimeInMillis();
-            computePersianFromGregorianFast();
-            areFieldsSet = false;
-        }
-    }
-
-    public void addDays(int days) {
-        add(DAY_OF_MONTH, days);
-    }
-
     /**
      * Handle Persian date arithmetic with proper day adjustment
+     * Internal months are 0-based
      */
-    private void handlePersianDateArithmetic(int field, int amount) {
+    private void handlePersianArithmetic(int field, int amount) {
         switch (field) {
             case YEAR:
                 persianYear += amount;
                 if (persianYear < 1) persianYear = 1;
-                adjustDayForNewMonth();
+                adjustDayForMonth();
                 break;
             case MONTH:
                 int totalMonths = persianYear * 12 + persianMonth + amount;
@@ -752,7 +704,7 @@ public class FastPersianCalendar extends Calendar {
                     if (persianYear < 1) persianYear = 1;
                     persianMonth = (totalMonths % 12 + 12) % 12;
                 }
-                adjustDayForNewMonth();
+                adjustDayForMonth();
                 break;
             case DAY_OF_MONTH:
                 persianDay += amount;
@@ -760,7 +712,7 @@ public class FastPersianCalendar extends Calendar {
                 break;
         }
 
-        //Recompute Gregorian date and sync
+        // Recompute Gregorian date and sync
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
         isDirty          = true;
@@ -768,13 +720,18 @@ public class FastPersianCalendar extends Calendar {
         areFieldsSet     = false;
     }
 
+    public void addDays(int days) {
+        add(DAY_OF_MONTH, days);
+    }
+
     /**
      * Normalize date by handling overflow/underflow of days
      */
+
     private void normalizeDate() {
-        //Handle positive overflow
-        while (persianDay > getDaysInMonth(persianYear, persianMonth + 1)) {
-            persianDay -= getDaysInMonth(persianYear, persianMonth + 1);
+        // Handle positive overflow
+        while (persianDay > getDaysInMonthInternal(persianYear, persianMonth)) {
+            persianDay -= getDaysInMonthInternal(persianYear, persianMonth);
             persianMonth++;
             if (persianMonth > 11) {
                 persianMonth = 0;
@@ -782,7 +739,7 @@ public class FastPersianCalendar extends Calendar {
             }
         }
 
-        //Handle negative underflow
+        // Handle negative underflow
         while (persianDay < 1) {
             persianMonth--;
             if (persianMonth < 0) {
@@ -790,69 +747,77 @@ public class FastPersianCalendar extends Calendar {
                 persianYear--;
                 if (persianYear < 1) persianYear = 1;
             }
-            persianDay += getDaysInMonth(persianYear, persianMonth + 1);
+            persianDay += getDaysInMonthInternal(persianYear, persianMonth);
         }
     }
 
     /**
      * Adjust day when month or year changes to ensure valid date
      */
-    private void adjustDayForNewMonth() {
-        int maxDays = getDaysInMonth(persianYear, persianMonth + 1);
+
+    private void adjustDayForMonth() {
+        int maxDays = getDaysInMonthInternal(persianYear, persianMonth);
         if (persianDay > maxDays) {
             persianDay = maxDays;
         }
     }
 
     @Override
-    public void roll(int field, boolean up) {
+    public void add(int field, int amount) {
+        if (amount == 0) return;
+        if (field < 0 || field >= ZONE_OFFSET) return;
+
         complete();
 
-        if (field == YEAR) {
-            persianYear += up ? 1 : -1;
-            if (persianYear <= 0) persianYear = 1;
-            adjustDayForNewMonth();
-        } else if (field == MONTH) {
-            if (up) {
-                if (persianMonth == 11) {
-                    persianMonth = 0;
-                    persianYear++;
-                } else {
-                    persianMonth++;
-                }
-            } else {
-                if (persianMonth == 0) {
-                    persianMonth = 11;
-                    persianYear--;
-                    if (persianYear < 1) persianYear = 1;
-                } else {
-                    persianMonth--;
-                }
-            }
-            adjustDayForNewMonth();
-        } else if (field == DAY_OF_MONTH) {
-            int maxDays = getDaysInMonth(persianYear, persianMonth + 1);
-            if (up) {
-                if (persianDay == maxDays) {
-                    persianDay = 1;
-                } else {
-                    persianDay++;
-                }
-            } else {
-                if (persianDay == 1) {
-                    persianDay = maxDays;
-                } else {
-                    persianDay--;
-                }
-            }
+        if (field == YEAR || field == MONTH || field == DAY_OF_MONTH) {
+            handlePersianArithmetic(field, amount);
         } else {
             computeTime();
-            gCal.roll(field, up);
+            gCal.add(field, amount);
             time = gCal.getTimeInMillis();
             computePersianFromGregorianFast();
+            areFieldsSet = false;
+        }
+    }
+
+    @Override
+    public void roll(int field, boolean up) {
+        complete();
+        int amount = up ? 1 : -1;
+
+        switch (field) {
+            case YEAR:
+                persianYear += amount;
+                if (persianYear < 1) persianYear = 1;
+                adjustDayForMonth();
+                break;
+            case MONTH:
+                int newMonth = persianMonth + amount;
+                if (newMonth < 0) {
+                    newMonth = 11;
+                    persianYear--;
+                    if (persianYear < 1) persianYear = 1;
+                } else if (newMonth > 11) {
+                    newMonth = 0;
+                    persianYear++;
+                }
+                persianMonth = newMonth;
+                adjustDayForMonth();
+                break;
+            case DAY_OF_MONTH:
+                int maxDays = getDaysInMonthInternal(persianYear, persianMonth);
+                persianDay += amount;
+                if (persianDay < 1) persianDay = maxDays;
+                else if (persianDay > maxDays) persianDay = 1;
+                break;
+            default:
+                computeTime();
+                gCal.roll(field, up);
+                time = gCal.getTimeInMillis();
+                computePersianFromGregorianFast();
+                break;
         }
 
-        //Recompute Gregorian date and sync
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
         isDirty          = true;
@@ -860,7 +825,6 @@ public class FastPersianCalendar extends Calendar {
         areFieldsSet     = false;
     }
 
-    //=== OVERRIDES (FIXED) ===
 
     public void setNewTime(Date date) {
         setTimeInMillis(date.getTime());
@@ -882,63 +846,45 @@ public class FastPersianCalendar extends Calendar {
         computeFields();
     }
 
-
-    @Override
-    public void setTimeZone(TimeZone zone) {
-        super.setTimeZone(zone);
-        gCal.setTimeZone(zone);
-        lastComputedTime = -1;
-        isDirty          = true;
-        areFieldsSet     = false;
-    }
-
     @Override
     public void set(int field, int value) {
-        //Handle setting Persian fields specially
         switch (field) {
             case YEAR:
                 if (value < 1 || value > 9999) {
                     throw new IllegalArgumentException("Year must be between 1 and 9999, got: " + value);
                 }
                 persianYear = value;
-                adjustDayForNewMonth();
+                adjustDayForMonth();
                 break;
             case MONTH:
                 if (value < 0 || value > 11) {
                     throw new IllegalArgumentException("Month must be between 0 and 11, got: " + value);
                 }
                 persianMonth = value;
-                adjustDayForNewMonth();
+                adjustDayForMonth();
                 break;
             case DAY_OF_MONTH:
-                int maxDays = getDaysInMonth(persianYear, persianMonth + 1);
+                int maxDays = getDaysInMonthInternal(persianYear, persianMonth);
                 if (value < 1 || value > maxDays) {
                     throw new IllegalArgumentException("Day must be between 1 and " + maxDays + ", got: " + value);
                 }
                 persianDay = value;
                 break;
             default:
-                //For other fields, use standard mechanism
                 super.set(field, value);
                 return;
         }
 
-        //Recompute Gregorian date and sync everything
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
         areFieldsSet     = false;
         lastComputedTime = -1;
     }
 
-    //=== VALIDATION METHODS ===
-
-
     @Override
     public String toString() {
         return getLongDate();
     }
-
-    //=== FAST CONVERSION ALGORITHMS ===
 
     public static void gregorianToJalaliFast(int gy, int gm, int gd, int[] out) {
         int jy = (gm > 2) ? (gy + 1) : gy;
@@ -1013,8 +959,9 @@ public class FastPersianCalendar extends Calendar {
     //=== INTERNAL HELPERS ===
 
     private void setPersianDateInternal(int year, int month, int day) {
+        validatePersianDateInternal(year, month, day);
         this.persianYear      = year;
-        this.persianMonth     = month;
+        this.persianMonth     = month; // 0-based
         this.persianDay       = day;
         this.isDirty          = true;
         this.lastComputedTime = -1;
@@ -1022,6 +969,71 @@ public class FastPersianCalendar extends Calendar {
 
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
+    }
+
+    /**
+     * Internal method: Get days in month with 0-based month
+     */
+    private int getDaysInMonthInternal(int year, int month) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+        if (month < 6) return 31;
+        if (month < 11) return 30;
+        return isLeapYear(year) ? 30 : 29;
+    }
+
+    /**
+     * Static internal method: Get days in month with 0-based month
+     */
+    private static int getDaysInMonthInternalStatic(int year, int month) {
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+        if (month < 6) return 31;
+        if (month < 11) return 30;
+        return isLeapYear(year) ? 30 : 29;
+    }
+
+    /**
+     * Validate 1-based month
+     */
+    private static void validateMonth1Based(int month) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
+        }
+    }
+
+    /**
+     * Validate Persian date (internal: 0-based month)
+     */
+    private void validatePersianDateInternal(int year, int month, int day) {
+        if (year < 1 || year > 9999) {
+            throw new IllegalArgumentException("Year must be between 1 and 9999, got: " + year);
+        }
+        if (month < 0 || month > 11) {
+            throw new IllegalArgumentException("Month must be between 0 and 11, got: " + month);
+        }
+        int maxDays = getDaysInMonthInternal(year, month);
+        if (day < 1 || day > maxDays) {
+            throw new IllegalArgumentException("Day must be between 1 and " + maxDays + ", got: " + day);
+        }
+    }
+
+    /**
+     * Validate Gregorian date (1-based month)
+     */
+    private void validateGregorianDate(int year, int month, int day) {
+        if (year < 1 || year > 9999) {
+            throw new IllegalArgumentException("Year must be between 1 and 9999, got: " + year);
+        }
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
+        }
+        int maxDays = getGrgMonthLength(year, month);
+        if (day < 1 || day > maxDays) {
+            throw new IllegalArgumentException("Day must be between 1 and " + maxDays + ", got: " + day);
+        }
     }
 
     private void setInternalField(int field, int value) {
@@ -1250,14 +1262,15 @@ public class FastPersianCalendar extends Calendar {
         if (index < 0) index += 7;
 
         return locale.getLanguage().equals("fa")
-                ? PCConstants.WEEKDAY_NAMES[index]
-                : PCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
+                ? WEEKDAY_NAMES[index]
+                : WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
     }
 
     /**
      * @param month 1-based Persian month (1=Farvardin)
      */
     public static String getMonthName(int month, Locale locale) {
+        validateMonth1Based(month);
         return PCalendarUtils.getPersianMonthName(month, locale);
     }
 
@@ -1268,24 +1281,23 @@ public class FastPersianCalendar extends Calendar {
 
     public String getMonthNameShort() {
         return getMonthNameShort(getMonth(), locale);
-
     }
 
     /**
      * @param month 1-based Persian month (1=Farvardin)
      */
     public static String getMonthNameShort(int month, Locale locale) {
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
+        validateMonth1Based(month);
+        if (locale.getLanguage().equals("fa")) {
+            return PERSIAN_MONTH_NAMES_SHORT[month - 1];
+        } else {
+            return PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month - 1];
         }
-
-        return locale.getLanguage().equals("fa")
-                ? PCConstants.PERSIAN_MONTH_NAMES_SHORT[month - 1]
-                : PCConstants.PERSIAN_MONTH_NAMES_ENGLISH_SHORT[month - 1];
     }
 
     /**
      * Get Gregorian year from the underlying GregorianCalendar
+     *
      * @return Gregorian year
      */
     public int getGrgYear() {
@@ -1295,6 +1307,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian month (1-based: 1=January, 12=December)
+     *
      * @return Gregorian month (1-12)
      */
     public int getGrgMonth() {
@@ -1305,6 +1318,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian day of month (1-31)
+     *
      * @return Gregorian day of month
      */
     public int getGrgDay() {
@@ -1314,6 +1328,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian week of year (ISO 8601 week numbering)
+     *
      * @return Gregorian week of year (1-53)
      */
     public int getGrgWeekOfYear() {
@@ -1323,6 +1338,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian week of month
+     *
      * @return Gregorian week of month (1-6)
      */
     public int getGrgWeekOfMonth() {
@@ -1332,6 +1348,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian day of week (Calendar.SUNDAY=1, Calendar.SATURDAY=7)
+     *
      * @return Gregorian day of week
      */
     public int getGrgDayOfWeek() {
@@ -1341,6 +1358,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian day of week name
+     *
      * @param locale locale for weekday name
      * @return Gregorian weekday name
      */
@@ -1361,6 +1379,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian month name
+     *
      * @param locale locale for month name
      * @return Gregorian month name
      */
@@ -1376,6 +1395,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian month length (days in month)
+     *
      * @return number of days in current Gregorian month
      */
     public int getGrgMonthLength() {
@@ -1385,7 +1405,8 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian month0 length for specific year and month0
-     * @param year Gregorian year
+     *
+     * @param year  Gregorian year
      * @param month 1-based Gregorian month (1=January)
      * @return number of days in the month
      */
@@ -1421,7 +1442,8 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian month name (fast version without Calendar)
-     * @param month 1-based Gregorian month (1=January)
+     *
+     * @param month  1-based Gregorian month (1=January)
      * @param locale locale for month name
      * @return month name
      */
@@ -1454,6 +1476,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian month short name (3-letter abbreviation)
+     *
      * @param locale locale for month name
      * @return Gregorian month short name
      */
@@ -1469,7 +1492,8 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian month short name (3-letter abbreviation)
-     * @param month 1-based Gregorian month (1=January)
+     *
+     * @param month  1-based Gregorian month (1=January)
      * @param locale locale for month name
      * @return month short name
      */
@@ -1498,7 +1522,8 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Static method: Get Gregorian month name without creating calendar instance
-     * @param month 1-based Gregorian month (1=January)
+     *
+     * @param month  1-based Gregorian month (1=January)
      * @param locale locale for month name
      * @return Gregorian month name
      */
@@ -1517,6 +1542,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian month name with number (e.g., "January (01)")
+     *
      * @param locale locale for month name
      * @return formatted month name with number
      */
@@ -1529,9 +1555,10 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Convert Gregorian date to Persian date
-     * @param year Gregorian year
+     *
+     * @param year  Gregorian year
      * @param month 1-based Gregorian month (1=January)
-     * @param day Gregorian day
+     * @param day   Gregorian day
      * @return Persian date as FastPersianCalendar
      */
     public static FastPersianCalendar fromGregorian(int year, int month, int day) {
@@ -1543,6 +1570,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get current Gregorian date
+     *
      * @return current Gregorian date as FastPersianCalendar
      */
     public static GregorianCalendar currentGregorian() {
@@ -1554,6 +1582,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get full Gregorian date as string
+     *
      * @param locale locale for formatting
      * @return formatted Gregorian date
      */
@@ -1597,6 +1626,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian date with 1-based month format
+     *
      * @param delimiter delimiter between parts
      * @return formatted date with 1-based month
      */
@@ -1613,6 +1643,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if current Gregorian date is today
+     *
      * @return true if Gregorian date is today
      */
     public boolean isGrgToday() {
@@ -1627,6 +1658,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian date as Date object
+     *
      * @return Date object representing the Gregorian date
      */
     public Date toDate() {
@@ -1636,6 +1668,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Gregorian date as milliseconds
+     *
      * @return milliseconds since epoch
      */
     public long getGrgTimeInMillis() {
@@ -1645,9 +1678,10 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Set Gregorian date
-     * @param year Gregorian year
+     *
+     * @param year  Gregorian year
      * @param month 1-based Gregorian month (1=January)
-     * @param day day of month (1-31)
+     * @param day   day of month (1-31)
      */
     public void setGregorianDate(int year, int month, int day) {
         if (month < 1 || month > 12) {
@@ -1663,6 +1697,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Add days to Gregorian date
+     *
      * @param days number of days to add (can be negative)
      */
     public void addGrgDays(int days) {
@@ -1673,6 +1708,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Add months to Gregorian date
+     *
      * @param months number of months to add (can be negative)
      */
     public void addGrgMonths(int months) {
@@ -1683,6 +1719,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Add years to Gregorian date
+     *
      * @param years number of years to add (can be negative)
      */
     public void addGrgYears(int years) {
@@ -1693,6 +1730,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get difference in days between this Gregorian date and another
+     *
      * @param other the other date
      * @return number of days difference
      */
@@ -1704,6 +1742,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if Gregorian year is leap year
+     *
      * @param year Gregorian year
      * @return true if leap year
      */
@@ -1713,6 +1752,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if current Gregorian year is leap year
+     *
      * @return true if leap year
      */
     public boolean isGrgLeapYear() {
@@ -1721,6 +1761,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get day of year for Gregorian date (1-365/366)
+     *
      * @return day of year
      */
     public int getGrgDayOfYear() {
@@ -1730,6 +1771,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the first day of week for Gregorian calendar
+     *
      * @return first day of week (Calendar.SUNDAY or Calendar.MONDAY)
      */
     public int getGrgFirstDayOfWeek() {
@@ -1738,6 +1780,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if Gregorian date is weekend (Saturday or Sunday)
+     *
      * @return true if Saturday or Sunday
      */
     public boolean isGrgWeekend() {
@@ -1747,6 +1790,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if Gregorian date is weekday (Monday to Friday)
+     *
      * @return true if Monday to Friday
      */
     public boolean isGrgWeekday() {
@@ -1773,15 +1817,15 @@ public class FastPersianCalendar extends Calendar {
     }
 
     public static String getShortDate(int year, int month, int day, String delimiter, Locale locale) {
-        return formatToTwoDigits(year, locale) + delimiter +
-               formatToTwoDigits(month + 1, locale) + delimiter +
-               formatToTwoDigits(day, locale);
+        return String.format(locale, "%04d%s%02d%s%02d",
+                             year, delimiter, month, delimiter, day);
     }
 
     //=== HELPER METHODS FOR DATE MANIPULATION ===
 
     /**
      * Add weeks to the current date
+     *
      * @param weeks number of weeks to add (can be negative to subtract)
      */
     public void addWeeks(int weeks) {
@@ -1790,6 +1834,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Add months to the current date
+     *
      * @param months number of months to add (can be negative to subtract)
      */
     public void addMonths(int months) {
@@ -1798,6 +1843,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Add years to the current date
+     *
      * @param years number of years to add (can be negative to subtract)
      */
     public void addYears(int years) {
@@ -1806,6 +1852,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a copy of this calendar with days added
+     *
      * @param days number of days to add
      * @return new FastPersianCalendar instance with the added days
      */
@@ -1817,6 +1864,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a copy of this calendar with days subtracted
+     *
      * @param days number of days to subtract
      * @return new FastPersianCalendar instance with the subtracted days
      */
@@ -1826,6 +1874,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a copy of this calendar with weeks added
+     *
      * @param weeks number of weeks to add
      * @return new FastPersianCalendar instance with the added weeks
      */
@@ -1837,6 +1886,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a copy of this calendar with weeks subtracted
+     *
      * @param weeks number of weeks to subtract
      * @return new FastPersianCalendar instance with the subtracted weeks
      */
@@ -1846,6 +1896,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a copy of this calendar with months added
+     *
      * @param months number of months to add
      * @return new FastPersianCalendar instance with the added months
      */
@@ -1857,6 +1908,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a copy of this calendar with months subtracted
+     *
      * @param months number of months to subtract
      * @return new FastPersianCalendar instance with the subtracted months
      */
@@ -1866,6 +1918,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a copy of this calendar with years added
+     *
      * @param years number of years to add
      * @return new FastPersianCalendar instance with the added years
      */
@@ -1877,6 +1930,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a copy of this calendar with years subtracted
+     *
      * @param years number of years to subtract
      * @return new FastPersianCalendar instance with the subtracted years
      */
@@ -1886,6 +1940,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if this date is before another Persian date
+     *
      * @param other the date to compare with
      * @return true if this date is before the other date
      */
@@ -1895,6 +1950,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if this date is after another Persian date
+     *
      * @param other the date to compare with
      * @return true if this date is after the other date
      */
@@ -1904,6 +1960,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if this date is equal to another Persian date
+     *
      * @param other the date to compare with
      * @return true if both dates represent the same day
      */
@@ -1915,6 +1972,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the number of days between this date and another date
+     *
      * @param other the date to compare with
      * @return number of days between the two dates (positive if this date is later)
      */
@@ -1929,9 +1987,9 @@ public class FastPersianCalendar extends Calendar {
      *
      * @param other the other Persian date
      * @return number of days between this date and the other date
-     *         Positive if this date is later than the other date
-     *         Negative if this date is earlier than the other date
-     *         Zero if both dates are the same
+     * Positive if this date is later than the other date
+     * Negative if this date is earlier than the other date
+     * Zero if both dates are the same
      */
     public int calculateDaysBetween(FastPersianCalendar other) {
         if (other == null) {
@@ -2102,7 +2160,7 @@ public class FastPersianCalendar extends Calendar {
     /**
      * Check if a date is within a certain number of days from this date
      *
-     * @param other the other Persian date
+     * @param other   the other Persian date
      * @param maxDays maximum number of days allowed
      * @return true if the other date is within maxDays from this date
      */
@@ -2158,7 +2216,7 @@ public class FastPersianCalendar extends Calendar {
     /**
      * Calculate the number of specific weekdays between two dates
      *
-     * @param other the other Persian date
+     * @param other           the other Persian date
      * @param targetDayOfWeek the day of week to count (Calendar.SUNDAY, Calendar.MONDAY, etc.)
      * @return number of occurrences of the target day of week between the dates
      */
@@ -2266,7 +2324,7 @@ public class FastPersianCalendar extends Calendar {
      * Check if this date is within a date range (inclusive)
      *
      * @param startDate start of the range
-     * @param endDate end of the range
+     * @param endDate   end of the range
      * @return true if this date is between startDate and endDate (inclusive)
      */
     public boolean isWithinRange(FastPersianCalendar startDate, FastPersianCalendar endDate) {
@@ -2281,12 +2339,13 @@ public class FastPersianCalendar extends Calendar {
      * Calculate overlapping days between two date ranges
      *
      * @param range1Start start of first range
-     * @param range1End end of first range
+     * @param range1End   end of first range
      * @param range2Start start of second range
-     * @param range2End end of second range
+     * @param range2End   end of second range
      * @return number of overlapping days, or 0 if no overlap
      */
-    public static int calculateOverlapDays(FastPersianCalendar range1Start, FastPersianCalendar range1End,
+    public static int calculateOverlapDays(FastPersianCalendar range1Start,
+            FastPersianCalendar range1End,
             FastPersianCalendar range2Start, FastPersianCalendar range2End) {
         if (range1Start == null || range1End == null || range2Start == null || range2End == null) {
             throw new IllegalArgumentException("All date parameters must not be null");
@@ -2311,6 +2370,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the current date is a holiday (Friday in Persian calendar)
+     *
      * @return true if the day is Friday
      */
     public boolean isHoliday() {
@@ -2319,6 +2379,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the current date is today
+     *
      * @return true if the date represents today
      */
     public boolean isToday() {
@@ -2328,6 +2389,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the first day of the current month
+     *
      * @return new FastPersianCalendar instance set to the first day of current month
      */
     public FastPersianCalendar withFirstDayOfMonth() {
@@ -2338,6 +2400,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the last day of the current month
+     *
      * @return new FastPersianCalendar instance set to the last day of current month
      */
     public FastPersianCalendar withLastDayOfMonth() {
@@ -2349,6 +2412,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the first day of the current year
+     *
      * @return new FastPersianCalendar instance set to Farvardin 1 of current year
      */
     public FastPersianCalendar withFirstDayOfYear() {
@@ -2360,6 +2424,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the last day of the current year
+     *
      * @return new FastPersianCalendar instance set to Esfand 29/30 of current year
      */
     public FastPersianCalendar withLastDayOfYear() {
@@ -2372,6 +2437,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the start of the day (00:00:00.000)
+     *
      * @return new FastPersianCalendar instance with time set to midnight
      */
     public FastPersianCalendar atStartOfDay() {
@@ -2385,6 +2451,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the end of the day (23:59:59.999)
+     *
      * @return new FastPersianCalendar instance with time set to end of day
      */
     public FastPersianCalendar atEndOfDay() {
@@ -2398,6 +2465,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the age in years based on a reference date (usually today)
+     *
      * @param referenceDate the date to calculate age against (usually today)
      * @return age in years
      */
@@ -2419,6 +2487,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the age in years based on today's date
+     *
      * @return age in years
      */
     public int getAge() {
@@ -2427,8 +2496,9 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the current date is within a date range (inclusive)
+     *
      * @param startDate start of the range
-     * @param endDate end of the range
+     * @param endDate   end of the range
      * @return true if current date is between startDate and endDate (inclusive)
      */
     public boolean isBetween(FastPersianCalendar startDate, FastPersianCalendar endDate) {
@@ -2440,6 +2510,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the day of year (1 to 365/366)
+     *
      * @return day of year
      */
     public int getDayOfYear() {
@@ -2448,6 +2519,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the week of year
+     *
      * @return week of year (1-53)
      */
     public int getWeekOfYear() {
@@ -2456,6 +2528,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the week of month
+     *
      * @return week of month (1-6)
      */
     public int getWeekOfMonth() {
@@ -2464,6 +2537,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Create a copy of this calendar
+     *
      * @return a deep copy of this FastPersianCalendar instance
      */
     @Override
@@ -2516,6 +2590,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the current date is a weekend (Friday in Persian calendar)
+     *
      * @return true if the day is Friday
      */
     public boolean isWeekend() {
@@ -2524,6 +2599,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the current date is a weekday (Saturday through Thursday)
+     *
      * @return true if the day is not Friday
      */
     public boolean isWeekday() {
@@ -2532,6 +2608,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the number of days in the current year
+     *
      * @return 365 or 366 depending on leap year
      */
     public int getDaysInYear() {
@@ -2540,6 +2617,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the quarter (3-month period) of the year
+     *
      * @return quarter number (1-4)
      */
     public int getQuarter() {
@@ -2548,6 +2626,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the current date is the last day of the month
+     *
      * @return true if current day is the last day of the month
      */
     public boolean isLastDayOfMonth() {
@@ -2556,6 +2635,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the current date is the first day of the month
+     *
      * @return true if current day is the first day of the month
      */
     public boolean isFirstDayOfMonth() {
@@ -2564,6 +2644,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the number of days remaining in the current month
+     *
      * @return days remaining in month
      */
     public int getDaysRemainingInMonth() {
@@ -2572,6 +2653,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the number of days passed in the current month
+     *
      * @return days passed in month
      */
     public int getDaysPassedInMonth() {
@@ -2580,6 +2662,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get a string representation of the date in ISO-like format (YYYY/MM/dd)
+     *
      * @return formatted date string
      */
     public String toIsoString() {
@@ -2589,6 +2672,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if this date is in a leap year
+     *
      * @return true if the year is a leap year
      */
     public boolean isLeapYear() {
@@ -2597,6 +2681,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the day of week as Persian name
+     *
      * @return Persian weekday name
      */
     public String getPersianWeekdayName() {
@@ -2605,6 +2690,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the month name in Persian
+     *
      * @return Persian month name
      */
     public String getPersianMonthName() {
@@ -2613,6 +2699,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the month name in English
+     *
      * @return English month name
      */
     public String getEnglishMonthName() {
@@ -2621,6 +2708,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if two dates represent the same day (ignoring time)
+     *
      * @param other the date to compare with
      * @return true if same year, month, and day
      */
@@ -2637,6 +2725,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if two dates represent the same month and year
+     *
      * @param other the date to compare with
      * @return true if same year and month
      */
@@ -2650,6 +2739,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if two dates represent the same year
+     *
      * @param other the date to compare with
      * @return true if same year
      */
@@ -2662,6 +2752,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get midnight timestamp for this date
+     *
      * @return milliseconds since epoch for midnight of this date
      */
     public long getMidnightTime() {
@@ -2670,11 +2761,12 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the date is valid
+     *
      * @return true if the date represents a valid Persian date
      */
     public boolean isValid() {
         try {
-            validatePersianDate(persianYear, persianMonth, persianDay);
+            validateFastPersianCalendar(persianYear, persianMonth, persianDay);
             return true;
         } catch (IllegalArgumentException e) {
             return false;
@@ -2683,6 +2775,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the maximum possible day for the current month
+     *
      * @return maximum day number for current month
      */
     public int getMaxDayOfMonth() {
@@ -2692,16 +2785,10 @@ public class FastPersianCalendar extends Calendar {
 
     //Persian calendar methods
     public int getDaysPassedFromStartOfYear() {
-        int year  = getYear();
-        int month = getMonth();
-        int day   = getDayOfMonth();
-
-        int daysPassed = day - 1;
-
-        for (int i = 0; i < month - 1; i++) {
-            daysPassed += getDaysInMonth(year, i + 1);
+        int daysPassed = persianDay - 1;
+        for (int month = 0; month < persianMonth; month++) {
+            daysPassed += getDaysInMonthInternal(persianYear, month);
         }
-
         return daysPassed;
     }
 
@@ -2790,7 +2877,7 @@ public class FastPersianCalendar extends Calendar {
         int dayOfYear = hijriDate.day;
 
         for (int month = 1; month < hijriDate.month; month++) {
-            dayOfYear += HijriConvertor.getMonthLength(hijriDate.year, month);
+            dayOfYear += getMonthLength(hijriDate.year, month);
         }
 
         return dayOfYear;
@@ -2831,16 +2918,16 @@ public class FastPersianCalendar extends Calendar {
     }
 
 
-    /////////////////////
+    /// //////////////////
     //Add this method to get the next Persian New Year date
-    public static FastPersianCalendar getNextNewYear(FastPersianCalendar persianDate) {
-        if (persianDate == null) {
+    public static FastPersianCalendar getNextNewYear(FastPersianCalendar FastPersianCalendar) {
+        if (FastPersianCalendar == null) {
             throw new IllegalArgumentException("Persian date cannot be null");
         }
 
-        int currentYear  = persianDate.getYear();
-        int currentMonth = persianDate.getMonth();
-        int currentDay   = persianDate.getDayOfMonth();
+        int currentYear  = FastPersianCalendar.getYear();
+        int currentMonth = FastPersianCalendar.getMonth();
+        int currentDay   = FastPersianCalendar.getDayOfMonth();
 
         //If current date is before or on New Year (1st of Farvardin)
         //then next New Year is in current year, otherwise next year
@@ -2869,6 +2956,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the previous Friday (weekend start)
+     *
      * @return date of previous Friday
      */
     public FastPersianCalendar getPreviousFriday() {
@@ -2884,6 +2972,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the next Friday (weekend start)
+     *
      * @return date of next Friday
      */
     public FastPersianCalendar getNextFriday() {
@@ -2899,6 +2988,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the date is in the past
+     *
      * @return true if date is before today
      */
     public boolean isPast() {
@@ -2907,6 +2997,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if the date is in the future
+     *
      * @return true if date is after today
      */
     public boolean isFuture() {
@@ -2915,6 +3006,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the difference in months between this date and another date
+     *
      * @param other the date to compare with
      * @return number of months difference (positive if this date is later)
      */
@@ -2926,6 +3018,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get the difference in years between this date and another date
+     *
      * @param other the date to compare with
      * @return number of years difference (positive if this date is later)
      */
@@ -2977,18 +3070,18 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Get Persian horoscope (برج فلکی) based on Persian month
-     * @param persianMonth Persian month (1 to 12)
+     *
+     * @param month Persian month (1 to 12)
      * @return Persian horoscope name
      */
-    public static String getPersianHoroscope(int persianMonth) {
-        if (persianMonth < 1 || persianMonth > 12) {
-            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + persianMonth);
-        }
-        return PERSIAN_HOROSCOPE_NAMES[persianMonth - 1];
+    public static String getPersianHoroscope(int month) {
+        validateMonth1Based(month);
+        return PERSIAN_HOROSCOPE_NAMES[month - 1];
     }
 
     /**
      * Get Persian horoscope based on Persian month with English name
+     *
      * @param persianMonth Persian month (1 to 12)
      * @return Array containing [persianName, englishName]
      */
@@ -3001,7 +3094,6 @@ public class FastPersianCalendar extends Calendar {
                 PERSIAN_HOROSCOPE_NAMES_EN[persianMonth - 1]
         };
     }
-
 
     /**
      * Better debug method for Android Logcat
@@ -3025,6 +3117,7 @@ public class FastPersianCalendar extends Calendar {
 
     /**
      * Check if a 1-based Persian month is valid
+     *
      * @param month 1-based month to validate
      * @return true if valid (1-12)
      */
@@ -3268,7 +3361,7 @@ public class FastPersianCalendar extends Calendar {
     /**
      * Validate Persian date components
      */
-    private void validatePersianDate(int year, int month, int day) {
+    private void validateFastPersianCalendar(int year, int month, int day) {
         if (year < 1 || year > 9999) {
             throw new IllegalArgumentException("Year must be between 1 and 9999, got: " + year);
         }
@@ -3281,21 +3374,6 @@ public class FastPersianCalendar extends Calendar {
         }
     }
 
-    /**
-     * Validate Gregorian date components
-     */
-    private void validateGregorianDate(int year, int month, int day) {
-        if (year < 1 || year > 9999) {
-            throw new IllegalArgumentException("Year must be between 1 and 9999, got: " + year);
-        }
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("Month must be between 1 and 12, got: " + month);
-        }
-        int maxDays = getGrgMonthLength(year, month);
-        if (day < 1 || day > maxDays) {
-            throw new IllegalArgumentException("Day must be between 1 and " + maxDays + " for month " + (month + 1) + ", got: " + day);
-        }
-    }
 
     /**
      * Convert to JSON string

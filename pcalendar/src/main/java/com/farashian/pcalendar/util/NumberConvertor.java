@@ -6,6 +6,7 @@ public class NumberConvertor {
 
     /**
      * Convert English digits (0-9) to Persian digits (۰-۹)
+     *
      * @param text Input string with English digits
      * @return String with Persian digits
      */
@@ -30,6 +31,7 @@ public class NumberConvertor {
 
     /**
      * Convert Persian/Arabic digits to English digits
+     *
      * @param text Input string with Persian/Arabic digits
      * @return String with English digits (0-9)
      */
@@ -62,6 +64,7 @@ public class NumberConvertor {
 
     /**
      * Check if text contains Persian or Arabic digits
+     *
      * @param text Input string to check
      * @return true if contains non-English digits
      */
@@ -82,6 +85,7 @@ public class NumberConvertor {
 
     /**
      * Check if text contains only English digits
+     *
      * @param text Input string to check
      * @return true if contains only English digits (0-9)
      */
@@ -102,6 +106,7 @@ public class NumberConvertor {
 
     /**
      * Normalize numbers to English digits regardless of input
+     *
      * @param text Input string
      * @return String with all digits converted to English (0-9)
      */
@@ -112,6 +117,7 @@ public class NumberConvertor {
     /**
      * Normalize numbers to Persian digits regardless of input
      * First convert any Arabic digits to Persian, then any English to Persian
+     *
      * @param text Input string
      * @return String with all digits converted to Persian (۰-۹)
      */

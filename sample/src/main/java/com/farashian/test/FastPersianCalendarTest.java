@@ -87,31 +87,31 @@ public class FastPersianCalendarTest {
         assertEquals(0, date.getMonth(), "Should still be Farvardin");
 
         //Test 2: Day addition crossing month boundary
-        date.setPersianDate(1402, 0, 28); //Farvardin 28
+        date.setDate(1402, 0, 28); //Farvardin 28
         date.add(FastPersianCalendar.DAY_OF_MONTH, 5);
         assertEquals(2, date.getDayOfMonth(), "Should be Ordibehesht 2");
         assertEquals(1, date.getMonth(), "Should be Ordibehesht (1)");
 
         //Test 3: Month addition
-        date.setPersianDate(1402, 10, 15); //Bahman 15
+        date.setDate(1402, 10, 15); //Bahman 15
         date.add(FastPersianCalendar.MONTH, 1);
         assertEquals(11, date.getMonth(), "Should be Esfand (11)");
         assertEquals(1402, date.getYear());
 
         //Test 4: Month addition crossing year boundary
-        date.setPersianDate(1402, 11, 15); //Esfand 15
+        date.setDate(1402, 11, 15); //Esfand 15
         date.add(FastPersianCalendar.MONTH, 1);
         assertEquals(0, date.getMonth(), "Should be Farvardin (0)");
         assertEquals(1403, date.getYear());
 
         //Test 5: Year addition
-        date.setPersianDate(1402, 5, 15); //Shahrivar 15
+        date.setDate(1402, 5, 15); //Shahrivar 15
         date.add(FastPersianCalendar.YEAR, 1);
         assertEquals(1403, date.getYear());
         assertEquals(5, date.getMonth(), "Should still be Shahrivar");
 
         //Test 6: Negative addition (subtraction)
-        date.setPersianDate(1402, 0, 1); //Farvardin 1
+        date.setDate(1402, 0, 1); //Farvardin 1
         date.add(FastPersianCalendar.DAY_OF_MONTH, -1);
         assertEquals(1401, date.getYear(), "Should roll back to 1401");
         assertEquals(11, date.getMonth(), "Should be Esfand (11)");
@@ -187,7 +187,7 @@ public class FastPersianCalendarTest {
         assertNull(parsed4, "parseOrNullToCompat should return null for invalid day");
 
         //Test that parse handles time preservation
-        date.setPersianDate(1402, 0, 1);
+        date.setDate(1402, 0, 1);
         date.set(FastPersianCalendar.HOUR_OF_DAY, 14);
         date.set(FastPersianCalendar.MINUTE, 30);
         date.parse("1403/06/15");
@@ -303,8 +303,8 @@ public class FastPersianCalendarTest {
         assertEquals(32, age, "Age from 1370 to 1402 should be 32");
 
         //Test with birthday not happened yet this year
-        birthDate.setPersianDate(1370, 6, 15); //Mehr 15
-        now.setPersianDate(1402, 5, 1); //Shahrivar 1 (before birthday)
+        birthDate.setDate(1370, 6, 15); //Mehr 15
+        now.setDate(1402, 5, 1); //Shahrivar 1 (before birthday)
         age = birthDate.getAge(now);
         assertEquals(31, age, "Age should be 31 if birthday hasn't occurred yet");
 
@@ -328,16 +328,16 @@ public class FastPersianCalendarTest {
         date.set(FastPersianCalendar.MONTH, 1); //Ordibehesht has 31 days too, so should be OK
         assertEquals(31, date.getDayOfMonth(), "Day should remain 31");
 
-        date.setPersianDate(1402, 0, 31);
+        date.setDate(1402, 0, 31);
         date.set(FastPersianCalendar.MONTH, 6); //Mehr has 30 days, should adjust to 30
         assertEquals(30, date.getDayOfMonth(), "Day should adjust to 30 for 30-day month");
 
         //Test leap year adjustment
-        date.setPersianDate(1403, 10, 30); //Bahman 30 in leap year 1403
+        date.setDate(1403, 10, 30); //Bahman 30 in leap year 1403
         date.set(FastPersianCalendar.MONTH, 11); //Esfand in leap year has 30 days
         assertEquals(30, date.getDayOfMonth(), "Day should remain 30 in leap year Esfand");
 
-        date.setPersianDate(1402, 10, 30); //Bahman 30 in non-leap year 1402
+        date.setDate(1402, 10, 30); //Bahman 30 in non-leap year 1402
         date.set(FastPersianCalendar.MONTH, 11); //Esfand in non-leap year has 29 days
         assertEquals(29, date.getDayOfMonth(), "Day should adjust to 29 in non-leap year Esfand");
 
@@ -348,12 +348,12 @@ public class FastPersianCalendarTest {
         assertEquals(original.getTimeInMillis(), clone.getTimeInMillis(), "Clone should have same time");
 
         //Test roll method
-        date.setPersianDate(1402, 11, 15); //Esfand 15
+        date.setDate(1402, 11, 15); //Esfand 15
         date.roll(FastPersianCalendar.MONTH, true); //Roll forward
         assertEquals(0, date.getMonth(), "Should roll to Farvardin");
         assertEquals(1403, date.getYear(), "Should increment year when rolling from Esfand");
 
-        date.setPersianDate(1402, 0, 15); //Farvardin 15
+        date.setDate(1402, 0, 15); //Farvardin 15
         date.roll(FastPersianCalendar.MONTH, false); //Roll backward
         assertEquals(11, date.getMonth(), "Should roll to Esfand");
         assertEquals(1401, date.getYear(), "Should decrement year when rolling from Farvardin");

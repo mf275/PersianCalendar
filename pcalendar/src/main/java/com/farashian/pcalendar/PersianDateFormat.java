@@ -12,7 +12,7 @@ import static com.farashian.pcalendar.util.NumberConvertor.convertToPersianNumbe
 import static com.farashian.pcalendar.util.PCalendarUtils.getHijriMonthName;
 
 /**
- *  Persian Date Formatter - Direct replacement of PersianCalendar with PersianCalendar
+ * Persian Date Formatter - Direct replacement of PersianCalendar with PersianCalendar
  */
 public class PersianDateFormat {
 

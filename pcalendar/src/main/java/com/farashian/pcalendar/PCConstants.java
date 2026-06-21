@@ -50,7 +50,7 @@ public class PCConstants {
             "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
             "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
     };
-    public static final String[] AFGHAN_MONTH_NAMES = {
+    public static final String[] AFGHAN_MONTH_NAMES  = {
             "حمل", "ثور", "جوزا", "سرطان", "اسد", "سنبله",
             "میزان", "عقرب", "قوس", "جدی", "دلو", "حوت"
     };
@@ -65,7 +65,11 @@ public class PCConstants {
             "مهر", "آبـان", "آذر", "دی", "بهـم", "اسف"
     };
 
-    public static final String[] HIJRI_MONTH_NAMES = {
+    public static final String[] HIJRI_MONTH_NAMES       = {
+            "محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانیه",
+            "رجب", "شعبان", "رمضان", "شوال", "ذیقعده", "ذیحجه"
+    };
+    public static final String[] HIJRI_MONTH_NAMES_SHORT = {
             "محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانیه",
             "رجب", "شعبان", "رمضان", "شوال", "ذیقعده", "ذیحجه"
     };

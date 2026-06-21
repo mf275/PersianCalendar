@@ -18,7 +18,7 @@ import static com.farashian.pcalendar.util.PCalendarUtils.getHijriMonthName;
  */
 public class FastPersianDateFormat {
 
-    public enum PersianDateNumberCharacter {
+    public enum NumberCharacter {
         ENGLISH, FARSI
     }
 
@@ -26,11 +26,11 @@ public class FastPersianDateFormat {
         PERSIAN, GREGORIAN, HEJRI
     }
 
-    private String                     pattern;
-    private PersianDateNumberCharacter numberCharacter = PersianDateNumberCharacter.ENGLISH;
-    private CalendarType               calendarType    = CalendarType.PERSIAN;
-    private Locale                     locale;
-    private TimeZone                   timeZone;
+    private String          pattern;
+    private NumberCharacter numberCharacter = NumberCharacter.ENGLISH;
+    private CalendarType    calendarType    = CalendarType.PERSIAN;
+    private Locale          locale;
+    private TimeZone        timeZone;
 
     private YMD hijri;
 
@@ -38,7 +38,7 @@ public class FastPersianDateFormat {
         this.locale          = new Locale("fa", "IR");
         this.timeZone        = TimeZone.getTimeZone("Asia/Tehran");
         this.calendarType    = CalendarType.PERSIAN;
-        this.numberCharacter = PersianDateNumberCharacter.FARSI;
+        this.numberCharacter = NumberCharacter.FARSI;
     }
 
     public FastPersianDateFormat(String pattern) {
@@ -74,11 +74,11 @@ public class FastPersianDateFormat {
         return pattern;
     }
 
-    public void setNumberCharacter(PersianDateNumberCharacter numberCharacter) {
+    public void setNumberCharacter(NumberCharacter numberCharacter) {
         this.numberCharacter = numberCharacter;
     }
 
-    public PersianDateNumberCharacter getNumberCharacter() {
+    public NumberCharacter getNumberCharacter() {
         return numberCharacter;
     }
 
@@ -98,7 +98,7 @@ public class FastPersianDateFormat {
         return timeZone;
     }
 
-    public String format(FastPersianCalendar calendar, PersianDateNumberCharacter nc) {
+    public String format(FastPersianCalendar calendar, NumberCharacter nc) {
         this.numberCharacter = nc;
         return format(calendar);
     }
@@ -132,7 +132,7 @@ public class FastPersianDateFormat {
         //Create a PersianCalendar object and set the date from YMD, and set time to zero.
         FastPersianCalendar pc = new FastPersianCalendar();
         // ✅ YMD.month is 1-based, pass it directly
-        pc.setPersianDate(ymd.year, ymd.month, ymd.day);
+        pc.setDate(ymd.year, ymd.month, ymd.day);
         pc.set(Calendar.HOUR_OF_DAY, 0);
         pc.set(Calendar.MINUTE, 0);
         pc.set(Calendar.SECOND, 0);
@@ -255,7 +255,7 @@ public class FastPersianDateFormat {
     }
 
     private String convertNumbersToLocale(String text) {
-        if (numberCharacter == PersianDateNumberCharacter.ENGLISH) {
+        if (numberCharacter == NumberCharacter.ENGLISH) {
             return text;
         }
 
@@ -291,7 +291,8 @@ public class FastPersianDateFormat {
         }
     }
 
-    private FastPersianCalendar parseDateTimePattern(String dateString, String parsePattern) throws ParseException {
+    private FastPersianCalendar parseDateTimePattern(String dateString,
+            String parsePattern) throws ParseException {
         try {
             //Remove any extra spaces
             dateString = dateString.trim();
@@ -331,8 +332,8 @@ public class FastPersianDateFormat {
 
             //Create and set calendar
             FastPersianCalendar calendar = new FastPersianCalendar(timeZone, locale);
-            // ✅ Pass 1-based month to setPersianDate()
-            calendar.setPersianDate(year, month, day);
+            // ✅ Pass 1-based month to setDate()
+            calendar.setDate(year, month, day);
             calendar.set(HOUR_OF_DAY, hour);
             calendar.set(MINUTE, minute);
             calendar.set(SECOND, second);
@@ -386,8 +387,8 @@ public class FastPersianDateFormat {
             int day   = Integer.parseInt(convertToEnglishNumbers(parts[2]));
 
             FastPersianCalendar calendar = new FastPersianCalendar(timeZone, locale);
-            // ✅ Pass 1-based month to setPersianDate()
-            calendar.setPersianDate(year, month, day);
+            // ✅ Pass 1-based month to setDate()
+            calendar.setDate(year, month, day);
             return calendar;
 
         } catch (NumberFormatException e) {
@@ -397,7 +398,8 @@ public class FastPersianDateFormat {
         }
     }
 
-    private FastPersianCalendar parseDateTime(String dateString, String parsePattern) throws ParseException {
+    private FastPersianCalendar parseDateTime(String dateString,
+            String parsePattern) throws ParseException {
         //Simple implementation - parse date part and set time
         FastPersianCalendar calendar = parseStandardDate(dateString);
 
@@ -438,18 +440,18 @@ public class FastPersianDateFormat {
     //=== STATIC UTILITY METHODS ===
 
     public static String format(FastPersianCalendar calendar, String pattern) {
-        return format(calendar, pattern, PersianDateNumberCharacter.ENGLISH);
+        return format(calendar, pattern, NumberCharacter.ENGLISH);
     }
 
     public static String format(FastPersianCalendar calendar, String pattern,
-            PersianDateNumberCharacter numberCharacter) {
+            NumberCharacter numberCharacter) {
         FastPersianDateFormat formatter = new FastPersianDateFormat(pattern);
         formatter.setNumberCharacter(numberCharacter);
         return formatter.format(calendar);
     }
 
     public static String format(FastPersianCalendar calendar, String pattern,
-            PersianDateNumberCharacter numberCharacter, CalendarType type) {
+            NumberCharacter numberCharacter, CalendarType type) {
         FastPersianDateFormat formatter = new FastPersianDateFormat(pattern, type);
         formatter.setNumberCharacter(numberCharacter);
         return formatter.format(calendar);
@@ -461,7 +463,8 @@ public class FastPersianDateFormat {
         return format(calendar, pattern);
     }
 
-    public static String format(Date date, String pattern, PersianDateNumberCharacter numberCharacter) {
+    public static String format(Date date, String pattern,
+            NumberCharacter numberCharacter) {
         FastPersianCalendar calendar = new FastPersianCalendar();
         calendar.setTime(date);
         return format(calendar, pattern, numberCharacter);
@@ -473,7 +476,8 @@ public class FastPersianDateFormat {
         return format(calendar, pattern);
     }
 
-    public static String format(long milliseconds, String pattern, PersianDateNumberCharacter numberCharacter) {
+    public static String format(long milliseconds, String pattern,
+            NumberCharacter numberCharacter) {
         FastPersianCalendar calendar = new FastPersianCalendar();
         calendar.setTimeInMillis(milliseconds);
         return format(calendar, pattern, numberCharacter);

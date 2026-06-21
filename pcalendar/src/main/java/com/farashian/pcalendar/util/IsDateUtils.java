@@ -3,6 +3,7 @@ package com.farashian.pcalendar.util;
 public class IsDateUtils {
     /**
      * Static method: Check if Hijri year is leap year
+     *
      * @param year Hijri year
      * @return true if leap year
      */
@@ -13,7 +14,8 @@ public class IsDateUtils {
 
     /**
      * Get days in Hijri month
-     * @param year Hijri year
+     *
+     * @param year  Hijri year
      * @param month Hijri month (1-12)
      * @return number of days in month (29 or 30)
      */
@@ -32,6 +34,7 @@ public class IsDateUtils {
 
     /**
      * Convert Gregorian date to Hijri date using Umm al-Qura algorithm
+     *
      * @param gy Gregorian year
      * @param gm Gregorian month (0-based: 0=January)
      * @param gd Gregorian day
@@ -60,7 +63,7 @@ public class IsDateUtils {
         int testYear = year;
         while (true) {
             //Calculate days for this year
-            int daysInYear = isHijriLeapYear(testYear) ? 355 : 354;
+            int daysInYear  = isHijriLeapYear(testYear) ? 355 : 354;
             int daysAtStart = (int) Math.floor(testYear * 354.366 + 0.5);
 
             if (daysSinceEpoch < daysAtStart + daysInYear) {
@@ -72,7 +75,7 @@ public class IsDateUtils {
 
         //Calculate days at start of year
         int daysAtStartOfYear = (int) Math.floor(year * 354.366 + 0.5);
-        int dayOfYear = daysSinceEpoch - daysAtStartOfYear + 1;
+        int dayOfYear         = daysSinceEpoch - daysAtStartOfYear + 1;
 
         //Determine month
         int month = 1;
@@ -97,6 +100,7 @@ public class IsDateUtils {
 
     /**
      * Convert Hijri date to Gregorian date
+     *
      * @param iy Hijri year
      * @param im Hijri month (1-12)
      * @param id Hijri day
@@ -122,7 +126,7 @@ public class IsDateUtils {
 
         //Hijri epoch (July 16, 622 CE = Julian Day 1948439.5)
         int islamicEpoch = 1948439;
-        int jd = islamicEpoch + totalDays;
+        int jd           = islamicEpoch + totalDays;
 
         //Convert Julian Day to Gregorian
         return julianDayToGregorian(jd);
@@ -150,9 +154,9 @@ public class IsDateUtils {
         int e = c - (1461 * d) / 4;
         int m = (5 * e + 2) / 153;
 
-        int day = e - (153 * m + 2) / 5 + 1;
+        int day   = e - (153 * m + 2) / 5 + 1;
         int month = m + 3 - 12 * (m / 10);
-        int year = 100 * b + d - 4800 + (m / 10);
+        int year  = 100 * b + d - 4800 + (m / 10);
 
         return new int[]{year, month - 1, day}; //Return 0-based month
     }

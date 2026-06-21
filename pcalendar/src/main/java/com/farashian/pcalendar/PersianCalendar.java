@@ -202,13 +202,17 @@ public class PersianCalendar extends Calendar {
         return ymd[0];
     }
 
-    /** ✅ PUBLIC API: 1-based month, returns 1-12 **/
+    /**
+     * ✅ PUBLIC API: 1-based month, returns 1-12
+     **/
     public int getMonth() {
         ensureComputed();
         return ymd[1] + 1; // Convert 0-based to 1-based
     }
 
-    /** ✅ Get internal 0-based month (for Calendar compatibility) */
+    /**
+     * ✅ Get internal 0-based month (for Calendar compatibility)
+     */
     private int getMonth0() {
         ensureComputed();
         return ymd[1];
@@ -615,6 +619,7 @@ public class PersianCalendar extends Calendar {
 
     /**
      * ✅ Set Gregorian date
+     *
      * @param month 1-based Gregorian month (1=January, 12=December)
      */
     public void setGregorianDate(int year, int month, int day) {
@@ -1700,9 +1705,9 @@ public class PersianCalendar extends Calendar {
      *
      * @param other the other Persian date
      * @return number of days between this date and the other date
-     *         Positive if this date is later than the other date
-     *         Negative if this date is earlier than the other date
-     *         Zero if both dates are the same
+     * Positive if this date is later than the other date
+     * Negative if this date is earlier than the other date
+     * Zero if both dates are the same
      */
     public int calculateDaysBetween(PersianCalendar other) {
         if (other == null) {
@@ -1873,7 +1878,7 @@ public class PersianCalendar extends Calendar {
     /**
      * Check if a date is within a certain number of days from this date
      *
-     * @param other the other Persian date
+     * @param other   the other Persian date
      * @param maxDays maximum number of days allowed
      * @return true if the other date is within maxDays from this date
      */
@@ -1929,7 +1934,7 @@ public class PersianCalendar extends Calendar {
     /**
      * Calculate the number of specific weekdays between two dates
      *
-     * @param other the other Persian date
+     * @param other           the other Persian date
      * @param targetDayOfWeek the day of week to count (Calendar.SUNDAY, Calendar.MONDAY, etc.)
      * @return number of occurrences of the target day of week between the dates
      */
@@ -2037,7 +2042,7 @@ public class PersianCalendar extends Calendar {
      * Check if this date is within a date range (inclusive)
      *
      * @param startDate start of the range
-     * @param endDate end of the range
+     * @param endDate   end of the range
      * @return true if this date is between startDate and endDate (inclusive)
      */
     public boolean isWithinRange(PersianCalendar startDate, PersianCalendar endDate) {
@@ -2052,9 +2057,9 @@ public class PersianCalendar extends Calendar {
      * Calculate overlapping days between two date ranges
      *
      * @param range1Start start of first range
-     * @param range1End end of first range
+     * @param range1End   end of first range
      * @param range2Start start of second range
-     * @param range2End end of second range
+     * @param range2End   end of second range
      * @return number of overlapping days, or 0 if no overlap
      */
     public static int calculateOverlapDays(PersianCalendar range1Start, PersianCalendar range1End,
@@ -2468,7 +2473,7 @@ public class PersianCalendar extends Calendar {
         return isHijriLeapYear(hijriYear) ? 30 : 29;
     }
 
-    /////////////////////
+    /// //////////////////
     // Add this method to get the next Persian New Year date
     public static PersianCalendar getNextNewYear(PersianCalendar persianDate) {
         if (persianDate == null) {
@@ -2506,6 +2511,7 @@ public class PersianCalendar extends Calendar {
 
     /**
      * Get the previous Friday (weekend start)
+     *
      * @return date of previous Friday
      */
     public PersianCalendar getPreviousFriday() {
@@ -2521,6 +2527,7 @@ public class PersianCalendar extends Calendar {
 
     /**
      * Get the next Friday (weekend start)
+     *
      * @return date of next Friday
      */
     public PersianCalendar getNextFriday() {
@@ -2536,6 +2543,7 @@ public class PersianCalendar extends Calendar {
 
     /**
      * Check if the date is in the past
+     *
      * @return true if date is before today
      */
     public boolean isPast() {
@@ -2544,6 +2552,7 @@ public class PersianCalendar extends Calendar {
 
     /**
      * Check if the date is in the future
+     *
      * @return true if date is after today
      */
     public boolean isFuture() {
@@ -2552,6 +2561,7 @@ public class PersianCalendar extends Calendar {
 
     /**
      * Get the difference in months between this date and another date
+     *
      * @param other the date to compare with
      * @return number of months difference (positive if this date is later)
      */
@@ -2563,6 +2573,7 @@ public class PersianCalendar extends Calendar {
 
     /**
      * Get the difference in years between this date and another date
+     *
      * @param other the date to compare with
      * @return number of years difference (positive if this date is later)
      */
@@ -2715,16 +2726,17 @@ public class PersianCalendar extends Calendar {
         return getShortDate(getYear(), getMonth(), getDayOfMonth(), delimiter, locale);
     }
 
-   public YMD getHijriDate() {
+    public YMD getHijriDate() {
         ensureComputed();
         return gregorianToHijri(gCal);
     }
 
     /**
      * Set the date using Hijri (Hijri) calendar values
-     * @param hYear Hijri year
-     * @param hMonth Hijri month (1-12)
-     * @param hDay Hijri day of month
+     *
+     * @param hYear    Hijri year
+     * @param hMonth   Hijri month (1-12)
+     * @param hDay     Hijri day of month
      * @param timeZone Target timezone for the date
      */
     public void setHijriDate(int hYear, int hMonth, int hDay, TimeZone timeZone) {
@@ -2762,7 +2774,7 @@ public class PersianCalendar extends Calendar {
      * Find the Gregorian date corresponding to the first day (Hijri day 1)
      * of a given Hijri month and year.
      *
-     * @param islamicYear   Hijri year (e.g., 1446)
+     * @param islamicYear  Hijri year (e.g., 1446)
      * @param islamicMonth Hijri month (1-based: 1 = Muharram, 2 = Safar, ..., 12 = Dhu al-Hijjah)
      * @return Calendar object representing the Gregorian date of the first day of the Hijri month
      */
@@ -2826,6 +2838,7 @@ public class PersianCalendar extends Calendar {
     /**
      * Get Persian horoscope (برج فلکی) based on Persian month
      * ✅ @param persianMonth Persian month (1 to 12)
+     *
      * @return Persian horoscope name
      */
     public static String getPersianHoroscope(int persianMonth) {
@@ -2840,6 +2853,7 @@ public class PersianCalendar extends Calendar {
     /**
      * Get Persian horoscope based on Persian month with English name
      * ✅ @param persianMonth Persian month (1 to 12)
+     *
      * @return Array containing [persianName, englishName]
      */
     public static String[] getPersianHoroscopeWithEnglish(int persianMonth) {

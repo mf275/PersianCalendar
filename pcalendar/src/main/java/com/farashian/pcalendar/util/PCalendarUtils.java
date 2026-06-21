@@ -19,9 +19,10 @@ public final class PCalendarUtils {
 
     /**
      * Validates a Persian date
-     * @param year Persian year
+     *
+     * @param year  Persian year
      * @param month Persian month (1-12)
-     * @param day day of month
+     * @param day   day of month
      * @throws IllegalArgumentException if date is invalid
      */
     public static void validatePersianDate(int year, int month, int day) {
@@ -42,9 +43,10 @@ public final class PCalendarUtils {
 
     /**
      * Validates a Gregorian date
-     * @param year Gregorian year
+     *
+     * @param year  Gregorian year
      * @param month Gregorian month (1-12)
-     * @param day day of month
+     * @param day   day of month
      * @throws IllegalArgumentException if date is invalid
      */
     public static void validateGregorianDate(int year, int month, int day) {
@@ -65,6 +67,7 @@ public final class PCalendarUtils {
 
     /**
      * Static method to check if a Persian year is a leap year
+     *
      * @param year Persian year
      * @return true if leap year
      */
@@ -77,7 +80,8 @@ public final class PCalendarUtils {
 
     /**
      * Static method to get number of days in a Persian month
-     * @param year Persian year
+     *
+     * @param year  Persian year
      * @param month Persian month (1-12)
      * @return days in month
      */
@@ -100,7 +104,8 @@ public final class PCalendarUtils {
 
     /**
      * Static method to get Gregorian month length
-     * @param year Gregorian year
+     *
+     * @param year  Gregorian year
      * @param month Gregorian month (1-12)
      * @return days in month
      */
@@ -135,6 +140,7 @@ public final class PCalendarUtils {
 
     /**
      * Static method to check if Gregorian year is leap year
+     *
      * @param year Gregorian year
      * @return true if leap year
      */
@@ -144,9 +150,10 @@ public final class PCalendarUtils {
 
     /**
      * Converts Persian date to Gregorian date
-     * @param year Persian year
+     *
+     * @param year  Persian year
      * @param month Persian month (1-12)
-     * @param day Persian day
+     * @param day   Persian day
      * @return array with [Gregorian year, Gregorian month (1-12), Gregorian day]
      */
     public static int[] persianToGregorian(int year, int month, int day) {
@@ -161,9 +168,10 @@ public final class PCalendarUtils {
 
     /**
      * Converts Gregorian date to Persian date
-     * @param year Gregorian year
+     *
+     * @param year  Gregorian year
      * @param month Gregorian month (1-12)
-     * @param day Gregorian day
+     * @param day   Gregorian day
      * @return array with [Persian year, Persian month (1-12), Persian day]
      */
     public static int[] gregorianToPersian(int year, int month, int day) {
@@ -178,9 +186,10 @@ public final class PCalendarUtils {
 
     /**
      * Static method to format a Persian date
-     * @param year Persian year
-     * @param month Persian month (1-12)
-     * @param day Persian day
+     *
+     * @param year      Persian year
+     * @param month     Persian month (1-12)
+     * @param day       Persian day
      * @param delimiter delimiter to use
      * @return formatted date string
      */
@@ -191,6 +200,7 @@ public final class PCalendarUtils {
 
     /**
      * Formats a number to two digits
+     *
      * @param num the number to format
      * @return two-digit string
      */
@@ -274,7 +284,8 @@ public final class PCalendarUtils {
 
     /**
      * Get Persian month name
-     * @param month Persian month (1-12)
+     *
+     * @param month  Persian month (1-12)
      * @param locale locale for month name
      * @return month name
      */
@@ -302,6 +313,7 @@ public final class PCalendarUtils {
 
     /**
      * Get Gregorian month name
+     *
      * @param month Gregorian month (1-12)
      * @return month name in English
      */
@@ -325,6 +337,7 @@ public final class PCalendarUtils {
 
     /**
      * Get Hijri month name
+     *
      * @param month Hijri month (1-12)
      * @return month name
      */
@@ -337,6 +350,7 @@ public final class PCalendarUtils {
 
     /**
      * Helper method for backward compatibility
+     *
      * @deprecated Use getDaysInMonth() instead
      */
     @Deprecated
@@ -346,6 +360,7 @@ public final class PCalendarUtils {
 
     /**
      * Helper method for backward compatibility
+     *
      * @deprecated Use isLeapYear() instead
      */
     @Deprecated

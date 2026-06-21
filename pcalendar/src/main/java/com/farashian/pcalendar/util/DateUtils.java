@@ -46,7 +46,7 @@ public class DateUtils {
     }
 
     public static Date from(LocalDate localDate) {
-            return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public static Date from(LocalDateTime localDateTime) {
