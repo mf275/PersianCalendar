@@ -42,18 +42,18 @@ A **robust**, **accurate**, and **highly compatible** Persian (Solar Hijri / Jal
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar</artifactId>
-<version>2.6.0</version>
+<version>2.6.1</version>
 </dependency>
 
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>persian-calendar-android</artifactId>
-<version>2.6.0</version>
+<version>2.6.1</version>
 </dependency>
 <dependency>
 <groupId>com.github.mf275.PersianCalendar</groupId>
 <artifactId>fast-persian-calendar-android</artifactId>
-<version>2.6.0</version>
+<version>2.6.1</version>
 </dependency>
 ```
 ---
@@ -82,12 +82,12 @@ repositories {
 
 dependencies {
     //For Java/Kotlin projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.6.0")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar:v2.6.1")
 
     //For Android projects:
-    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.6.0")
+    implementation("com.github.mf275.PersianCalendar:persian-calendar-android:v2.6.1")
     //or
-    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.6.0")
+    implementation("com.github.mf275.PersianCalendar:fast-persian-calendar-android:v2.6.1")
 }
 
 ```
@@ -102,7 +102,10 @@ Thank you for helping keep this project alive!
 
 # what's new
 
-### version 2.6.0
+### version 2.6.1
+* - bug fix
+
+- ### version 2.6.0
 * - add CalendarType for  date formatting
 - 
 ### version 2.5.2

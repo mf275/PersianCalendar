@@ -3,8 +3,6 @@ package com.farashian.pcalendar.fast;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.farashian.pcalendar.fast.util.HijriConvertor;
 import com.farashian.pcalendar.fast.util.PCConstants;
 import com.farashian.pcalendar.fast.util.PCalendarUtils;
 import com.farashian.pcalendar.fast.util.YMD;
@@ -108,12 +106,20 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
     public FastPersianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute,
             int second) {
         this();
+        // First set the date to midnight of the given Persian date
         setPersianDateInternal(year, month - 1, dayOfMonth);
-        //Set time fields directly
+        // Now set the time fields directly on the underlying Gregorian calendar
+        gCal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        gCal.set(Calendar.MINUTE, minute);
+        gCal.set(Calendar.SECOND, second);
+        gCal.set(Calendar.MILLISECOND, 0);
+        // Update the time and recompute Persian fields
+        setTimeInMillis(gCal.getTimeInMillis());  // this will update time and recompute
+        // Also mark the fields as set
         setInternalField(HOUR_OF_DAY, hourOfDay);
         setInternalField(MINUTE, minute);
         setInternalField(SECOND, second);
-        isDirty = true;
+        isDirty = false; // setTimeInMillis already computes
     }
 
 
@@ -805,7 +811,7 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
             case MONTH:
                 int totalMonths = persianYear * 12 + persianMonth + amount;
                 if (totalMonths >= 0) {
-                    persianYear = totalMonths / 12;
+                    persianYear  = totalMonths / 12;
                     persianMonth = totalMonths % 12;
                 } else {
                     int yearsToSubtract = (-totalMonths + 11) / 12;
@@ -824,9 +830,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         // Recompute Gregorian date and sync
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
-        isDirty = true;
+        isDirty          = true;
         lastComputedTime = -1;
-        areFieldsSet = false;
+        areFieldsSet     = false;
     }
 
     public void addDays(int days) {
@@ -929,9 +935,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
-        isDirty = true;
+        isDirty          = true;
         lastComputedTime = -1;
-        areFieldsSet = false;
+        areFieldsSet     = false;
     }
 
 
@@ -986,10 +992,9 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
 
         computeGregorianFromPersianFast();
         setTimeInMillis(gCal.getTimeInMillis());
-        areFieldsSet = false;
+        areFieldsSet     = false;
         lastComputedTime = -1;
     }
-
 
 
     @Override
@@ -1373,8 +1378,8 @@ public class FastPersianCalendar extends Calendar implements Parcelable {
         if (index < 0) index += 7;
 
         return locale.getLanguage().equals("fa")
-                ? WEEKDAY_NAMES[index]
-                : WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
+                ? PCConstants.WEEKDAY_NAMES[index]
+                : PCConstants.WEEKDAY_NAMES_SHORT_IN_ENGLISH[index];
     }
 
     /**

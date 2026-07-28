@@ -90,7 +90,6 @@ public class FastPersianCalendar extends Calendar {
         setPersianDateInternal(pc.getYear(), pc.getMonth() - 1, pc.getDayOfMonth());
     }
 
-    // ✅ PUBLIC CONSTRUCTORS: 1-based month (1=Farvardin, 12=Esfand)
     public FastPersianCalendar(int year, int month, int dayOfMonth) {
         this();
         setPersianDateInternal(year, month - 1, dayOfMonth);
@@ -103,12 +102,20 @@ public class FastPersianCalendar extends Calendar {
     public FastPersianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minute,
             int second) {
         this();
+        // First set the date to midnight of the given Persian date
         setPersianDateInternal(year, month - 1, dayOfMonth);
-        //Set time fields directly
+        // Now set the time fields directly on the underlying Gregorian calendar
+        gCal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        gCal.set(Calendar.MINUTE, minute);
+        gCal.set(Calendar.SECOND, second);
+        gCal.set(Calendar.MILLISECOND, 0);
+        // Update the time and recompute Persian fields
+        setTimeInMillis(gCal.getTimeInMillis());  // this will update time and recompute
+        // Also mark the fields as set
         setInternalField(HOUR_OF_DAY, hourOfDay);
         setInternalField(MINUTE, minute);
         setInternalField(SECOND, second);
-        isDirty = true;
+        isDirty = false; // setTimeInMillis already computes
     }
 
 
