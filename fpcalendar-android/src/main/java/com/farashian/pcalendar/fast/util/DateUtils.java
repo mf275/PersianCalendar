@@ -289,6 +289,7 @@ public class DateUtils {
     }
 
     public static String getDateWithTimeFarsi(long dateInMilis) {
+        if (dateInMilis == -1) return "";
         FastPersianCalendar pdate = new FastPersianCalendar(dateInMilis);
         return dateTime.format(pdate);
     }
@@ -492,6 +493,54 @@ public class DateUtils {
         return persianCalendar.getTimeInMillis();
     }
 
+    // Add these helper methods
+    public static long getStartOfDay() {
+        FastPersianCalendar cal = new FastPersianCalendar();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTimeInMillis();
+    }
+
+    public static long getEndOfDay() {
+        FastPersianCalendar cal = new FastPersianCalendar();
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        return cal.getTimeInMillis();
+    }
+
+    public static long getStartOfWeek() {
+        FastPersianCalendar cal = new FastPersianCalendar();
+        // Get current day of week (1=Sunday, 7=Saturday)
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        // Persian week starts on Saturday (7 in Calendar)
+        int daysToSubtract;
+        if (dayOfWeek == Calendar.SATURDAY) {
+            daysToSubtract = 0;
+        } else {
+            daysToSubtract = dayOfWeek; // Saturday=7, Sunday=1, etc.
+        }
+        cal.addDays(-daysToSubtract);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTimeInMillis();
+    }
+
+    public static long getStartOfMonth() {
+        FastPersianCalendar cal = new FastPersianCalendar();
+        cal.setDate(cal.getPersianYear(), cal.getPersianMonth(), 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTimeInMillis();
+    }
+
     public static long getStartOfYear(int persianYear) {
         FastPersianCalendar persianCalendar = new FastPersianCalendar();
         persianCalendar.setDate(persianYear, 1, 1);
@@ -583,13 +632,30 @@ public class DateUtils {
         return calendar.getTimeInMillis();
     }
 
-    public static long getEndDate(long dateTime) {
+    public static long getEndDate1(long dateTime) {
+        Date gregorianDate = new Date(dateTime);
+
+        // Create a Calendar instance and set it to the Gregorian date
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(dateTime);
+        calendar.setTime(gregorianDate);
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTimeInMillis();
+    }
+
+    public static long getEndDate(long dateTime) {
+        // Create a Calendar instance and set it to the Gregorian date
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateTime);
+        // Set the end time to 23:59:59
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+
+        // Now you can use the calendar object as needed
         return calendar.getTimeInMillis();
     }
 
@@ -624,13 +690,21 @@ public class DateUtils {
 
     public static long convertUTCToLocal(long utcDate) {
         if (utcDate <= 0) return 0;
+        // Convert UTC timestamp to local time
+        calendar.setTimeInMillis(utcDate);
+        // Get the offset of the local time zone
         int offset = TimeZone.getDefault().getOffset(utcDate);
-        return utcDate + offset;
+
+        return utcDate + offset; // Convert to local time
     }
 
     public static long convertToUTC(long localTimeMillis) {
         if (localTimeMillis == -1) return -1;
+
+        // Get the offset of the local time zone
         int localTimeZoneOffset = TimeZone.getDefault().getOffset(localTimeMillis);
+
+        // Calculate UTC time by subtracting the local time zone offset
         return localTimeMillis - localTimeZoneOffset;
     }
 
@@ -642,13 +716,20 @@ public class DateUtils {
     }
 
     public static Date addOneDayAndSetTimeToMidnight(Date date) {
+        // Create a Calendar instance and set it to the given date
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
+
+        // Add one day
         calendar.add(Calendar.DAY_OF_MONTH, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 2);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+
+        // Set the time to 00:02
+        calendar.set(Calendar.HOUR_OF_DAY, 0); // Set hour to 0
+        calendar.set(Calendar.MINUTE, 2);      // Set minute to 2
+        calendar.set(Calendar.SECOND, 0);      // Set second to 0
+        calendar.set(Calendar.MILLISECOND, 0); // Set millisecond to 0
+
+        // Return the updated Date object
         return calendar.getTime();
     }
 
